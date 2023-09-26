@@ -1,0 +1,21 @@
+<form action="/api/deposit/payment" method="post" id="depositForm">
+    <h2>Deposit</h2>
+    <label for="paymentPlan">PaymentPlan</label>
+    <select name="paymentPlan" id="paymentPlan">
+        <option value="basic">Basic</option>
+        <option value="standard">Standard</option>
+        <option value="gold">Gold</option>
+        <option value="insurance">Insurance</option>
+        <option value="realEstate">Real Estate</option>
+        <option value="immigration">Immigration</option>
+    </select>
+
+   <input type="hidden" id="jwtToken" name="jwt" value="">
+
+    <label for="amount">Amount</label>
+    <input type="number" name="amount" id="amount">
+    <input type="hidden" name="user_id" value="{{ user_id }}" /> 
+
+    <button type="submit">Proceed</button>
+</form>
+
