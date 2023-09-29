@@ -1,5 +1,6 @@
 import { prisma } from "../utils/db.sever";
 import { User, getUser } from "../users/users.service"
+import { Request, Response } from "express";
 
 type Deposit = {
     id: number;

@@ -118,10 +118,10 @@ export async function logUser(
                 user.userName,
             );
         }
-        return "";
-        // else{
-        //     throw new Error('Password is not correct!')
-        // }
+        // return "";
+        else {
+            throw new Error('Password is not correct!')
+        }
     } catch (error) {
         throw error;
     }

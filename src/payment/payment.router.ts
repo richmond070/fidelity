@@ -1,7 +1,7 @@
 import express from "express";
 import type { Request, Response } from "express";
 import { body, validationResult } from "express-validator";
-import { auth } from "../utils/auth";
+import { auth, verifyToken } from "../utils/auth";
 import jwt from "jsonwebtoken";
 
 import * as PaymentService from "./payment.service";
@@ -10,7 +10,7 @@ import { createSecretKey } from "crypto";
 export const paymentRouter = express.Router();
 
 //GET: List for the payment
-paymentRouter.get("/:userId", auth, async (req: Request, res: Response) => {
+paymentRouter.get("/:userId", async (req: Request, res: Response) => {
     const id: number = parseInt(req.params.userId, 10)
     try {
         const payment = await PaymentService.listDeposit(id)
@@ -34,13 +34,23 @@ paymentRouter.get("/:id", async (req: Request, res: Response) => {
 });
 
 paymentRouter.post("/payment", body("paymentPlan").isString(), body("amount").isInt(),
-    body("userId").isInt(), body("createdAt").isDate().toDate(), auth,
+    body("userId").isInt(), body("createdAt").isDate().toDate(), verifyToken,
     async (req: Request, res: Response) => {
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
+
+        const { token } = req.cookies;
+
+        if (!token) {
+            res.send('No token given')
+        }
+
+        const decoded = Credential
+
+
 
         try {
             const deposit = req.body

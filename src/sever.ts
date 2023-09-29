@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import cookieSession from "cookie-session";
 import bodyParser from "body-parser";
 import http from "http";
+import { verifyToken } from "./utils/auth";
 
 import { User } from "@prisma/client";
 

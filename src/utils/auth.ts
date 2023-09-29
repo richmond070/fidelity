@@ -1,6 +1,7 @@
 import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-
+import { User } from '@prisma/client';
+import { getUser } from '../users/users.service';
 
 // export const SECRET_KEY: Secret = process.env.JWT_SECRET_KEY || 'my-secret';
 
@@ -60,6 +61,14 @@ interface Payload {
     userName: string,
 }
 
+declare global {
+    namespace Express {
+        interface Request {
+            payload?: Payload; // Extend the Request object to include 'payload' property
+        }
+    }
+}
+
 class Authentication {
     public static generateToken(id: number, userName: string): string {
         const secretKey: string = process.env.JWT_SECRET_KEY || "richmond-ekezie-richard-031";
@@ -93,11 +102,47 @@ export const auth = (req: Request, res: Response, next: NextFunction): any => {
         const credential: string | object = jwt.verify(token, secretKey)
         if (credential) {
             req.app.locals.credential = credential;
+            const userId = credential
             return next();
         }
     } catch (error) {
         return res.send(error)
     }
 }
+
+
+export function verifyToken(req: Request, res: Response, next: NextFunction) {
+    // const token = req.cookies.jwtToken;
+    let secretKey = process.env.JWT_SECRET_KEY || "richmond-ekezie-richard-031";
+
+    // if (!token) {
+    //     return res.status(401).json({ message: 'Authentication required' });
+    // }
+
+
+    // jwt.verify(token, secretKey, (err: any, payload: any) => {
+    //     if (err) {
+    //         return res.status(401).json({ message: 'Invalid token' });
+    //     }
+
+    //     // JWT is valid; you can access the decoded payload
+    //     // req.user = payload; // Attach user data to the request object
+    //     next();
+    // });
+
+    if (!req.headers['authorization']) return next(res.status(401).send("No token!"))
+    const authHeader = req.headers['authorization']
+    const bearerToken = authHeader.split(' ')
+    const token = bearerToken[1]
+
+    jwt.verify(token, secretKey, (err: any, payload: any) => {
+        if (err) {
+            return next(res.send(err))
+        }
+        req.payload = payload
+        next()
+    })
+}
+
 
 export default Authentication

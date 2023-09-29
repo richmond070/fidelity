@@ -1,7 +1,7 @@
 import express from "express";
 import type { Request, Response } from "express";
 import { body, validationResult } from "express-validator";
-import { auth } from "../utils/auth";
+import generateToken from "../utils/auth";
 
 import * as UserService from "./users.service";
 
@@ -43,9 +43,13 @@ userRouter.post("/signup",
         try {
             const user = req.body;
             const newUser = await UserService.createUser(user);
-            // const token = createToken(user.id);
-            res.status(201).json(newUser);
-            return res.send({ success: true, redirect: '/dashboard', message: 'signup successful' })
+            const token = new generateToken();
+            res.status(201).json({
+                success: true,
+                user: newUser,
+                redirect: '/login',
+                message: 'signup successful, please login'
+            });
         } catch (error: any) {
             return res.status(500).json(error.message);
         }
@@ -93,7 +97,8 @@ userRouter.post("/login", async (req: Request, res: Response) => {
             })
         }
         const res_token = { type: "Bearer", token: token }
-        const setCookie = res.cookie("jwt", res_token, { httpOnly: true })
+        res.cookie("jwt", token, { httpOnly: true });
+        res.setHeader('set-cookies', ['value= token', 'language= javascript', 'HttpOnly']);
 
 
         return res.status(200).json({
