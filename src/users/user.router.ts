@@ -43,7 +43,6 @@ userRouter.post("/signup",
         try {
             const user = req.body;
             const newUser = await UserService.createUser(user);
-            const token = new generateToken();
             res.status(201).json({
                 success: true,
                 user: newUser,
@@ -96,15 +95,15 @@ userRouter.post("/login", async (req: Request, res: Response) => {
                 message: "Wrong email or Password"
             })
         }
-        const res_token = { type: "Bearer", token: token }
+        //const res_token = { type: "Bearer", token: token }
         res.cookie("jwt", token, { httpOnly: true });
-        res.setHeader('set-cookies', ['value= token', 'language= javascript', 'HttpOnly']);
+        //res.setHeader('set-cookies', ['value= token', 'language= javascript', 'HttpOnly']);
 
 
         return res.status(200).json({
             status: "OK!",
             message: "Successfully login",
-            result: res_token,
+            result: token,
         });
 
 

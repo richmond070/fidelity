@@ -1,8 +1,6 @@
-//import { SECRET_KEY } from "../utils/auth";
 import Authentication from "../utils/auth";
 import { prisma } from "../utils/db.sever";
 import { generateHash, compareHash } from "../utils/password";
-import jwt from "jsonwebtoken";
 
 export type User = {
     id: number;

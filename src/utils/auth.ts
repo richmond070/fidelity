@@ -64,7 +64,7 @@ interface Payload {
 declare global {
     namespace Express {
         interface Request {
-            payload?: Payload; // Extend the Request object to include 'payload' property
+            user?: Payload; // Extend the Request object to include 'payload' property
         }
     }
 }
@@ -112,36 +112,36 @@ export const auth = (req: Request, res: Response, next: NextFunction): any => {
 
 
 export function verifyToken(req: Request, res: Response, next: NextFunction) {
-    // const token = req.cookies.jwtToken;
+    const token = req.cookies.jwt;
     let secretKey = process.env.JWT_SECRET_KEY || "richmond-ekezie-richard-031";
 
-    // if (!token) {
-    //     return res.status(401).json({ message: 'Authentication required' });
-    // }
+    if (!token) {
+        return res.status(401).json({ message: 'Authentication required' });
+    }
 
-
-    // jwt.verify(token, secretKey, (err: any, payload: any) => {
-    //     if (err) {
-    //         return res.status(401).json({ message: 'Invalid token' });
-    //     }
-
-    //     // JWT is valid; you can access the decoded payload
-    //     // req.user = payload; // Attach user data to the request object
-    //     next();
-    // });
-
-    if (!req.headers['authorization']) return next(res.status(401).send("No token!"))
-    const authHeader = req.headers['authorization']
-    const bearerToken = authHeader.split(' ')
-    const token = bearerToken[1]
 
     jwt.verify(token, secretKey, (err: any, payload: any) => {
         if (err) {
-            return next(res.send(err))
+            return res.status(403).json({ message: 'Invalid token' });
         }
-        req.payload = payload
-        next()
-    })
+
+        //JWT is valid; you can access the decoded payload
+        req.user = payload.id; // Attach user data to the request object
+        next();
+    });
+
+    // if (!req.headers['authorization']) return next(res.status(401).send("No token!"))
+    // const authHeader = req.headers['authorization']
+    // const bearerToken = authHeader.split(' ')
+    // const token = bearerToken[1]
+
+    // jwt.verify(token, secretKey, (err: any, payload: any) => {
+    //     if (err) {
+    //         return next(res.send(err))
+    //     }
+    //     req.payload = payload.Id
+    //     next()
+    // })
 }
 
 

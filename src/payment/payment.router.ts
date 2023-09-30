@@ -10,7 +10,7 @@ import { createSecretKey } from "crypto";
 export const paymentRouter = express.Router();
 
 //GET: List for the payment
-paymentRouter.get("/:userId", async (req: Request, res: Response) => {
+paymentRouter.get("/:userId", verifyToken, async (req: Request, res: Response) => {
     const id: number = parseInt(req.params.userId, 10)
     try {
         const payment = await PaymentService.listDeposit(id)
@@ -47,9 +47,6 @@ paymentRouter.post("/payment", body("paymentPlan").isString(), body("amount").is
         if (!token) {
             res.send('No token given')
         }
-
-        const decoded = Credential
-
 
 
         try {
