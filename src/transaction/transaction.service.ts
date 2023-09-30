@@ -11,12 +11,12 @@ export const getTransaction = async (transactionId: number) => {
     }
 };
 
-export const makeTransaction = async (userId: number, transactionNumber: string) => {
+export const makeTransaction = async (depositId: number, transactionNumber: string) => {
     try {
         const transaction = await prisma.transaction.create({
             data: {
                 transactionNumber,
-                deposit: { connect: userId }
+                deposit: { connect: { id: depositId } }
             }
         })
     } catch (error) {
