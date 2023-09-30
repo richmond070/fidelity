@@ -9,4 +9,17 @@ export const getTransaction = async (transactionId: number) => {
     } catch (error) {
         throw new Error('no transaction number');
     }
+};
+
+export const makeTransaction = async (userId: number, transactionNumber: string) => {
+    try {
+        const transaction = await prisma.transaction.create({
+            data: {
+                transactionNumber,
+                deposit: { connect: userId }
+            }
+        })
+    } catch (error) {
+
+    }
 }
