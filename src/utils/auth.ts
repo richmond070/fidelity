@@ -58,7 +58,7 @@ import { getUser } from '../users/users.service';
 
 interface Payload {
     userId: number,
-    userName: string,
+    role: "USER" | "ADMIN",
 }
 
 declare global {
@@ -70,10 +70,10 @@ declare global {
 }
 
 class Authentication {
-    public static generateToken(id: number, userName: string): string {
+    public static generateToken(id: number, role: any): string {
         const secretKey: string = process.env.JWT_SECRET_KEY || "richmond-ekezie-richard-031";
-        const payload: Payload = { userId: id, userName: userName };
-        const option = { expiresIn: process.env.JWT_EXPIRES_IN };
+        const payload: Payload = { userId: id, role: role };
+        const option = { expiresIn: process.env.JWT_EXPIRES_IN || '24h' };
 
         return jwt.sign(payload, secretKey, option)
     }
@@ -90,25 +90,25 @@ class Authentication {
 
 
 
-export const auth = (req: Request, res: Response, next: NextFunction): any => {
-    if (!req.headers.authorization) {
-        return res.status(401).send("No token!")
-    }
+// export const auth = (req: Request, res: Response, next: NextFunction): any => {
+//     if (!req.headers.authorization) {
+//         return res.status(401).send("No token!")
+//     }
 
-    let secretKey = process.env.JWT_SECRET_KEY || "richmond-ekezie-richard-031";
-    const token: string = req.headers.authorization.split(' ')[1];
+//     let secretKey = process.env.JWT_SECRET_KEY || "richmond-ekezie-richard-031";
+//     const token: string = req.headers.authorization.split(' ')[1];
 
-    try {
-        const credential: string | object = jwt.verify(token, secretKey)
-        if (credential) {
-            req.app.locals.credential = credential;
-            const userId = credential
-            return next();
-        }
-    } catch (error) {
-        return res.send(error)
-    }
-}
+//     try {
+//         const credential: string | object = jwt.verify(token, secretKey)
+//         if (credential) {
+//             req.app.locals.credential = credential;
+//             const userId = credential
+//             return next();
+//         }
+//     } catch (error) {
+//         return res.send(error)
+//     }
+// }
 
 
 export function verifyToken(req: Request, res: Response, next: NextFunction) {
@@ -142,6 +142,33 @@ export function verifyToken(req: Request, res: Response, next: NextFunction) {
     //     req.payload = payload.Id
     //     next()
     // })
+}
+
+
+
+// Middleware for authorization 
+export function authorization(role: any) {
+    return (req: Request, res: Response, next: NextFunction) => {
+        const accessToken = req.cookies.jwt;
+
+        if (!accessToken) {
+            return res.status(401).json({ message: 'Access token required' });
+        }
+
+        //token verification 
+        const user = Authentication.validationToken(accessToken);
+
+        if (!user) {
+            return res.status(403).json({ message: 'Invalid access token' });
+        }
+
+        //To check if the user has the required role
+        if (user.role !== role) {
+            return res.status(403).json({ message: 'Unauthorized' });
+        }
+
+        next();
+    };
 }
 
 

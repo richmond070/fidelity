@@ -83,6 +83,17 @@ userRouter.delete("/:id", async (req: Request, res: Response) => {
     }
 })
 
+
+userRouter.delete("/", async (req: Request, res: Response) => {
+    try {
+        await UserService.deleteAllUsers()
+        return res.status(204).json("Users deleted successfully");
+    } catch (error: any) {
+        console.log("error:", error)
+        return res.status(500).json({ message: "Error deleting transaction numbers" });
+    }
+})
+
 //POST: to log a user in
 userRouter.post("/login", async (req: Request, res: Response) => {
 
@@ -97,7 +108,6 @@ userRouter.post("/login", async (req: Request, res: Response) => {
         }
         //const res_token = { type: "Bearer", token: token }
         res.cookie("jwt", token, { httpOnly: true });
-        //res.setHeader('set-cookies', ['value= token', 'language= javascript', 'HttpOnly']);
 
 
         return res.status(200).json({

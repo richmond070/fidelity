@@ -6,12 +6,16 @@ import cookieParser from "cookie-parser";
 import cookieSession from "cookie-session";
 import bodyParser from "body-parser";
 import http from "http";
-import { verifyToken } from "./utils/auth";
+import { verifyToken, authorization } from "./utils/auth";
+import axios from "axios";
 
 
 import { userRouter } from "./users/user.router";
 import { paymentRouter } from "./payment/payment.router";
-import { cookie } from "express-validator";;
+import { transactionRouter } from "./transaction/transaction.router";
+
+import { cookie } from "express-validator"; import { adminRouter } from "./admin/admin.router";
+;
 
 dotenv.config();
 
@@ -22,16 +26,23 @@ if (!process.env.PORT) {
 const PORT: number = parseInt(process.env.PORT as string, 10);
 const app = express();
 
-app.use(cors());
+app.use(
+    cors({
+        credentials: true,
+        //origin: "http://localhost:4000",
+    })
+);
 app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET_KEY));
 app.use(cookieSession({ secret: process.env.JWT_SECRET_KEY }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-import axios from "axios";
+
 
 app.use("/api/users", userRouter);
 app.use("/api/deposit", paymentRouter);
+app.use("/api/trans", transactionRouter);
+app.use("/api/admin", adminRouter)
 //app.use(userToken);
 app.use(express.static('public'));
 

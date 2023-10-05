@@ -8,14 +8,16 @@ export type User = {
     userName: string;
     email: string;
     password: string;
+    role: any,
 };
 
-type UserLog = {
+type logUser = {
     email: string;
     password: string;
 };
 
 export const listUsers = async (): Promise<User[]> => {
+    const defaultRole = 'USER';
     return prisma.user.findMany({
         select: {
             id: true,
@@ -23,6 +25,7 @@ export const listUsers = async (): Promise<User[]> => {
             userName: true,
             email: true,
             password: true,
+            role: true,
         },
     });
 };
@@ -39,13 +42,14 @@ export const createUser = async (user: Omit<User, "id">): Promise<User> => {
     const { fullName, userName, email, password } = user;
 
     const hashedPassword = await generateHash(password);
-
+    const defaultRole = 'USER';
     return prisma.user.create({
         data: {
             fullName,
             userName,
             email,
             password: hashedPassword,
+            role: defaultRole
         },
         select: {
             id: true,
@@ -53,6 +57,7 @@ export const createUser = async (user: Omit<User, "id">): Promise<User> => {
             userName: true,
             email: true,
             password: true,
+            role: true
         },
     });
 };
@@ -77,6 +82,7 @@ export const updateUser = async (
             userName: true,
             email: true,
             password: true,
+            role: true
         },
     });
 };
@@ -88,6 +94,11 @@ export const deleteUser = async (id: number): Promise<void> => {
         },
     });
 };
+
+//DELETE MANY transaction numbers
+export const deleteAllUsers = async (): Promise<void> => {
+    await prisma.user.deleteMany()
+}
 
 export async function logUser(
     email: string,
@@ -106,14 +117,10 @@ export async function logUser(
 
         const passwordMatch = await compareHash(password, user.password);
         if (passwordMatch) {
-            // const token = jwt.sign({userId: user.id}, SECRET_KEY, {
-            //     expiresIn: '1 day',
-            // })
-            // return token;
 
             return Authentication.generateToken(
                 user.id,
-                user.userName,
+                user.role,
             );
         }
         // return "";
