@@ -8,20 +8,18 @@ import bodyParser from "body-parser";
 import http from "http";
 import { verifyToken, authorization } from "./utils/auth";
 import axios from "axios";
+import nodemailer from "nodemailer";
+
 
 
 import { userRouter } from "./users/user.router";
 import { paymentRouter } from "./payment/payment.router";
 import { transactionRouter } from "./transaction/transaction.router";
-
+import { mailRoute } from "./handler/mailRoute"
 import { cookie } from "express-validator"; import { adminRouter } from "./admin/admin.router";
-;
+
 
 dotenv.config();
-
-if (!process.env.PORT) {
-    process.exit(1);
-}
 
 const PORT: number = parseInt(process.env.PORT as string, 10);
 const app = express();
@@ -43,7 +41,7 @@ app.use("/api/users", userRouter);
 app.use("/api/deposit", paymentRouter);
 app.use("/api/trans", transactionRouter);
 app.use("/api/admin", adminRouter)
-//app.use(userToken);
+app.use(mailRoute);
 app.use(express.static('public'));
 
 
@@ -63,8 +61,12 @@ app.get('/login', (req, res) => res.render('login'));
 app.get('/register', (req, res) => res.render('register'));
 app.get('/dashboard', (req, res) => res.render('dashboard'));
 app.get('/deposit', verifyToken, (req, res) => res.render('deposit'));
+app.get('/contact', (req, res) => res.render('contact'));
 
 
+if (!process.env.PORT) {
+    process.exit(1);
+}
 app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
 });
