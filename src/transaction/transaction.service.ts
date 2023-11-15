@@ -1,25 +1,44 @@
 import { prisma } from "../utils/db.sever";
 
-export const getTransaction = async (transactionId: number) => {
-    try {
-        const transaction = await prisma.transaction.findUnique({
-            where: { id: transactionId },
-        });
-        return transaction;
-    } catch (error) {
-        throw new Error('no transaction number');
-    }
+type Transaction = {
+    id: number;
+    transactionNumber: string;
+    depositId: number;
+}
+
+//POST a transaction number
+export const makeTransaction = async (transaction: Omit<Transaction, "id">): Promise<Transaction> => {
+    const { transactionNumber, depositId } = transaction
+
+    return prisma.transaction.create({
+        data: {
+            transactionNumber,
+            depositId,
+        }
+    });
 };
 
-export const makeTransaction = async (depositId: number, transactionNumber: string) => {
-    try {
-        const transaction = await prisma.transaction.create({
-            data: {
-                transactionNumber,
-                deposit: { connect: { id: depositId } }
-            }
-        })
-    } catch (error) {
+//GET all transaction number
+export const listTransactions = async (): Promise<Transaction[]> => {
+    return prisma.transaction.findMany({
+        select: {
+            id: true,
+            transactionNumber: true,
+            depositId: true
+        },
+    });
+};
 
-    }
+//DELETE transaction numbers 
+export const deleteTransactions = async (id: number): Promise<void> => {
+    await prisma.transaction.delete({
+        where: {
+            id
+        }
+    });
+};
+
+//DELETE MANY transaction numbers
+export const deleteAllTransactions = async (): Promise<void> => {
+    await prisma.transaction.deleteMany()
 }

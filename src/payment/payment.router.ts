@@ -1,7 +1,7 @@
 import express from "express";
 import type { Request, Response } from "express";
 import { body, validationResult } from "express-validator";
-import { auth, verifyToken } from "../utils/auth";
+import { verifyToken } from "../utils/auth";
 import jwt from "jsonwebtoken";
 
 import * as PaymentService from "./payment.service";
@@ -42,11 +42,11 @@ paymentRouter.post("/payment", body("paymentPlan").isString(), body("amount").is
             return res.status(400).json({ errors: errors.array() });
         }
 
-        const { token } = req.cookies;
+        // const { token } = req.cookies;
 
-        if (!token) {
-            res.send('No token given')
-        }
+        // if (!token) {
+        //     res.send('No token given')
+        // }
 
 
         try {
@@ -71,22 +71,23 @@ paymentRouter.delete("/:id", async (req: Request, res: Response) => {
 
 
 
-paymentRouter.get('/payment-form', (req: Request, res: Response) => {
-    // Your authentication token
-    const authToken = auth;
-    res.send(`
-    <html>
-    <body>
-      <h2>Deposit</h2>
-      <!-- Include the authentication token in a JavaScript variable -->
-      <script>
-        const authToken = "${authToken}";
-      </script>
-      <!-- Rest of your HTML form -->
-      <form>
-        <!-- ... -->
-      </form>
-    </body>
-    </html>
-  `);
-});
+paymentRouter.delete("/", async (req: Request, res: Response) => {
+    try {
+        await PaymentService.deleteAllPayments()
+        return res.status(204).json("No existing payment left");
+    } catch (error: any) {
+        console.log("error:", error)
+        return res.status(500).json({ message: "Error deleting transaction numbers" });
+    }
+})
+
+
+
+paymentRouter.get("/", async (req: Request, res: Response) => {
+    try {
+        const deposit = await PaymentService.listDeposits()
+        return res.status(200).json(deposit);
+    } catch (error: any) {
+        return res.status(500).json(error.message);
+    }
+})

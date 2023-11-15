@@ -18,7 +18,7 @@ model User {
   userName  String
   email     String    @unique
   password  String
-  role      Roles     @default(BASIC)
+  role      Roles
   Deposit   Deposit[]
 }
 
@@ -30,17 +30,17 @@ model Deposit {
   amount      Int
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      Int
-  transaction transaction?
+  transaction Transaction?
 }
 
-model transaction {
+model Transaction {
   id                Int     @id @default(autoincrement())
-  transactionNumber String
-  deposit           Deposit @relation(fields: [deopsitId], references: [id], onDelete: Cascade)
-  deopsitId         Int     @unique
+  transactionNumber String  @unique
+  deposit           Deposit @relation(fields: [depositId], references: [id], onDelete: Cascade)
+  depositId         Int     @unique
 }
 
 enum Roles {
-  BASIC
+  USER
   ADMIN
 }
