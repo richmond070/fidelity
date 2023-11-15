@@ -8,11 +8,10 @@ import bodyParser from "body-parser";
 import http from "http";
 import { verifyToken } from "./utils/auth";
 
-import { User } from "@prisma/client";
 
 import { userRouter } from "./users/user.router";
 import { paymentRouter } from "./payment/payment.router";
-//import { userToken } from "./utils/handler";
+import { cookie } from "express-validator";;
 
 dotenv.config();
 
@@ -29,6 +28,7 @@ app.use(cookieParser(process.env.JWT_SECRET_KEY));
 app.use(cookieSession({ secret: process.env.JWT_SECRET_KEY }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+import axios from "axios";
 
 app.use("/api/users", userRouter);
 app.use("/api/deposit", paymentRouter);
@@ -36,12 +36,13 @@ app.use("/api/deposit", paymentRouter);
 app.use(express.static('public'));
 
 
-// app.use(function (req, res, next) {
-//     res.setHeader('Content-Type', 'text/html');
-//     res.setHeader('set-cookies', ['value= ${token}', 'language= javascript', 'HttpOnly']);
+app.use(function (req, res, next) {
+    res.setHeader('Content-Type', 'text/html');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-type,Authorization');
+    //res.setHeader('set-cookies', []);
 
-//     next();
-// })
+    next();
+})
 
 
 app.set('view engine', 'ejs');
@@ -50,7 +51,7 @@ app.get('/', (req, res) => res.render('index'));
 app.get('/login', (req, res) => res.render('login'));
 app.get('/register', (req, res) => res.render('register'));
 app.get('/dashboard', (req, res) => res.render('dashboard'));
-app.get('/deposit', (req, res) => res.render('deposit'));
+app.get('/deposit', verifyToken, (req, res) => res.render('deposit'));
 
 
 app.listen(PORT, () => {
