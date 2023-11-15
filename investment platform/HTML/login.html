@@ -1,0 +1,36 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Example</title>
+</head>
+<body>
+
+<header>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li id="login-option"><a href="/login">Login</a></li>
+            <!-- Other menu items -->
+        </ul>
+    </nav>
+</header> -->
+
+<script>
+// Simulating a user login status (you may use your own logic)
+const isLoggedIn = false;
+
+// Get the login option element
+const loginOption = document.getElementById('login-option');
+
+// Update the content based on the login status
+if (isLoggedIn) {
+    loginOption.innerHTML = '<a href="/logout">Logout</a>';
+} else {
+    loginOption.innerHTML = '<a href="/login">Login</a>';
+}
+</script>
+
+</body>
+</html>
