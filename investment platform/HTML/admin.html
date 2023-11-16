@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <!-- Admin Dashboard -->
+<div class="admin-dashboard">
+    <center>
+    <h1>ADMIN PAGE</h1>
+    
+    <section class="transaction-alerts">
+        <div class="head"style="background-color: #3b288f;padding: 20px 20px;">
+            <span style="font-size:30px;cursor:pointer; color: gold ;" class="nav3"  >CONTACT CLIENT</span>
+        </div>
+        <div class="containers border" style="width: 50%;height: 300px;padding: 20px 20px;margin: 40px;">
+            
+            
+            <form id="email-form">
+                <h2>Contact Client</h2> <br>
+                <label for="email">Recipient Email:</label>
+                <input style="width: 50%;" type="text" id="email" name="email" required>
+        
+                <label for="message">Message:</label>
+                <textarea style="width: 100%;height: 50%;" class="message" id="message" name="message" rows="8" required></textarea>
+        
+                <input type="submit" value="Send Email">
+            </form>
+        </div>
+
+        <div class="head"style="background-color: #3b288f;padding: 20px 20px;">
+            <span style="font-size:30px;cursor:pointer; color: gold ;" class="nav3"  >TRANSACTION ALERTS</span>
+        </div>
+        
+        <div class="tran-alerts" style="padding: 20px 20px;">
+            <!-- <h2>Transaction Alerts</h2> -->
+            <div id="transaction-alerts-container" style="font-size: 20px;"></div>
+            <button id="approveButton">Approve</button>
+            <button id="declineButton">Decline</button>
+        </div> </section>
+        
+        <div class="head"style="background-color: #3b288f;padding: 20px 20px;">
+            <span style="font-size:30px;cursor:pointer; color: gold ;" class="nav3"  >WITHDRAWAL ALERTS</span>
+        </div>
+        <!-- Withdrawal Section -->
+    <div class="withdrawal-section" style="font-size: 20px;">
+        <!-- <h2>Withdrawal</h2> -->
+        <div id="withdrawal-alert-container">
+            <!-- Withdrawal information from local storage will be displayed here using JavaScript -->
+        </div>
+        <button id="confirmWithdrawalButton" >Confirm Withdrawal</button> </center>
+        
+    </div>
+    <div class="head"style="background-color: #3b288f;padding: 20px 20px;">
+        <span style="font-size:30px;cursor:pointer; color: gold ;" class="nav3"  >TRANSACTION HISTORY</span>
+    </div>
+    <section class="transaction-history">
+        
+        <!-- <h2>Transaction History</h2> -->
+        <table id="transaction-history-table">
+            <thead>
+            <tr>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody id="transaction-history">
+                <!-- Transaction history rows will be added here using JavaScript -->
+            </tbody>
+        </table>
+    </section>
+  </div>
+  
+  
+  
+
+    
+
+    <style>
+        
+
+/* admin */
+.admin-page {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.transaction-alerts,
+.transaction-history {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+h2 {
+    margin: 0;
+}
+
+.head {
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+}
+/* form */
+form {
+            width: 80%; /* Increase the width */
+            margin: 0 auto;
+            padding: 20px; /* Add padding for height */
+        }
+        label, input, .message {
+            display: block;
+            margin-bottom: 10px;
+        }
+        .message {
+            width: 100%;
+            height: 100%; /* Increase the height */
+        }
+
+        .containers {
+                    max-width: 100%;
+                    /* margin: 0 auto; */
+                    padding: 20px;
+                    /* padding-bottom: 20px; */
+                    background-color: whitesmoke;
+                    border-radius: 5px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+                    border-top-left-radius: 30px;
+                     border-top-right-radius: 30px;
+    
+                    border-bottom-left-radius: 30px;
+                    border-bottom-right-radius: 30px;
+                    height: 200px;
+                    overflow: hidden;
+                    /* border: 2px solid gold; */
+                }
+
+                /* Style for the withdrawal section */
+        .withdrawal-section {
+            padding: 20px;
+            border: 1px solid #ccc;
+            margin-top: 20px;
+        }
+    </style>
+    <script>
+        // //transactions
+        // const transactionAlertsContainer = document.getElementById('transaction-alerts-container');
+        // const approveButton = document.getElementById('approveButton');
+        // const declineButton = document.getElementById('declineButton');
+        // const transactionHistoryTable = document.querySelector('.transaction-history table');
+        // const alertsQueue = []; // Array to store alerts
+        // Transaction alerts section
+
+
+        const transactionAlertsContainer = document.getElementById('transaction-alerts-container');
+        const approveButton = document.getElementById('approveButton');
+        const declineButton = document.getElementById('declineButton');
+        const transactionHistoryTable = document.querySelector('.transaction-history table');
+        const alertsQueue = []; // Array to store alerts
+
+        // // Function to add an alert to the transaction alerts section
+        // function addTransactionAlert(alertMessage) {
+        //     const alertElement = document.createElement('p');
+        //     alertElement.textContent = alertMessage;
+        //     transactionAlertsContainer.appendChild(alertElement);
+        // }
+
+        // // Retrieve InvestmentInfo from local storage
+        // const investmentInfo = localStorage.getItem('investmentInfo');
+        // if (investmentInfo) {
+        //     addTransactionAlert(investmentInfo);
+        // }
+
+        // // Retrieve MergerInvestmentInfo from local storage
+        // const mergerInvestmentInfo = localStorage.getItem('MergerInvestmentInfo');
+        // if (mergerInvestmentInfo) {
+        //     addTransactionAlert(mergerInvestmentInfo);
+        // }
+    </script>
+    <script src="/JAVASCRIPT/admin.js"></script>
+    <script src="/JAVASCRIPT/admincontactclient.js"></script>
+    <!-- <script src="/JAVASCRIPT/adminbasic.js"></script> -->
+    <script src="/JAVASCRIPT/adminwithdraw.js"></script>
+    <!-- <script src="/JAVASCRIPT/adminmerger.js"></script> -->
+  
+    <script src="script.js"></script>
+</body>
+</html>
