@@ -46,7 +46,7 @@ userRouter.post("/signup",
             res.status(201).json({
                 success: true,
                 user: newUser,
-                redirect: '/login',
+                redirect: '/verify',
                 message: 'signup successful, please login'
             });
         } catch (error: any) {
