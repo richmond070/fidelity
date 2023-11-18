@@ -112,28 +112,28 @@ export const deleteUser = async (req: Request, res: Response) => {
 // TRANSACTION
 
 //to get all transaction numbers 
-export const getTransaction = async (req: Request, res: Response) => {
-    try {
-        const transactionNumbers = await prisma.transaction.findMany()
-        res.status(200).json({
-            data: transactionNumbers
-        })
-    } catch (error) {
-        console.log(error)
-        res.status(500).json({
-            error: "Server error"
-        })
-    }
-}
+// export const getTransaction = async (req: Request, res: Response) => {
+//     try {
+//         const transactionNumbers = await prisma.transaction.findMany()
+//         res.status(200).json({
+//             data: transactionNumbers
+//         })
+//     } catch (error) {
+//         console.log(error)
+//         res.status(500).json({
+//             error: "Server error"
+//         })
+//     }
+// }
 
 
 //DEPOSIT
 export const deposit = async (req: Request, res: Response) => {
-    const { paymentPlan, amount, userId }: Deposit = req.body;
+    const { transactionId, amount, userId }: Deposit = req.body;
     try {
         const payment = await prisma.deposit.create({
             data: {
-                paymentPlan,
+                transactionId,
                 amount,
                 userId
             }

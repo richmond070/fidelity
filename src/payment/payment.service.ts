@@ -4,12 +4,12 @@ import { Request, Response } from "express";
 
 type Deposit = {
     id: number;
-    paymentPlan: string;
     amount: number;
+    transactionId: string;
 };
 
 type DepositMade = {
-    paymentPlan: string;
+    transactionId: string;
     amount: number;
     createdAt: Date;
     userId: number;
@@ -22,7 +22,7 @@ export const listDeposit = async (userId: number): Promise<DepositMade[] | null>
             userId: userId
         },
         select: {
-            paymentPlan: true,
+            transactionId: true,
             amount: true,
             createdAt: true,
             userId: true
@@ -34,7 +34,7 @@ export const listDeposits = async (): Promise<Deposit[]> => {
     return prisma.deposit.findMany({
         select: {
             id: true,
-            paymentPlan: true,
+            transactionId: true,
             amount: true,
         },
     });
@@ -47,7 +47,7 @@ export const getDeposit = async (id: number): Promise<Deposit | null> => {
         },
         select: {
             id: true,
-            paymentPlan: true,
+            transactionId: true,
             amount: true,
         },
 
@@ -55,12 +55,12 @@ export const getDeposit = async (id: number): Promise<Deposit | null> => {
 }
 
 export const makeDeposit = async (deposit: DepositMade): Promise<Deposit> => {
-    const { paymentPlan, amount, createdAt, userId } = deposit;
+    const { transactionId, amount, createdAt, userId } = deposit;
     const parsedDate: Date = new Date(createdAt);
 
     return prisma.deposit.create({
         data: {
-            paymentPlan,
+            transactionId,
             amount,
             createdAt: parsedDate,
             userId

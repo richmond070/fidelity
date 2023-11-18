@@ -23,21 +23,12 @@ model User {
 }
 
 model Deposit {
-  id          Int          @id @default(autoincrement())
-  createdAt   DateTime     @default(now())
-  updateAt    DateTime     @updatedAt
-  paymentPlan String
-  amount      Int
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      Int
-  transaction Transaction?
-}
-
-model Transaction {
-  id                Int     @id @default(autoincrement())
-  transactionNumber String  @unique
-  deposit           Deposit @relation(fields: [depositId], references: [id], onDelete: Cascade)
-  depositId         Int     @unique
+  id            Int      @id @default(autoincrement())
+  createdAt     DateTime @default(now())
+  amount        Int
+  transactionId String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        Int
 }
 
 enum Roles {
