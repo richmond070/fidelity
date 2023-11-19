@@ -60,7 +60,7 @@
         </div> </div>
         <br> <br>
     <div class="container" >
-        <div >
+        <form >
             <h3>Order Summary:</h3>
             <h6><strong>Plan:</strong> Basic </h6>
             <h6><strong>Profit:</strong> 10% every 48 hours </h6>
@@ -82,7 +82,7 @@
 
             <button id="submitButton">Submit</button> <br><br>
 
-        </div>
+        </form>
 
     </div>
 
@@ -197,6 +197,7 @@ Dependable, Profitable, Timeless
             color: whitesmoke;
         }
       </style>
+
     <script>
         const walletTextArea = document.getElementById('walletTextArea');
         const copyButton = document.getElementById('copyButton');
@@ -237,6 +238,64 @@ Dependable, Profitable, Timeless
             location.href = '/success'; 
         }
     });
+
+
+    // const amountTextArea = document.getElementById('amountTextArea');
+      // const transactionIdTextArea = document.getElementById('transactionIdTextArea');
+      // //const userIdTextArea = document.getElementById('userIdTextArea');
+      // //const createdAtTextArea = document.getElementById('createdAtTextArea');
+      // const submitButton = document.getElementById('submitButton');
+
+      // submitButton.addEventListener('click', async () => {
+      //   const amount = amountTextArea.value.trim();
+      //   const transactionId = transactionIdTextArea.value.trim();
+      //   //const userId = userIdTextArea.value.trim();
+      //   //const createdAt = createdAtTextArea.value.trim(); // Assuming createdAt is in a valid date format
+
+      //   if (amount === '' || transactionId === '') {
+      //     alert('Please fill in all the required fields appropriately.');
+      //   } else {
+      //     // Retrieve the 'jwt' cookie value
+      //     const jwtToken = getCookie('jwt');
+
+      //     // Make a POST request to store the deposit
+      //     try {
+      //       const response = await fetch('/payment', {
+      //         method: 'POST',
+      //         headers: {
+      //           'Content-Type': 'application/json',
+      //           'Authorization': 'Bearer ' + jwtToken,
+      //         },
+      //         body: JSON.stringify({ amount, transactionId, }),
+      //       });
+
+      //       if (response.ok) {
+      //         const newDeposit = await response.json();
+      //         console.log('Deposit made:', newDeposit);
+      //         // Redirect to the next page or perform other actions...
+      //       } else {
+      //         const errorData = await response.json();
+      //         console.error('Error making deposit:', errorData);
+      //         alert('Error making deposit. Please check your input and try again.');
+      //       }
+      //     } catch (error) {
+      //       console.error('Error making deposit:', error);
+      //       alert('An unexpected error occurred. Please try again later.');
+      //     }
+      //   }
+      // });
+
+      // // Function to retrieve cookie value by name
+      // function getCookie(name) {
+      //   const cookies = document.cookie.split(';');
+      //   for (const cookie of cookies) {
+      //     const [cookieName, cookieValue] = cookie.trim().split('=');
+      //     if (cookieName === name) {
+      //       return cookieValue;
+      //     }
+      //   }
+      //   return null;
+      // }
       </script>
 </body>
 </html>

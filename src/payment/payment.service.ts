@@ -62,7 +62,7 @@ export const makeDeposit = async (deposit: DepositMade): Promise<Deposit> => {
         data: {
             transactionId,
             amount,
-            createdAt: parsedDate,
+            createdAt: new Date,
             userId
         }
     })
