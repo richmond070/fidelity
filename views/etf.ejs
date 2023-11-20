@@ -1,0 +1,151 @@
+<%- include('partial/plansheader'); -%>
+    <br> <br> <br><br>
+
+    <div class="container" style="border: 2px solid gold;" >
+        <div style="display: block;">
+        <h1><strong>ETF & MUTUAL FUNDS PLAN</strong></h1>
+
+        <h4>Please confirm your deposit</h4>
+        </div> </div>
+        <br> <br>
+    <div class="container" >
+        <div >
+            <h3>Order Summary:</h3>
+            <h6><strong>Plan:</strong> Etf & Mutual funds account </h6>
+            <h6><strong>Profit:</strong> 55% every two weeks </h6>
+            <h6><strong>Principal return:</strong> Yes </h6>
+            <h6><strong>Minimum deposit:</strong> $10,000.00 </h6> 
+            <h6><strong>Maximum deposit:</strong> $20,000.00 </h6>
+            <h6><strong>Deposit fee:</strong> 0.00% </h6> <br>
+            <h5> *Input the amount you desire to invest</h5>
+            <textarea id="amountTextArea"></textarea> <br><br>
+            <h5>"Copy wallet" and send the desired amount to it.</h5>
+
+            <textarea id="walletTextArea" readonly>ahakhdaddkdahdadakdhadaaaj</textarea>
+            <br>
+            <button id="copyButton">Copy Wallet</button> <br><br>
+            
+            
+            <h5>*Transaction ID(required):</h5>
+            <textarea id="transactionIdTextArea"></textarea> <br>
+
+            <button id="submitButton">Submit</button> <br><br>
+
+        </div>
+
+    </div>
+
+
+    <%- include('partial/plansfooter'); -%>
+
+
+
+
+
+
+
+
+
+
+
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+
+      body{
+        font-family: 'Quicksand', sans-serif;
+      }
+        .container {
+          text-align: center;
+        }
+        #walletTextArea {
+          width: 300px;
+          height: 30px;
+          resize: none;
+        }
+        #amountTextArea {
+          width: 300px;
+          height: 30px;
+          resize: none;
+        }
+        #transactionIdTextArea {
+          width: 300px;
+          height: 30px;
+          resize: none;
+        }
+        #copyButton {
+          padding: 10px 20px;
+          /* border: 2px solid gold; */
+          background-color: gold;
+          /* color: #3b288f; */
+          border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+    
+         border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        }
+
+        #copyButton:hover{
+            background-color: #3b288f;
+            color: whitesmoke;
+        }
+
+        #submitButton {
+          padding: 10px 20px;
+          /* border: 2px solid gold; */
+          background-color: gold;
+          /* color: #3b288f; */
+          border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+    
+         border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        }
+
+        #submitButton:hover{
+            background-color: #3b288f;
+            color: whitesmoke;
+        }
+      </style>
+    <script>
+        const walletTextArea = document.getElementById('walletTextArea');
+        const copyButton = document.getElementById('copyButton');
+        const amountTextArea = document.getElementById('amountTextArea');
+        const submitButton = document.getElementById('submitButton');
+
+
+        amountTextArea.addEventListener('input', function (e) {
+        const value = e.target.value;
+        // Remove non-numeric characters from the input
+        e.target.value = value.replace(/[^0-9]/g, '');
+      });
+  
+        copyButton.addEventListener('click', () => {
+          walletTextArea.select();
+          document.execCommand('copy');
+          window.getSelection().removeAllRanges();
+          alert('Copied to clipboard');
+        });
+
+        submitButton.addEventListener('click', () => {
+        const etfAmount = amountTextArea.value.trim();
+        // Check if the amount is within the range
+        if (etfAmount < 10000 || etfamount > 20000) {
+                alert('Kindly input an amount between $10,000.00 & $20,000.00');
+                return;
+            }
+        const etftransactionId = transactionIdTextArea.value.trim();
+
+
+        if (etfAmount === '' || etftransactionId === '') {
+            alert('Please fill in the required fields appropriately.');
+        } else {
+            // Save the transaction ID and amount to local storage
+            localStorage.setItem('etfInvestmentInfo', `Etf plan investment: ${etfAmount}. Transaction ID: ${etftransactionId}`);
+
+            // Redirect to the next page (success.html)
+            location.href = '/success'; 
+        }
+    });
+      </script>
+</body>
+</html>

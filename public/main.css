@@ -13,6 +13,13 @@ h1, h2, h3, h4, ul, li, a, p, input, label, button, div, footer{
   font-family: 'Quicksand', sans-serif;
   color: #444;
 }
+p{
+  font-size: 20px;
+}
+
+#register a{
+  color: #3b288f;
+}
 ul{
   list-style-type: none;
 }

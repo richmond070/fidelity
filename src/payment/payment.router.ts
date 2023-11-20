@@ -33,7 +33,7 @@ paymentRouter.get("/:id", async (req: Request, res: Response) => {
     }
 });
 
-paymentRouter.post("/payment", body("paymentPlan").isString(), body("amount").isInt(),
+paymentRouter.post("/payment", body("transactionId").isString(), body("amount").isInt(),
     body("userId").isInt(), body("createdAt").isDate().toDate(), verifyToken,
     async (req: Request, res: Response) => {
 

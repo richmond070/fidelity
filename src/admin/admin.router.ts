@@ -4,7 +4,7 @@ import {
     getUsers,
     createUser,
     deleteUser,
-    getTransaction,
+    //getTransaction,
     deposit,
     createAdmin,
     getAdmin,
@@ -22,7 +22,7 @@ adminRouter.get("/users", getUsers);
 adminRouter.delete("/user:id", deleteUser);
 
 
-adminRouter.get("/transaction", getTransaction);
+// adminRouter.get("/transaction", getTransaction);
 
 
 adminRouter.post("/deposit", deposit);

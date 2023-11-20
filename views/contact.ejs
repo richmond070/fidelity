@@ -1,8 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Email Form</title>
-</head>
+<%- include('partial/homeheader'); -%>
 <body>
   <h1>Email Form</h1>
   
@@ -18,7 +14,11 @@
     
     <button type="submit">Send Email</button>
   </form>
+  <br><br>
 
+  <%- include('partial/homefooter'); -%>
+
+  
   <script>
     const form = document.getElementById("email-form");
 
