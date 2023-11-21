@@ -17,7 +17,7 @@ const listDeposit = (userId) => __awaiter(void 0, void 0, void 0, function* () {
             userId: userId
         },
         select: {
-            paymentPlan: true,
+            transactionId: true,
             amount: true,
             createdAt: true,
             userId: true
@@ -29,7 +29,7 @@ const listDeposits = () => __awaiter(void 0, void 0, void 0, function* () {
     return db_sever_1.prisma.deposit.findMany({
         select: {
             id: true,
-            paymentPlan: true,
+            transactionId: true,
             amount: true,
         },
     });
@@ -42,20 +42,18 @@ const getDeposit = (id) => __awaiter(void 0, void 0, void 0, function* () {
         },
         select: {
             id: true,
-            paymentPlan: true,
+            transactionId: true,
             amount: true,
         },
     });
 });
 exports.getDeposit = getDeposit;
 const makeDeposit = (deposit) => __awaiter(void 0, void 0, void 0, function* () {
-    const { paymentPlan, amount, createdAt, userId } = deposit;
-    const parsedDate = new Date(createdAt);
+    const { transactionId, amount, userId } = deposit;
     return db_sever_1.prisma.deposit.create({
         data: {
-            paymentPlan,
+            transactionId,
             amount,
-            createdAt: parsedDate,
             userId
         }
     });

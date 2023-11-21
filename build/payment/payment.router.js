@@ -64,7 +64,7 @@ exports.paymentRouter.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0
         return res.status(500).json(error.message);
     }
 }));
-exports.paymentRouter.post("/payment", (0, express_validator_1.body)("paymentPlan").isString(), (0, express_validator_1.body)("amount").isInt(), (0, express_validator_1.body)("userId").isInt(), (0, express_validator_1.body)("createdAt").isDate().toDate(), auth_1.verifyToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.paymentRouter.post("/payment", (0, express_validator_1.body)("transactionId").isString(), (0, express_validator_1.body)("amount").isInt(), (0, express_validator_1.body)("userId").isInt(), auth_1.verifyToken, (0, auth_1.authorization)("USER"), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });

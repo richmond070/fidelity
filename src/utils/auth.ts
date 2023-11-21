@@ -90,27 +90,7 @@ class Authentication {
 
 
 
-// export const auth = (req: Request, res: Response, next: NextFunction): any => {
-//     if (!req.headers.authorization) {
-//         return res.status(401).send("No token!")
-//     }
-
-//     let secretKey = process.env.JWT_SECRET_KEY || "richmond-ekezie-richard-031";
-//     const token: string = req.headers.authorization.split(' ')[1];
-
-//     try {
-//         const credential: string | object = jwt.verify(token, secretKey)
-//         if (credential) {
-//             req.app.locals.credential = credential;
-//             const userId = credential
-//             return next();
-//         }
-//     } catch (error) {
-//         return res.send(error)
-//     }
-// }
-
-
+// function to verify a users token
 export function verifyToken(req: Request, res: Response, next: NextFunction) {
     const token = req.cookies.jwt;
     let secretKey = process.env.JWT_SECRET_KEY || "richmond-ekezie-richard-031";
@@ -170,6 +150,30 @@ export function authorization(role: any) {
         next();
     };
 }
+
+
+
+
+// export const auth = (req: Request, res: Response, next: NextFunction): any => {
+//     if (!req.headers.authorization) {
+//         return res.status(401).send("No token!")
+//     }
+
+//     let secretKey = process.env.JWT_SECRET_KEY || "richmond-ekezie-richard-031";
+//     const token: string = req.headers.authorization.split(' ')[1];
+
+//     try {
+//         const credential: string | object = jwt.verify(token, secretKey)
+//         if (credential) {
+//             req.app.locals.credential = credential;
+//             const userId = credential
+//             return next();
+//         }
+//     } catch (error) {
+//         return res.send(error)
+//     }
+// }
+
 
 
 export default Authentication

@@ -1,0 +1,1 @@
+{"version":3,"file":"mail.js","sourceRoot":"","sources":["../../src/handler/mail.ts"],"names":[],"mappings":";;;;;;AAAA,4DAAoC;AAEvB,QAAA,WAAW,GAAG,oBAAU,CAAC,eAAe,CAAC;IAClD,IAAI,EAAE,yBAAyB;IAC/B,IAAI,EAAE,GAAG;IACT,MAAM,EAAE,KAAK;IACb,IAAI,EAAE;QACF,IAAI,EAAE,0CAA0C;QAChD,IAAI,EAAE,mBAAmB;KAC5B;IACD,GAAG,EAAE;QACD,kBAAkB,EAAE,IAAI;KAC3B;CACJ,CAAC,CAAC"}

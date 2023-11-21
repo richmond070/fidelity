@@ -45,10 +45,10 @@ app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/
 app.use('/js', express.static(path.join(__dirname, 'node_modules/jquery/dist')))
 
 
-app.use("/api/users", userRouter);
-app.use("/api/deposit", paymentRouter);
+app.use("/api", userRouter);
+app.use("/api", paymentRouter);
 // app.use("/api/trans", transactionRouter);
-app.use("/api/admin", adminRouter)
+app.use("/api", adminRouter)
 //app.use(userToken);
 app.use(express.static('public'));
 

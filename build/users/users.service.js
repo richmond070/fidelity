@@ -108,7 +108,7 @@ function logUser(email, password) {
             }
             const passwordMatch = yield (0, password_1.compareHash)(password, user.password);
             if (passwordMatch) {
-                return auth_1.default.generateToken(user.id, user.userName);
+                return auth_1.default.generateToken(user.id, user.role);
             }
             else {
                 throw new Error('Password is not correct!');

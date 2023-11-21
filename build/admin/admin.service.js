@@ -8,18 +8,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTransaction = exports.deleteUser = exports.getUsers = exports.getUser = exports.createUser = void 0;
+exports.deleteAdmin = exports.getAdmins = exports.getAdmin = exports.logAdmin = exports.createAdmin = exports.deposit = exports.deleteUser = exports.getUsers = exports.getUser = exports.createUser = void 0;
 const db_sever_1 = require("../utils/db.sever");
+const password_1 = require("../utils/password");
+const auth_1 = __importDefault(require("../utils/auth"));
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userName, fullName, email, password } = req.body;
+    const hashedPassword = yield (0, password_1.generateHash)(password);
     try {
         const user = yield db_sever_1.prisma.user.create({
             data: {
                 userName,
                 fullName,
                 email,
-                password,
+                password: hashedPassword,
                 role: 'USER'
             }
         });
@@ -45,7 +51,7 @@ const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 email
             },
             select: {
-                fullName
+                fullName: true
             }
         });
         res.status(200).json({
@@ -56,14 +62,19 @@ const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         console.log(error);
         res.status(500).json({
             error: "Sever error",
-            message: "User not found!"
+            message: `${email} does not exist`
         });
     }
 });
 exports.getUser = getUser;
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { fullName, userName, email } = req.body;
     try {
-        const user = yield db_sever_1.prisma.user.findMany();
+        const user = yield db_sever_1.prisma.user.findMany({
+            where: {
+                role: "USER"
+            },
+        });
         res.status(200).json({
             data: user
         });
@@ -99,11 +110,125 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.deleteUser = deleteUser;
-const getTransaction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deposit = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { transactionId, amount, userId } = req.body;
     try {
-        const transactionNumbers = yield db_sever_1.prisma.transaction.findMany();
+        const payment = yield db_sever_1.prisma.deposit.create({
+            data: {
+                transactionId,
+                amount,
+                userId
+            }
+        });
+        res.status(201).json(payment);
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            error: "Sever error",
+            message: "Error making payment please wait"
+        });
+    }
+});
+exports.deposit = deposit;
+const createAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userName, fullName, email, password } = req.body;
+    const hashedPassword = yield (0, password_1.generateHash)(password);
+    try {
+        const user = yield db_sever_1.prisma.user.create({
+            data: {
+                userName,
+                fullName,
+                email,
+                password: hashedPassword,
+                role: 'ADMIN'
+            }
+        });
+        res.status(201).json({
+            message: "Created successfully",
+            data: user
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            error: "Sever error",
+            message: "Error creating user please wait"
+        });
+    }
+});
+exports.createAdmin = createAdmin;
+const logAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { email, password } = req.body;
+    try {
+        const admin = yield db_sever_1.prisma.user.findUnique({
+            where: {
+                email
+            },
+        });
+        if (!admin) {
+            throw new Error("Email is not correct!");
+        }
+        if (admin.role !== 'ADMIN') {
+            return res.status(403).json({ message: "User is not an admin!" });
+        }
+        const passwordMatch = yield (0, password_1.compareHash)(password, admin.password);
+        if (!passwordMatch) {
+            return res.status(401).json({ message: "Password is not correct!" });
+        }
+        const accessToken = auth_1.default.generateToken(admin.id, admin.role);
+        res.cookie("jwt", accessToken, { httpOnly: true });
+        return res.status(200).json({
+            accessToken
+        });
+    }
+    catch (error) {
+        console.log(error);
+        throw error;
+    }
+});
+exports.logAdmin = logAdmin;
+const getAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const { userName, email } = req.body;
+    try {
+        const admin = yield db_sever_1.prisma.user.findUnique({
+            where: {
+                id: parseInt(id)
+            },
+            select: {
+                userName: true,
+                email: true
+            }
+        });
         res.status(200).json({
-            data: transactionNumbers
+            message: "Admin found",
+            data: admin
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            error: "Sever error",
+            message: `Admin ${id} does not exist`
+        });
+    }
+});
+exports.getAdmin = getAdmin;
+const getAdmins = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userName, email } = req.body;
+    try {
+        const admin = yield db_sever_1.prisma.user.findMany({
+            where: {
+                role: "ADMIN"
+            },
+            select: {
+                userName: true,
+                email: true
+            }
+        });
+        res.status(200).json({
+            data: admin
         });
     }
     catch (error) {
@@ -113,5 +238,27 @@ const getTransaction = (req, res) => __awaiter(void 0, void 0, void 0, function*
         });
     }
 });
-exports.getTransaction = getTransaction;
+exports.getAdmins = getAdmins;
+const deleteAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = parseInt(req.params.id);
+    try {
+        if (!id) {
+            throw new Error('id does not exist');
+        }
+        const deleteAdmin = yield db_sever_1.prisma.user.delete({
+            where: {
+                id: id
+            },
+        });
+        return res.status(200).json({
+            message: `${deleteAdmin} deleted successfully`
+        });
+    }
+    catch (err) {
+        res.status(500).json({
+            error: err.message,
+        });
+    }
+});
+exports.deleteAdmin = deleteAdmin;
 //# sourceMappingURL=admin.service.js.map

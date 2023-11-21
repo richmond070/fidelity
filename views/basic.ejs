@@ -69,7 +69,7 @@
             <h6><strong>Maximum deposit:</strong> $1,500.00 </h6> 
             <h6><strong>Deposit fee:</strong> 0.00% </h6> <br>
             <h5> *Input the amount you desire to invest</h5>
-            <textarea id="amountTextArea"></textarea> <br><br>
+            <textarea id="amountTextArea" name="amount"></textarea> <br><br>
             <h5>"Copy wallet" and send the desired amount to it.</h5>
 
             <textarea id="walletTextArea" readonly>ahakhdaddkdahdadakdhadaaaj</textarea>
@@ -78,7 +78,7 @@
             
             
             <h5>*Transaction ID(required):</h5>
-            <textarea id="transactionIdTextArea"></textarea> <br>
+            <textarea id="transactionIdTextArea" name="transactionId"></textarea> <br>
 
             <button id="submitButton">Submit</button> <br><br>
 
@@ -133,21 +133,15 @@ Dependable, Profitable, Timeless
 
 
 
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
 
-
-
-
-
-
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
-
-      body{
-        font-family: 'Quicksand', sans-serif;
-      }
-        .container {
-          text-align: center;
-        }
+  body{
+    font-family: 'Quicksand', sans-serif;
+  }
+  .container {
+    text-align: center;
+  }
         #walletTextArea {
           width: 300px;
           height: 30px;
@@ -199,91 +193,81 @@ Dependable, Profitable, Timeless
       </style>
 
     <script>
-        const walletTextArea = document.getElementById('walletTextArea');
-        const copyButton = document.getElementById('copyButton');
-        const amountTextArea = document.getElementById('amountTextArea');
-        const submitButton = document.getElementById('submitButton');
+      const walletTextArea = document.getElementById('walletTextArea');
+      const copyButton = document.getElementById('copyButton');
+      const amountTextArea = document.getElementById('amountTextArea');
+      const submitButton = document.getElementById('submitButton');
 
 
-        amountTextArea.addEventListener('input', function (e) {
+      amountTextArea.addEventListener('input', function (e) {
+        e.preventDefault();
         const value = e.target.value;
         // Remove non-numeric characters from the input
         e.target.value = value.replace(/[^0-9]/g, '');
       });
   
-        copyButton.addEventListener('click', () => {
+      copyButton.addEventListener('click', (e) => {
+          e.preventDefault();
           walletTextArea.select();
           document.execCommand('copy');
           window.getSelection().removeAllRanges();
           alert('Copied to clipboard');
-        });
+      });
 
-        submitButton.addEventListener('click', () => {
+      submitButton.addEventListener('click', async (e) => {
+        e.preventDefault();
         const amount = amountTextArea.value.trim();
         // Check if the amount is within the range
         if (amount < 50 || amount > 1500) {
-                alert('Kindly input an amount between $50 and $1500');
-                return;
-            }
+          alert('Kindly input an amount between $50 and $1500');
+          return;
+        }
         const transactionId = transactionIdTextArea.value.trim();
 
 
         if (amount === '' || transactionId === '') {
-            alert('Please fill in the required fields appropriately.');
-        } else {
-            // Save the transaction ID and amount to local storage
-            localStorage.setItem('investmentInfo', `Basic plan investment: ${amount}. Transaction ID: ${transactionId}`);
-
-            // Redirect to the next page (success.html)
-            location.href = '/success'; 
+          alert('Please fill in the required fields appropriately.');
+        } 
+        else {
+          //Save the transaction ID and amount to the database
+          localStorage.setItem('investmentInfo', `Basic plan investment: ${amount}. Transaction ID: ${transactionId}`);
+          //Redirect to the next page (success.html)
+          location.href = '/success'; 
         }
-    });
 
 
-    // const amountTextArea = document.getElementById('amountTextArea');
-      // const transactionIdTextArea = document.getElementById('transactionIdTextArea');
-      // //const userIdTextArea = document.getElementById('userIdTextArea');
-      // //const createdAtTextArea = document.getElementById('createdAtTextArea');
-      // const submitButton = document.getElementById('submitButton');
+      //   // Retrieve the 'jwt' cookie value
+      //   const token = getCookie('jwt');
 
-      // submitButton.addEventListener('click', async () => {
-      //   const amount = amountTextArea.value.trim();
-      //   const transactionId = transactionIdTextArea.value.trim();
-      //   //const userId = userIdTextArea.value.trim();
-      //   //const createdAt = createdAtTextArea.value.trim(); // Assuming createdAt is in a valid date format
 
-      //   if (amount === '' || transactionId === '') {
-      //     alert('Please fill in all the required fields appropriately.');
-      //   } else {
-      //     // Retrieve the 'jwt' cookie value
-      //     const jwtToken = getCookie('jwt');
-
-      //     // Make a POST request to store the deposit
       //     try {
-      //       const response = await fetch('/payment', {
+      //       const res = await fetch('/api/payment', {
       //         method: 'POST',
+      //         body: JSON.stringify({amount, transactionId}),
       //         headers: {
       //           'Content-Type': 'application/json',
-      //           'Authorization': 'Bearer ' + jwtToken,
-      //         },
-      //         body: JSON.stringify({ amount, transactionId, }),
+      //           'Authorization': `Bearer${token}`,
+      //         }
       //       });
 
-      //       if (response.ok) {
+      //       if (res.ok) {
       //         const newDeposit = await response.json();
       //         console.log('Deposit made:', newDeposit);
+
+
       //         // Redirect to the next page or perform other actions...
-      //       } else {
+      //         window.location.href = '/success'
+      //       }else {
       //         const errorData = await response.json();
       //         console.error('Error making deposit:', errorData);
       //         alert('Error making deposit. Please check your input and try again.');
       //       }
       //     } catch (error) {
       //       console.error('Error making deposit:', error);
-      //       alert('An unexpected error occurred. Please try again later.');
+      //       alert('An unexpected error occurred. Please try again later.')
       //     }
-      //   }
-      // });
+      });
+
 
       // // Function to retrieve cookie value by name
       // function getCookie(name) {
@@ -296,6 +280,53 @@ Dependable, Profitable, Timeless
       //   }
       //   return null;
       // }
-      </script>
+
+        // const amountTextArea = document.getElementById('amountTextArea');
+        // const transactionIdTextArea = document.getElementById('transactionIdTextArea');
+        // //const userIdTextArea = document.getElementById('userIdTextArea');
+        // //const createdAtTextArea = document.getElementById('createdAtTextArea');
+        // const submitButton = document.getElementById('submitButton');
+
+        // submitButton.addEventListener('click', async () => {
+        //   const amount = amountTextArea.value.trim();
+        //   const transactionId = transactionIdTextArea.value.trim();
+        //   //const userId = userIdTextArea.value.trim();
+        //   //const createdAt = createdAtTextArea.value.trim(); // Assuming createdAt is in a valid date format
+
+        //   if (amount === '' || transactionId === '') {
+        //     alert('Please fill in all the required fields appropriately.');
+        //   } else {
+        //     // Retrieve the 'jwt' cookie value
+        //     const jwtToken = getCookie('jwt');
+
+        //     // Make a POST request to store the deposit
+        //     try {
+        //       const response = await fetch('/payment', {
+        //         method: 'POST',
+        //         headers: {
+        //           'Content-Type': 'application/json',
+        //           'Authorization': 'Bearer ' + jwtToken,
+        //         },
+        //         body: JSON.stringify({ amount, transactionId, }),
+        //       });
+
+        //       if (response.ok) {
+        //         const newDeposit = await response.json();
+        //         console.log('Deposit made:', newDeposit);
+        //         // Redirect to the next page or perform other actions...
+        //       } else {
+        //         const errorData = await response.json();
+        //         console.error('Error making deposit:', errorData);
+        //         alert('Error making deposit. Please check your input and try again.');
+        //       }
+        //     } catch (error) {
+        //       console.error('Error making deposit:', error);
+        //       alert('An unexpected error occurred. Please try again later.');
+        //     }
+        //   }
+        // });
+
+
+    </script>
 </body>
-</html>
+</html> 
