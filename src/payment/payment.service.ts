@@ -54,15 +54,14 @@ export const getDeposit = async (id: number): Promise<Deposit | null> => {
     })
 }
 
-export const makeDeposit = async (deposit: DepositMade): Promise<Deposit> => {
-    const { transactionId, amount, createdAt, userId } = deposit;
-    const parsedDate: Date = new Date(createdAt);
+export const makeDeposit = async (deposit: Omit<DepositMade, "createdAt">): Promise<Deposit> => {
+    const { transactionId, amount, userId } = deposit;
+    // const parsedDate: Date = new Date(createdAt);
 
     return prisma.deposit.create({
         data: {
             transactionId,
             amount,
-            createdAt: new Date,
             userId
         }
     })

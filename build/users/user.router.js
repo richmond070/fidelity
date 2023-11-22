@@ -73,7 +73,7 @@ exports.userRouter.post("/signup", (0, express_validator_1.body)("fullName").isS
         res.status(201).json({
             success: true,
             user: newUser,
-            redirect: '/login',
+            redirect: '/verify',
             message: 'signup successful, please login'
         });
     }

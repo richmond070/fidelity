@@ -15,7 +15,7 @@ model User {
   createdAt DateTime  @default(now())
   updateAt  DateTime  @updatedAt
   fullName  String
-  userName  String
+  userName  String    @unique
   email     String    @unique
   password  String
   role      Roles
@@ -26,7 +26,7 @@ model Deposit {
   id            Int      @id @default(autoincrement())
   createdAt     DateTime @default(now())
   amount        Int
-  transactionId String
+  transactionId String   @unique
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        Int
 }

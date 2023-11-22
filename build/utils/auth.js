@@ -3,13 +3,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyToken = exports.auth = void 0;
+exports.authorization = exports.verifyToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 class Authentication {
-    static generateToken(id, userName) {
+    static generateToken(id, role) {
         const secretKey = process.env.JWT_SECRET_KEY || "richmond-ekezie-richard-031";
-        const payload = { userId: id, userName: userName };
-        const option = { expiresIn: process.env.JWT_EXPIRES_IN };
+        const payload = { userId: id, role: role };
+        const option = { expiresIn: process.env.JWT_EXPIRES_IN || '24h' };
         return jsonwebtoken_1.default.sign(payload, secretKey, option);
     }
     static validationToken(token) {
@@ -22,25 +22,6 @@ class Authentication {
         }
     }
 }
-const auth = (req, res, next) => {
-    if (!req.headers.authorization) {
-        return res.status(401).send("No token!");
-    }
-    let secretKey = process.env.JWT_SECRET_KEY || "richmond-ekezie-richard-031";
-    const token = req.headers.authorization.split(' ')[1];
-    try {
-        const credential = jsonwebtoken_1.default.verify(token, secretKey);
-        if (credential) {
-            req.app.locals.credential = credential;
-            const userId = credential;
-            return next();
-        }
-    }
-    catch (error) {
-        return res.send(error);
-    }
-};
-exports.auth = auth;
 function verifyToken(req, res, next) {
     const token = req.cookies.jwt;
     let secretKey = process.env.JWT_SECRET_KEY || "richmond-ekezie-richard-031";
@@ -56,5 +37,22 @@ function verifyToken(req, res, next) {
     });
 }
 exports.verifyToken = verifyToken;
+function authorization(role) {
+    return (req, res, next) => {
+        const accessToken = req.cookies.jwt;
+        if (!accessToken) {
+            return res.status(401).json({ message: 'Access token required' });
+        }
+        const user = Authentication.validationToken(accessToken);
+        if (!user) {
+            return res.status(403).json({ message: 'Invalid access token' });
+        }
+        if (user.role !== role) {
+            return res.status(403).json({ message: 'Unauthorized' });
+        }
+        next();
+    };
+}
+exports.authorization = authorization;
 exports.default = Authentication;
 //# sourceMappingURL=auth.js.map

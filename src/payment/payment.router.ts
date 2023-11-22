@@ -1,7 +1,7 @@
 import express from "express";
 import type { Request, Response } from "express";
 import { body, validationResult } from "express-validator";
-import { verifyToken } from "../utils/auth";
+import { verifyToken, authorization } from "../utils/auth";
 import jwt from "jsonwebtoken";
 
 import * as PaymentService from "./payment.service";
@@ -34,7 +34,7 @@ paymentRouter.get("/:id", async (req: Request, res: Response) => {
 });
 
 paymentRouter.post("/payment", body("transactionId").isString(), body("amount").isInt(),
-    body("userId").isInt(), body("createdAt").isDate().toDate(), verifyToken,
+    body("userId").isInt(), verifyToken, authorization("USER"),
     async (req: Request, res: Response) => {
 
         const errors = validationResult(req);
