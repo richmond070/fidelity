@@ -126,24 +126,46 @@
           alert('Copied to clipboard');
         });
 
-        submitButton.addEventListener('click', () => {
-        const etfAmount = amountTextArea.value.trim();
+      submitButton.addEventListener('click', async (e) => {
+        const amount = amountTextArea.value.trim();
+        const newAmount = parseInt(amount)
         // Check if the amount is within the range
-        if (etfAmount < 10000 || etfamount > 20000) {
+        if (amount < 10000 || amount > 20000) {
                 alert('Kindly input an amount between $10,000.00 & $20,000.00');
                 return;
             }
-        const etftransactionId = transactionIdTextArea.value.trim();
+        const transactionId = transactionIdTextArea.value.trim();
 
 
-        if (etfAmount === '' || etftransactionId === '') {
+        if (amount === '' || transactionId === '') {
             alert('Please fill in the required fields appropriately.');
         } else {
-            // Save the transaction ID and amount to local storage
-            localStorage.setItem('etfInvestmentInfo', `Etf plan investment: ${etfAmount}. Transaction ID: ${etftransactionId}`);
+          try {
+            const res = await fetch('/api/deposit/payment', {
+              method: 'POST',
+              body: JSON.stringify({amount: newAmount, transactionId}),
+              headers: {
+                'Content-Type': 'application/json',
+                // 'Authorization': `Bearer ${token}`,
+              }
+            });
 
-            // Redirect to the next page (success.html)
-            location.href = '/success'; 
+            if (res.ok) {
+              const newDeposit = await res.json();
+              console.log('Deposit made:', newDeposit);
+              
+              // Redirect to the next page or perform other actions...
+              window.location.href = '/success'
+            }else {
+              const errorData = await res.json();
+              console.error('Error making deposit:', errorData);
+              alert('Error making deposit. Please check your input and try again.');
+            }
+          } catch (error) {
+            console.error('Error making deposit:', error);
+            alert('An unexpected error occurred. Please try again later.')
+          }
+
         }
     });
       </script>

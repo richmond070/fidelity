@@ -5,6 +5,29 @@ import { Deposit } from "@prisma/client";
 import { generateHash, compareHash } from "../utils/password";
 import Authentication from "../utils/auth";
 import { Roles } from "@prisma/client";
+import WebSocket from "ws";
+
+// //websocket sever instance
+// let wss: WebSocket.Server;
+
+// // setup websocket sever
+// export function setupWebSocketSever(server: WebSocket.Server): void {
+//     wss = server;
+// }
+
+// // Function to notify the admin about a new deposit
+// export function notifyAdmin(deposit: Deposit): void {
+//     if (wss) {
+//         wss.clients.forEach((client) => {
+//             if (client.readyState === WebSocket.OPEN) {
+//                 client.send(JSON.stringify({
+//                     message: "New deposit pending approval",
+//                     deposit,
+//                 }))
+//             }
+//         })
+//     }
+// }
 
 // USER
 
@@ -129,13 +152,15 @@ export const deleteUser = async (req: Request, res: Response) => {
 
 //DEPOSIT
 export const deposit = async (req: Request, res: Response) => {
-    const { transactionId, amount, userId }: Deposit = req.body;
+    const { transactionId, amount, userId, plan }: Deposit = req.body;
     try {
         const payment = await prisma.deposit.create({
             data: {
                 transactionId,
                 amount,
-                userId
+                userId,
+                plan,
+                isVerified: true
             }
         });
         res.status(201).json(payment)
@@ -145,6 +170,20 @@ export const deposit = async (req: Request, res: Response) => {
             error: "Sever error",
             message: "Error making payment please wait"
         })
+    }
+}
+
+export const getAllDeposit = async (req: Request, res: Response) => {
+    try {
+        const deposit = await prisma.deposit.findMany();
+        res.status(200).json({
+            data: deposit
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            error: "Server error",
+        });
     }
 }
 
@@ -292,5 +331,47 @@ export const deleteAdmin = async (req: Request, res: Response) => {
         res.status(500).json({
             error: err.message,
         })
+    }
+}
+
+// Function to get unverified deposits
+export async function getUnverifiedDeposits(req: Request, res: Response): Promise<void> {
+    try {
+        const unverifiedDeposits = await prisma.deposit.findMany({
+            where: {
+                isVerified: false,
+            }, select: {
+                amount: true,
+                transactionId: true,
+                plan: true
+            }
+        });
+
+        res.status(200).json({ unverifiedDeposits });
+    } catch (error) {
+        console.error('Error in getUnverifiedDeposits:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+// Function to verify a deposit
+export async function verifyDeposit(req: Request, res: Response): Promise<void> {
+    try {
+        const depositId = parseInt(req.params.depositId, 10);
+
+        // Verify the deposit
+        await prisma.deposit.update({
+            where: {
+                id: depositId,
+            },
+            data: {
+                isVerified: true,
+            },
+        });
+
+        res.status(200).json({ message: 'Deposit verified successfully' });
+    } catch (error) {
+        console.error('Error in verifyDeposit:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 }

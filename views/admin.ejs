@@ -3,6 +3,11 @@
 <head>
     <title>Eternal Trading</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
+    <!-- Include the Socket.io client library -->
+  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>-->
+
+  <!-- Include the Socket.IO client library -->
+  <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
     <!-- Admin Dashboard -->
@@ -39,6 +44,9 @@
             <button id="approveButton">Approve</button>
             <button id="declineButton">Decline</button>
         </div> </section>
+
+        <!-- Display WebSocket messages -->
+         <div id="notification-list"></div>
         
         <div class="head"style="background-color: #3b288f;padding: 20px 20px;">
             <span style="font-size:30px;cursor:pointer; color: gold ;" class="nav3"  >WITHDRAWAL ALERTS</span>
@@ -59,14 +67,16 @@
         
         <!-- <h2>Transaction History</h2> -->
         <table id="transaction-history-table">
+            <% deposit.forEach(deposit => {%>
             <thead>
             <tr>
                 <th>Type</th>
-                <th>Amount</th>
-                <th>Date</th>
-                <th>Status</th>
+                <th>Amount: <%= deposit.amount%></th>
+                <th>Date: <%= deposit.createdAt%></th>
+                <th>Transaction ID: <%= deposit.transactionId%></th>
             </tr>
             </thead>
+            <%}); %>
             <tbody id="transaction-history">
                 <!-- Transaction history rows will be added here using JavaScript -->
             </tbody>
@@ -180,11 +190,11 @@ form {
         // Transaction alerts section
 
 
-        const transactionAlertsContainer = document.getElementById('transaction-alerts-container');
-        const approveButton = document.getElementById('approveButton');
-        const declineButton = document.getElementById('declineButton');
-        const transactionHistoryTable = document.querySelector('.transaction-history table');
-        const alertsQueue = []; // Array to store alerts
+        // const transactionAlertsContainer = document.getElementById('transaction-alerts-container');
+        // const approveButton = document.getElementById('approveButton');
+        // const declineButton = document.getElementById('declineButton');
+        // const transactionHistoryTable = document.querySelector('.transaction-history table');
+        // const alertsQueue = []; // Array to store alerts
 
         // // Function to add an alert to the transaction alerts section
         // function addTransactionAlert(alertMessage) {
@@ -204,6 +214,17 @@ form {
         // if (mergerInvestmentInfo) {
         //     addTransactionAlert(mergerInvestmentInfo);
         // }
+
+        
+        const socket = io(); // Establish a WebSocket connection
+
+        socket.on('newDeposit', (data) => {
+        // Update UI to show the new deposit notification
+        const notificationList = document.getElementById('notification-list');
+        const listItem = document.createElement('li');
+        listItem.textContent = `New Deposit: Amount - ${data.amount}, Transaction ID - ${data.transactionId}`;
+        notificationList.appendChild(listItem);
+        });
     </script>
     <script src="/JAVASCRIPT/admin.js"></script>
     <script src="/JAVASCRIPT/admincontactclient.js"></script>

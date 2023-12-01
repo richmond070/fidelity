@@ -189,15 +189,22 @@
 	  <div class="content-box">
 		<!-- <p style="color: gold;">Transactions</p> -->
 		<table id="transaction-history-table">
-		  <thead>
-			<tr>
-			  <th>Type</th>
-			  <th>Amount</th>
-			  <th>Date</th>
-			</tr>
-		  </thead>
+			<thead>
+				<tr>
+				  <th>Type</th>
+				  <th>Amount</th>
+				  <th>Date</th>
+				</tr>
+			  </thead>
 		  <tbody id="transaction-history">
 			<!-- Transaction history rows will be added here using JavaScript -->
+			<% deposits.forEach(deposit => { %>
+				<tr>
+				  <td><%= deposit.plan %></td>
+				  <td><%= deposit.amount %></td>
+				  <td><%= deposit.createdAt %></td>
+				</tr>
+			  <% }); %>
 		  </tbody>
 		</table>
 	  </div>
@@ -558,17 +565,32 @@ td, th {
 	  
 	<script>
         window.onload = function() {
-            var depositData = localStorage.getItem('depositData');
-            if (depositData) {
-                document.getElementById('displayDeposit').textContent = depositData;
-            }
+					// Function to handle authentication status and redirect to the login page
+			function handleAuthenticationStatus(response) {
+				if (response.status === 401) {
+					// Authentication required, redirect to login page
+					window.location.href = '/login';
+				} else {
+					// Handle other cases or continue with the normal flow
+					var depositData = localStorage.getItem('depositData');
+					if (depositData) {
+						document.getElementById('displayDeposit').textContent = depositData;
+					}
+				}
+			}	
         };
-    </script>
+
+				// Make a request to the server to check authentication status
+		fetch('/check-authentication-status') // Adjust the endpoint based on your server setup
+			.then(response => response.json())
+			.then(data => {
+				// Handle the authentication status
+				handleAuthenticationStatus(data);
+			})
+			.catch(error => {
+				console.error('Error:', error);
+			});
+	</script>
     
-	
-
-
-	</body>
-
-
-	</html>
+</body>
+</html>

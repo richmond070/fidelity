@@ -1,4 +1,5 @@
 import { prisma } from "../utils/db.sever";
+import { verifyToken } from "../utils/auth";
 import { User, getUser } from "../users/users.service"
 import { Request, Response } from "express";
 
@@ -6,6 +7,7 @@ type Deposit = {
     id: number;
     amount: number;
     transactionId: string;
+    plan: string
 };
 
 type DepositMade = {
@@ -13,6 +15,8 @@ type DepositMade = {
     amount: number;
     createdAt: Date;
     userId: number;
+    plan: string
+    isVerified?: boolean;
 };
 
 export const listDeposit = async (userId: number): Promise<DepositMade[] | null> => {
@@ -25,7 +29,8 @@ export const listDeposit = async (userId: number): Promise<DepositMade[] | null>
             transactionId: true,
             amount: true,
             createdAt: true,
-            userId: true
+            userId: true,
+            plan: true
         },
     });
 };
@@ -35,6 +40,7 @@ export const listDeposits = async (): Promise<Deposit[]> => {
         select: {
             id: true,
             transactionId: true,
+            plan: true,
             amount: true,
         },
     });
@@ -49,20 +55,23 @@ export const getDeposit = async (id: number): Promise<Deposit | null> => {
             id: true,
             transactionId: true,
             amount: true,
+            plan: true
         },
 
     })
 }
 
 export const makeDeposit = async (deposit: Omit<DepositMade, "createdAt">): Promise<Deposit> => {
-    const { transactionId, amount, userId } = deposit;
+    const { transactionId, amount, userId, plan } = deposit;
     // const parsedDate: Date = new Date(createdAt);
 
     return prisma.deposit.create({
         data: {
             transactionId,
             amount,
-            userId
+            userId,
+            plan,
+            isVerified: false
         }
     })
 };
@@ -80,3 +89,5 @@ export const deletePayment = async (id: number): Promise<void> => {
 export const deleteAllPayments = async (): Promise<void> => {
     await prisma.deposit.deleteMany()
 }
+
+
