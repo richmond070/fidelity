@@ -12,16 +12,19 @@
         <div >
             <h3>Order Summary:</h3>
             <h6><strong>Plan:</strong> Gold account </h6>
-            <h6><strong>Profit:</strong> 10% every 48 hours </h6>
+            <h6><strong>Profit:</strong> 38% every 48 hours </h6>
             <h6><strong>Principal return:</strong> Yes </h6>
-            <h6><strong>Minimum deposit:</strong> $50.00 </h6> 
-            <h6><strong>Maximum deposit:</strong> $1,500.00 </h6>
+            <h6><strong>Minimum deposit:</strong> $5,100.00 </h6> 
+            <h6><strong>Maximum deposit:</strong> $10,000.00 </h6>
+            <h6><strong>Referral bonus:</strong>5% </h6>
+            <h6><strong></strong> UNLIMITED DAILY TRADE </h6>
+            <h6><strong></strong> MIGRATION </h6>
             <h6><strong>Deposit fee:</strong> 0.00% </h6> <br>
             <h5> *Input the amount you desire to invest</h5>
             <textarea id="amountTextArea"></textarea> <br><br>
             <h5>"Copy wallet" and send the desired amount to it.</h5>
 
-            <textarea id="walletTextArea" readonly>ahakhdaddkdahdadakdhadaaaj</textarea>
+            <textarea id="walletTextArea" readonly>bc1qvwrxry6wu7jtk24029wv0u4qferyxzgva88kwl</textarea>
             <br>
             <button id="copyButton">Copy Wallet</button> <br><br>
             
@@ -131,8 +134,8 @@
         submitButton.addEventListener('click', () => {
         const goldAmount = amountTextArea.value.trim();
         // Check if the amount is within the range
-        if (goldAmount < 50 || goldAmount > 1500) {
-                alert('Kindly input an amount between $50 & $1500');
+        if (goldAmount < 5100 || goldAmount > 10000) {
+                alert('Kindly input an amount between $5,100.00 & $10,000.00');
                 return;
             }
         const goldtransactionId = transactionIdTextArea.value.trim();

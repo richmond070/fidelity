@@ -98,7 +98,7 @@ setInterval(function () {
   
     // Add ROI to Transaction History
     addTransactionToHistory('Standard ROI', standardRoiAmount, new Date().toLocaleString());
-  }, 3 * 7 * 24 * 60 * 60 * 1000);
+  }, 48 * 60 * 60 * 1000);
 
 
   // Merger Plan (biweekly)
@@ -160,17 +160,6 @@ setInterval(function () {
     addTransactionToHistory('ETF ROI', etfRoiAmount, new Date().toLocaleString());
   }, 2 * 7 * 24 * 60 * 60 * 1000);
 
-
-  // ETF Plan (every two weeks)
-setInterval(function () {
-    const newTotalBalance = parseFloat(balancePrimary.textContent) + etfRoiAmount;
-    const newTotalInvestments = parseFloat(activeInvestments.textContent) + etfRoiAmount;
-    balancePrimary.textContent = newTotalBalance.toFixed(2);
-    activeInvestments.textContent = newTotalInvestments.toFixed(2);
-  
-    // Add ROI to Transaction History
-    addTransactionToHistory('ETF ROI', etfRoiAmount, new Date().toLocaleString());
-  }, 2 * 7 * 24 * 60 * 60 * 1000);
 
 
    // Insurance Plan (every week)

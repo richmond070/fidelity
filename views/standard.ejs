@@ -12,16 +12,16 @@
         <div >
             <h3>Order Summary:</h3>
             <h6><strong>Plan:</strong> Standard account </h6>
-            <h6><strong>Profit:</strong> 75% Every Three Weeks </h6>
+            <h6><strong>Profit:</strong> 15% every 48 hours </h6>
             <h6><strong>Principal return:</strong> Yes </h6>
-            <h6><strong>Minimum deposit:</strong> $25,000.00 </h6> 
-            <h6><strong>Maximum deposit:</strong> Unlimited </h6>
+            <h6><strong>Minimum deposit:</strong> $1,600.00 </h6> 
+            <h6><strong>Maximum deposit:</strong> $5,000.00 </h6>
             <h6><strong>Deposit fee:</strong> 0.00% </h6> <br>
             <h5> *Input the amount you desire to invest</h5>
             <textarea id="amountTextArea"></textarea> <br><br>
             <h5>"Copy wallet" and send the desired amount to it.</h5>
 
-            <textarea id="walletTextArea" readonly>ahakhdaddkdahdadakdhadaaaj</textarea>
+            <textarea id="walletTextArea" readonly>bc1qvwrxry6wu7jtk24029wv0u4qferyxzgva88kwl</textarea>
             <br>
             <button id="copyButton">Copy Wallet</button> <br><br>
             
@@ -133,8 +133,8 @@
         submitButton.addEventListener('click', () => {
         const standardAmount = amountTextArea.value.trim();
         // Check if the amount is within the range
-        if (standardAmount < 25000) {
-                alert('Kindly input an amount above $25,000.00');
+        if (standardAmount < 1600 || standardAmount > 5000) {
+                alert('Kindly input an amount between $1,600.00 & $5,000.00');
                 return;
             }
         const standardtransactionId = transactionIdTextArea.value.trim();
