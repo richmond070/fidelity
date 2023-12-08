@@ -92,22 +92,25 @@ class Authentication {
 
 // function to verify a users token
 export function verifyToken(req: Request, res: Response, next: NextFunction) {
+    // console.log('Cookies:', req.cookies);
     const token = req.cookies.jwt;
     let secretKey = process.env.JWT_SECRET_KEY || "richmond-ekezie-richard-031";
 
     if (!token) {
-        return res.status(401).json({ message: 'Authentication required' });
+        res.status(401).json({ message: 'Authentication required' });
     }
 
 
     jwt.verify(token, secretKey, (err: any, payload: any) => {
         if (err) {
-            return res.status(403).json({ message: 'Invalid token' });
+            //send JSON response for invalid token
+            return res.status(401).json({ message: 'Invalid token' })
+        } else {
+            //JWT is valid; you can access the decoded payload
+            const userId = payload.userId
+            req.user = userId; // Attach user data to the request object
+            next();
         }
-
-        //JWT is valid; you can access the decoded payload
-        req.user = payload.id; // Attach user data to the request object
-        next();
     });
 
     // if (!req.headers['authorization']) return next(res.status(401).send("No token!"))
