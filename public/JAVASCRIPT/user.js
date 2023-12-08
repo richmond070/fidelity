@@ -215,8 +215,11 @@ addTransactionToHistory('Standard Plan', approvedStandardPlan, new Date().toLoca
 addTransactionToHistory('Basic Plan', approvedBasicPlan, new Date().toLocaleString());
 addTransactionToHistory('Immigration Plan', approvedImmigrationPlan, new Date().toLocaleString());
 addTransactionToHistory('Insurance Plan', approvedInsurancePlan, new Date().toLocaleString());
-// addTransactionToHistory('ETF Plan', approvedBasicPlan, new Date().toLocaleString());
+addTransactionToHistory('ETF Plan', approvedBasicPlan, new Date().toLocaleString());
 addTransactionToHistory('Gold Plan', approvedGoldPlan, new Date().toLocaleString());
 addTransactionToHistory('Real estate Plan', approvedEstatePlan, new Date().toLocaleString());
 addTransactionToHistory('Merger Plan', approvedMergerPlan, new Date().toLocaleString());
 addTransactionToHistory('Platinum Plan', approvedPlatinumPlan, new Date().toLocaleString());
+
+
+
