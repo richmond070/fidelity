@@ -8,15 +8,19 @@ import bodyParser from "body-parser";
 import http from "http";
 import { verifyToken, authorization } from "./utils/auth";
 import axios from "axios";
-import { Server as WebSocketServer, WebSocket } from 'ws';
-import * as socketIo from 'socket.io';
-// import { setupWebSocketSever } from "./admin/admin.service";
+// import * as ws from 'ws';
+// import * as socketIo from 'socket.io';
+const { io } = require("socket.io-client");
+import { Server as SocketIOServer } from "socket.io";
+import { initializeSocket } from "./utils/socket";
 import { CustomRequest } from './template/customTemplate'
 
 import * as PaymentService from "./payment/payment.service"
+import { getAllDeposit, getUnverifiedDeposits } from "./admin/admin.service";
 
 import { userRouter } from "./users/user.router";
-import { paymentRouter, setupPaymentRoute } from "./payment/payment.router";
+import { paymentRouter, } from "./payment/payment.router";
+// import { getROI } from "./payment/payment.router";
 // import { transactionRouter } from "./transaction/transaction.router";
 
 import { cookie } from "express-validator";
@@ -31,37 +35,28 @@ if (!process.env.PORT) {
 
 const PORT: number = parseInt(process.env.PORT as string, 10);
 const app = express();
-const server = http.createServer(app);
-const wss = new WebSocket.Server({ port: PORT });
-const io = new socketIo.Server(server);
+const httpServer = require('http').createServer(app)
+
+// const server = http.createServer(app)
+
+const socket = io('http://localhost:5000')
+
+// connect socket 
+const Socket = new SocketIOServer(httpServer)
+
+// Initialize Socket.IO and make it available globally
+initializeSocket(httpServer);
 
 
-wss.on('connection', (ws) => {
-    //handle new connection
+// WebSockets setup
+Socket.on('connection', (socket: any) => {
+    console.log('A user connected');
+});
 
-    ws.on('message', (data) => {
-        console.log(`Received message from client: ${data}`);
-    })
-
-    ws.send(`Hello, this is sever.ts!`)
-})
-
-// //set up WebSocket server
-// setupWebSocketSever(wss)
-
-// // Serve the Socket.IO client script
-// app.use('/socket.io', express.static(__dirname + '/node_modules/socket.io/client-dist'));
-
-// //Middleware to upgrade HTTP request to webSocket
-// app.use((req: CustomRequest, res: Response, next: NextFunction) => {
-//     req.server = wss;
-//     next();
-// })
-
-
-// Middleware to check authentication status
-app.use('/check-authentication-status', (req, res, next) => {
-    verifyToken(req, res, next);
+// Listen for deposit notifications
+Socket.on('newDeposit', (data: any) => {
+    // Broadcast the new deposit notification to all connected clients
+    io.emit('newDeposit', data);
 });
 
 app.use(
@@ -83,18 +78,7 @@ app.use('/js', express.static(path.join(__dirname, 'node_modules/jquery/dist')))
 
 app.use("/api/user", userRouter);
 app.use("/api/deposit", paymentRouter);
-// Set up the payment route with WebSocket integration
-app.use('/api/deposit', setupPaymentRoute(wss, prisma));
 
-// WebSocket server handling connections
-wss.on('connection', (socket: WebSocket) => {
-    console.log('WebSocket client connected');
-
-    // Handle disconnect event if needed
-    socket.on('close', () => {
-        console.log('WebSocket client disconnected');
-    });
-});
 // app.use("/api/trans", transactionRouter);
 app.use("/api/admin", adminRouter)
 //app.use(userToken);
@@ -110,17 +94,10 @@ app.use(function (req, res, next) {
     next();
 })
 
-// wss.on('connection', (ws) => {
-//     console.log('WebSocket connection opened.');
-
-//     // Send a welcome message to the connected client
-//     ws.send('Welcome to the WebSocket server.');
-
-//     // Listen for messages from the client
-//     ws.on('message', (message) => {
-//         console.log(`Received message: ${message}`);
-//     });
-// });
+app.get('/style.css', (req, res) => {
+    res.header('Content-Type', 'text/css');
+    res.sendFile(__dirname + '../public/style.css');
+});
 
 app.set('view engine', 'ejs');
 
@@ -129,21 +106,11 @@ app.get('/homeloggedin', (req, res) => res.render('homeloggedin'));
 app.get('/about', (req, res) => res.render('about'));
 app.get('/aboutloggedin', (req, res) => res.render('aboutloggedin'));
 app.get('/edit', (req, res) => res.render('editprofile'));
-app.get('/admin', async (req, res) => {
-    try {
-        const deposit = await prisma.deposit.findMany({
-            select: {
-                amount: true,
-                transactionId: true,
-                createdAt: true
-            }
-        });
-        res.render('admin', { deposit })
-    } catch (error: any) {
-        console.error('Error fetching data from the database:', error.message);
-        res.status(500).send('Internal Sever Error');
-    }
+app.get('/adminDashboard', async (req, res) => {
+    // Call the getAllDeposit function to retrieve deposit data
+    await getAllDeposit(req, res);
 });
+app.get('/admin', (req, res) => res.render('adminLogin'));
 app.get('/plans', (req, res) => res.render('plans'));
 
 app.get('/test', async (req, res) => {
@@ -174,21 +141,31 @@ app.get('/standard', verifyToken, (req, res) => res.render('standard'));
 
 app.get('/login', (req, res) => res.render('login'));
 app.get('/register', (req, res) => res.render('register'));
-app.get('/dashboard', verifyToken, async (req, res) => {
+app.get('/dashboard', verifyToken, authorization('USER'), async (req, res) => {
     try {
         // Type guard to narrow down the type
         if (typeof req.user !== 'number') {
             return res.status(403).json({ message: 'Invalid user ID' });
         }
-        const userId: number = req.user;
-        const deposits = await PaymentService.listDeposit(userId);
+        const user = req.user;
+        const id: number = parseInt(user, 10);
+        const roi = await PaymentService.calROI(id)
+        const deposits = await PaymentService.listDeposit(id);
+        const balance = await PaymentService.getAvailableBalance(id);
 
+        console.log('deposit:', deposits)
+        console.log('roi:', roi)
+        console.log('balance:', balance)
         // Render the EJS template and pass the data
-        res.render('dashboard1', { deposits });
+        res.render('dashboard1', { deposits, roi, balance });
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }
 })
+
+// for the return on investment
+// app.get('/payment/roi', verifyToken, getROI);
+
 app.get('/profile', (req, res) => res.render('profile'))
 //app.get('/deposit', verifyToken, (req, res) => res.render('deposit'));
 
@@ -199,6 +176,6 @@ app.get('/successwithdraw', (req, res) => res.render('successwithdraw'));
 
 
 
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
 });

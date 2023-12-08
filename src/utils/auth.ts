@@ -92,6 +92,7 @@ class Authentication {
 
 // function to verify a users token
 export function verifyToken(req: Request, res: Response, next: NextFunction) {
+    // console.log('Cookies:', req.cookies);
     const token = req.cookies.jwt;
     let secretKey = process.env.JWT_SECRET_KEY || "richmond-ekezie-richard-031";
 

@@ -5,6 +5,7 @@ import { Deposit } from "@prisma/client";
 import { generateHash, compareHash } from "../utils/password";
 import Authentication from "../utils/auth";
 import { Roles } from "@prisma/client";
+import { Server } from "socket.io";
 import WebSocket from "ws";
 
 // //websocket sever instance
@@ -175,15 +176,21 @@ export const deposit = async (req: Request, res: Response) => {
 
 export const getAllDeposit = async (req: Request, res: Response) => {
     try {
-        const deposit = await prisma.deposit.findMany();
-        res.status(200).json({
-            data: deposit
-        })
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            error: "Server error",
+        const deposit = await prisma.deposit.findMany({
+            where: {
+                isVerified: false
+            },
+            select: {
+                amount: true,
+                transactionId: true,
+                plan: true,
+                createdAt: true
+            }
         });
+        res.render('admin', { deposit: deposit })
+    } catch (error: any) {
+        console.error('Error fetching data from the database:', error.message);
+        res.status(500).send('Internal Sever Error');
     }
 }
 
@@ -218,17 +225,17 @@ export const createAdmin = async (req: Request, res: Response) => {
 
 //login an admin 
 export const logAdmin = async (req: Request, res: Response) => {
-    const { email, password } = req.body;
+    const { userName, password } = req.body;
 
     try {
         const admin = await prisma.user.findUnique({
             where: {
-                email
+                userName
             },
         });
 
         if (!admin) {
-            throw new Error("Email is not correct!");
+            throw new Error("userName is not correct!");
         }
 
         if (admin.role !== 'ADMIN') {
@@ -335,7 +342,7 @@ export const deleteAdmin = async (req: Request, res: Response) => {
 }
 
 // Function to get unverified deposits
-export async function getUnverifiedDeposits(req: Request, res: Response): Promise<void> {
+export async function getUnverifiedDeposits(res: Response, req: Request): Promise<void> {
     try {
         const unverifiedDeposits = await prisma.deposit.findMany({
             where: {
@@ -347,22 +354,94 @@ export async function getUnverifiedDeposits(req: Request, res: Response): Promis
             }
         });
 
-        res.status(200).json({ unverifiedDeposits });
+        // // Emit a WebSocket event to notify admin
+        // if (io) {
+        //     io.emit('newDeposit', {
+        //         amount,
+        //         transactionId,
+        //         plan,
+        //     });
+        // // }
+
+        // // Log information about the new deposit
+        // const depositInfo = {
+        //     amount,
+        //     transactionId,
+        //     plan,
+        // };
+        // console.log(`A client just deposited $${amount} with a transaction ID: ${transactionId}`);
+
+        // Return the deposit information
+        // return depositInfo;
+        res.render('admin', { unverifiedDeposits })
+        // res.status(200).json({ unverifiedDeposits });
     } catch (error) {
-        console.error('Error in getUnverifiedDeposits:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        // console.error('Error in getUnverifiedDeposits:', error);
+        // // res.status(500).json({ error: 'Internal Server Error' });
+
+        console.error('Error notifying admin:', error);
+        throw new Error('Failed to notify admin');
     }
 }
 
+// export const notifyAdminAboutDeposit = async (
+//     io: Server,
+//     userId: number,
+//     amount: number,
+//     transactionId: string,
+//     plan: string
+// ): Promise<void> => {
+//     try {
+//         //Perform admin notification logic here 
+//         const unverifiedDeposits = await prisma.deposit.findMany({
+//             where: {
+//                 isVerified: false,
+//             },
+//             select: {
+//                 amount: true,
+//                 transactionId: true,
+//                 plan: true,
+//             },
+//         });
+
+//         //Emit a webSocket event to notify admin
+//         io.emit('newDeposit', {
+//             userId,
+//             amount,
+//             transactionId,
+//             plan,
+//         });
+
+//         console.log(`Admin notified about user payment Amount: $${amount}, TransactionId: $${transactionId}`)
+//     } catch (error: any) {
+//         console.error('Error notifying admin:', error);
+//         throw new Error('Failed to notify admin')
+//     }
+// }
+
 // Function to verify a deposit
+
+
+
+//to verify a deposit 
 export async function verifyDeposit(req: Request, res: Response): Promise<void> {
     try {
-        const depositId = parseInt(req.params.depositId, 10);
+        //get the user deposit details 
+        const depositDetails = await prisma.deposit.findFirst({
+            where: {
+                isVerified: false
+            }
+        })
+
+        if (!depositDetails) {
+            res.status(404).json({ error: 'No unverified deposit found for the user' })
+            return;
+        }
 
         // Verify the deposit
         await prisma.deposit.update({
             where: {
-                id: depositId,
+                id: depositDetails.id,
             },
             data: {
                 isVerified: true,
@@ -375,3 +454,4 @@ export async function verifyDeposit(req: Request, res: Response): Promise<void> 
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
+

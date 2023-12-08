@@ -3,7 +3,7 @@
 
     <div class="container" style="border: 2px solid gold;" >
         <div style="display: block;">
-        <h1><strong>INSURANCE PLAN</strong></h1>
+        <h1 id="plan"><strong>INSURANCE</strong></h1>
 
         <h4>Please confirm your deposit</h4>
         </div> </div>
@@ -11,7 +11,7 @@
     <div class="container" >
         <div >
             <h3>Order Summary:</h3>
-            <h6><strong>Plan:</strong> INSURANCE account </h6>
+            <h6 id="plan">INSURANCE</h6>
             <h6><strong>Profit:</strong> 20% Weekly </h6>
             <h6><strong>Principal return:</strong> Yes </h6>
             <h6><strong>Minimum deposit:</strong> $30,000.00 </h6> 
@@ -114,6 +114,7 @@
         const copyButton = document.getElementById('copyButton');
         const amountTextArea = document.getElementById('amountTextArea');
         const submitButton = document.getElementById('submitButton');
+        const planElement = document.getElementById('plan')
 
 
         amountTextArea.addEventListener('input', function (e) {
@@ -131,6 +132,7 @@
 
         submitButton.addEventListener('click', async (e) => {
           e.preventDefault();
+          const plan = planElement ? planElement.textContent.trim() : '';
         const amount = amountTextArea.value.trim();
         const newAmount = parseInt(amount)
         // Check if the amount is within the range
@@ -147,7 +149,7 @@
           try {
             const res = await fetch('/api/deposit/payment', {
               method: 'POST',
-              body: JSON.stringify({amount: newAmount, transactionId}),
+              body: JSON.stringify({plan, amount: newAmount, transactionId}),
               headers: {
                 'Content-Type': 'application/json',
                 // 'Authorization': `Bearer ${token}`,

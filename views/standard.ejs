@@ -3,7 +3,7 @@
 
     <div class="container" style="border: 2px solid gold;" >
         <div style="display: block;">
-        <h1><strong>STANDARD PLAN</strong></h1>
+        <h1 id="plan"><strong>STANDARD</strong></h1>
 
         <h4>Please confirm your deposit</h4>
         </div> </div>
@@ -115,6 +115,7 @@
         const copyButton = document.getElementById('copyButton');
         const amountTextArea = document.getElementById('amountTextArea');
         const submitButton = document.getElementById('submitButton');
+        const planElement = document.getElementById('plan')
 
 
         amountTextArea.addEventListener('input', function (e) {
@@ -132,6 +133,7 @@
 
         submitButton.addEventListener('click', async (e) => {
           e.preventDefault();
+          const plan = planElement ? planElement.textContent.trim() : '';
         const amount = amountTextArea.value.trim();
         const newAmount = parseInt(amount)
         // Check if the amount is within the range
@@ -148,7 +150,7 @@
           try {
             const res = await fetch('/api/deposit/payment', {
               method: 'POST',
-              body: JSON.stringify({amount: newAmount, transactionId}),
+              body: JSON.stringify({plan, amount: newAmount, transactionId}),
               headers: {
                 'Content-Type': 'application/json',
                 // 'Authorization': `Bearer ${token}`,

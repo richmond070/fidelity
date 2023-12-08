@@ -47,7 +47,7 @@
 	<div class="container" style="padding-left: 40px;padding-top: 20px;">
 		<div class="col-div-3">
 			<div class="box">
-				<p style="font-size: 30px;">$<span id="displayDeposit" style="color: #fff;font-size: 30px;">00</span>
+				<p style="font-size: 30px;">$<span id="displayDeposit" style="color: #fff;font-size: 30px;"><%= balance %></span>
                     <br/><span>Deposits</span></p>
 				<i class="fa fa-users box-icon"></i>
 			</div>
@@ -61,14 +61,15 @@
 		</div>
 		<div class="col-div-3">
 			<div class="box">
-				<p style="font-size: 30px;">$<span id="balance-primary" style="color: #fff;font-size: 30px;">00</span>
+				<p style="font-size: 30px;">$<span id="balance-primary" style="color: #fff;font-size: 30px;"><%= roi %></span>
                     <br/><span>Balance</span></p>
+		
 				<i class="fa fa-shopping-bag box-icon"></i>
 			</div>
 		</div>
 		<div class="col-div-3">
 			<div class="box">
-				<p style="font-size: 30px;">$<span id="activeInvestments" style="color: #fff;font-size: 30px;">00</span>
+				<p style="font-size: 30px;">$<span id="activeInvestments" style="color: #fff;font-size: 30px;"><%= roi %></span>
                     <br/><span>Active investments</span></p>
 				<i class="fa fa-tasks box-icon"></i>
 			</div>

@@ -3,7 +3,7 @@
 
     <div class="container" style="border: 2px solid gold;" >
         <div style="display: block;">
-        <h1><strong>ETF & MUTUAL FUNDS PLAN</strong></h1>
+        <h1><strong>ETF & MUTUAL FUNDs</strong></h1>
 
         <h4>Please confirm your deposit</h4>
         </div> </div>
@@ -11,7 +11,7 @@
     <div class="container" >
         <div >
             <h3>Order Summary:</h3>
-            <h6><strong>Plan:</strong> Etf & Mutual funds account </h6>
+            <h6 id="plan"><strong>ETF & MUTUAL FUNDS</strong></h6>
             <h6><strong>Profit:</strong> 55% every two weeks </h6>
             <h6><strong>Principal return:</strong> Yes </h6>
             <h6><strong>Minimum deposit:</strong> $10,000.00 </h6> 
@@ -111,7 +111,7 @@
         const copyButton = document.getElementById('copyButton');
         const amountTextArea = document.getElementById('amountTextArea');
         const submitButton = document.getElementById('submitButton');
-
+        const planElement = document.getElementById('plan')
 
         amountTextArea.addEventListener('input', function (e) {
         const value = e.target.value;
@@ -127,6 +127,7 @@
         });
 
       submitButton.addEventListener('click', async (e) => {
+        const plan = planElement ? planElement.textContent.trim() : '';
         const amount = amountTextArea.value.trim();
         const newAmount = parseInt(amount)
         // Check if the amount is within the range
@@ -143,7 +144,7 @@
           try {
             const res = await fetch('/api/deposit/payment', {
               method: 'POST',
-              body: JSON.stringify({amount: newAmount, transactionId}),
+              body: JSON.stringify({plan, amount: newAmount, transactionId}),
               headers: {
                 'Content-Type': 'application/json',
                 // 'Authorization': `Bearer ${token}`,

@@ -18,13 +18,13 @@ model User {
   userName  String    @unique
   email     String    @unique
   password  String
-  role      Roles
+  role      Roles     @default(USER)
   Deposit   Deposit[]
 }
 
 model Deposit {
   id            Int      @id @default(autoincrement())
-  createdAt     DateTime @default(now())
+  createdAt     DateTime @default(now()) @db.Date
   plan          String
   amount        Int
   transactionId String   @unique

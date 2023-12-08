@@ -5,6 +5,9 @@ import { verifyToken, authorization } from "../utils/auth";
 import { Server as WebSocketServer, WebSocket } from 'ws';
 import jwt from "jsonwebtoken";
 import { PrismaClient } from '@prisma/client';
+// import { getUnverifiedDeposits } from "../admin/admin.service";
+import { getSocketInstance } from "../utils/socket";
+import { Server } from "socket.io";
 
 
 
@@ -22,16 +25,9 @@ const user = function userId() {
         }
     }
 }
-interface ExtendedWebSocketServer extends WebSocketServer {
-    clients: Set<WebSocket>
-}
 
-// const wss: ExtendedWebSocketServer = new WebSocket.Server();
-// setupPaymentRouter(wss)
-
-// type ExtendedWebSocketServer = WebSocketServer<WebSocket, { url: string, readonly rawHeaders: string[], readonly rawTrailers: string[], }>
 //GET: List for the payment
-paymentRouter.get("/", verifyToken, async (req: Request, res: Response) => {
+paymentRouter.get("/user", verifyToken, async (req: Request, res: Response) => {
 
     try {
         // Type guard to narrow down the type
@@ -49,69 +45,59 @@ paymentRouter.get("/", verifyToken, async (req: Request, res: Response) => {
     };
 });
 
-paymentRouter.get("/:id", async (req: Request, res: Response) => {
-    const id: number = parseInt(req.params.id, 10);
+// paymentRouter.get("/:id", async (req: Request, res: Response) => {
+//     const id: number = parseInt(req.params.id, 10);
 
-    try {
-        const deposit = await PaymentService.getDeposit(id)
-        if (deposit) {
-            return res.status(200).json({ data: deposit })
+//     try {
+//         const deposit = await PaymentService.getDeposit(id)
+//         if (deposit) {
+//             return res.status(200).json({ data: deposit })
+//         }
+//     } catch (error: any) {
+//         return res.status(500).json(error.message);
+//     }
+// });
+
+
+// to make payment 
+paymentRouter.post("/payment", body("transactionId").isString(), body("amount").isInt(),
+    verifyToken, authorization("USER"),
+    async (req: Request, res: Response) => {
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
         }
-    } catch (error: any) {
-        return res.status(500).json(error.message);
-    }
-});
 
-
-export const setupPaymentRoute = (wss: ExtendedWebSocketServer, prisma: PrismaClient): Router => {
-    paymentRouter.post("/payment", body("transactionId").isString(), body("amount").isInt(),
-        verifyToken, authorization("USER"),
-        async (req: Request, res: Response) => {
-
-            const errors = validationResult(req);
-            if (!errors.isEmpty()) {
-                return res.status(400).json({ errors: errors.array() });
+        try {
+            // Type guard to narrow down the type
+            if (typeof req.user !== 'number') {
+                return res.status(403).json({ message: 'Invalid user ID' });
             }
 
-            try {
-                // Type guard to narrow down the type
-                if (typeof req.user !== 'number') {
-                    return res.status(403).json({ message: 'Invalid user ID' });
-                }
+            // Use userId when creating the deposit
+            const deposit = {
+                transactionId: req.body.transactionId,
+                amount: req.body.amount,
+                userId: req.user,
+                plan: req.body.plan
+            };
 
-                // Use userId when creating the deposit
-                const deposit = {
-                    transactionId: req.body.transactionId,
-                    amount: req.body.amount,
-                    userId: req.user,
-                    plan: req.body.plan
-                };
+            // Call the makeDeposit function to create the deposit
+            const newDeposit = await PaymentService.makeDeposit(deposit);
 
-                // Call the makeDeposit function to create the deposit
-                const newDeposit = await PaymentService.makeDeposit(deposit);
+            // Notify admin about the deposit
+            // await getUnverifiedDeposits(req.app.get('io') as Server, req.user, req.body.amount, req.body.transactionId, req.body.plan, res);
+            // const io = getSocketInstance();
+            // io.emit('newDeposit', { message: 'New deposit received' })
 
-                //notify admin client about the new deposit 
-                wss.clients.forEach((client) => {
-                    if (client.readyState === WebSocket.OPEN) {
-                        client.send(JSON.stringify({
-                            message: 'New deposit pending verification',
-                            amount: newDeposit.amount,
-                            transactionId: newDeposit.transactionId,
-                        }));
-                    }
-                });
+            return res.status(201).json(newDeposit);
+        } catch (error: any) {
+            console.error("error:", error);
+            return res.status(500).json(error.message);
+        }
+    });
 
-                return res.status(201).json(newDeposit);
-            } catch (error: any) {
-                console.error("error:", error);
-                return res.status(500).json(error.message);
-            }
-
-
-
-        });
-    return paymentRouter;
-}
 
 
 paymentRouter.delete("/:id", async (req: Request, res: Response) => {
@@ -147,3 +133,37 @@ paymentRouter.get("/", async (req: Request, res: Response) => {
     }
 })
 
+//GET: List for the payment
+paymentRouter.get("/balance", verifyToken, async (req: Request, res: Response) => {
+
+    try {
+        // Type guard to narrow down the type
+        if (typeof req.user !== 'number') {
+            return res.status(403).json({ message: 'Invalid user ID' });
+        }
+        const user = req.user
+        const id: number = parseInt(user, 10);
+        const listDeposit = await PaymentService.getAvailableBalance(id)
+        // Render the EJS template and pass the data
+        return res.status(200).json({ data: listDeposit })
+    } catch (error: any) {
+        return res.status(500).json(error.message);
+    };
+})
+
+paymentRouter.get("/roi", verifyToken, async (req: Request, res: Response) => {
+    try {
+        // Type guard to narrow down the type
+        if (typeof req.user !== 'number') {
+            return res.status(403).json({ message: 'Invalid user ID' });
+        }
+        const user = req.user
+        const id: number = parseInt(user, 10);
+        const listDeposit = await PaymentService.calROI(id)
+        // Render the EJS template and pass the data
+        return res.status(200).json({ data: listDeposit })
+    } catch (error: any) {
+        return res.status(500).json(error.message);
+    };
+
+})
