@@ -96,9 +96,11 @@
 //     balancePrimary.textContent = newTotalBalance.toFixed(2);
 //     activeInvestments.textContent = newTotalInvestments.toFixed(2);
   
+
 //     // Add ROI to Transaction History
 //     addTransactionToHistory('Standard ROI', standardRoiAmount, new Date().toLocaleString());
 //   }, 3 * 7 * 24 * 60 * 60 * 1000);
+
 
 
 //   // Merger Plan (biweekly)
@@ -161,6 +163,7 @@
 //   }, 2 * 7 * 24 * 60 * 60 * 1000);
 
 
+
 //   // ETF Plan (every two weeks)
 // setInterval(function () {
 //     const newTotalBalance = parseFloat(balancePrimary.textContent) + etfRoiAmount;
@@ -220,6 +223,7 @@
 //     `;
 //     transactionHistory.appendChild(newRow);
 // }
+
 
 // // Example usage for the approvedStandardPlan
 // addTransactionToHistory('Standard Plan', approvedStandardPlan, new Date().toLocaleString());

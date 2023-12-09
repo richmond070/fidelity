@@ -1,0 +1,84 @@
+.social-share {
+  /* padding-top: 10px;
+  margin-top: 10px; */
+  /* border-top: 1px solid #f1f1f1; */
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  color: #3098F2;
+  text-align: center;
+}
+.social-share > ul {
+  margin: 0;
+}
+
+.social-share > ul a {
+  height: 30px;
+  width: 30px;
+  color: #3098F2 !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 7px;
+  border-radius: 100%;
+  opacity: 1 !important;
+}
+
+.share-this {
+  font-family: "tenon",sans-serif;
+  font-weight: 700;
+}
+
+.social-share > ul a:hover {
+  text-decoration: none;
+}
+/* 
+.social-share > ul > .facebook a {
+  background: #334f8d;
+  color: white;
+}
+
+.social-share > ul > .twitter a {
+  background: #4ba3eb;
+  color: white;
+}
+
+.social-share > ul > .google a {
+  background: #d74439;
+  color: white;
+}
+
+.social-share > ul > .pinterest a {
+  background: #c41d23;
+  color: white;
+} */
+
+
+
+/* .social-share > ul > li > a{
+  font-size: 20px;
+  position: relative;
+  z-index: 0;
+}
+
+.social-share > ul > li > a::after {
+  content: "";
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: green;
+  position: absolute;
+  z-index: 1;
+} */
+
+@media screen and (max-width: 767px) {
+  .post-categories-section {
+    justify-content: center;
+    display: flex;
+}
+
+  .social-share {
+    justify-content: center;
+  }
+}
