@@ -66,9 +66,10 @@
     <div class="containers">    
     <div class="container"  >
         <form >
+
           <center>
-            <h3> <strong>Order Summary</h3></strong> </center>
-            <h6><strong>Plan:</strong> PRIME </h6>
+            <h3>Order Summary:</h3>
+            <h6 id="plan"><strong>PRIME</strong></h6>
             <h6><strong>Profit:</strong> 10% every 48 hours </h6>
             <h6><strong>Principal return:</strong> Yes </h6>
             <h6><strong>Minimum deposit:</strong> $50.00 </h6> 
@@ -224,6 +225,7 @@ Dependable, Profitable, Timeless
       const copyButton = document.getElementById('copyButton');
       const amountTextArea = document.getElementById('amountTextArea');
       const submitButton = document.getElementById('submitButton');
+      const planElement = document.getElementById('plan')
 
 
       amountTextArea.addEventListener('input', function (e) {
@@ -243,9 +245,11 @@ Dependable, Profitable, Timeless
 
       submitButton.addEventListener('click', async (e) => {
         e.preventDefault();
+        const plan = planElement ? planElement.textContent.trim() : '';
         const amount = amountTextArea.value.trim();
+        const newAmount = parseInt(amount)
         // Check if the amount is within the range
-        if (amount < 50 || amount > 1500) {
+        if (newAmount < 50 || newAmount > 1500) {
           alert('Kindly input an amount between $50 and $1500');
           return;
         }
@@ -255,44 +259,33 @@ Dependable, Profitable, Timeless
         if (amount === '' || transactionId === '') {
           alert('Please fill in the required fields appropriately.');
         } 
-        else {
-          //Save the transaction ID and amount to the database
-          localStorage.setItem('investmentInfo', `Basic plan investment: ${amount}. Transaction ID: ${transactionId}`);
-          //Redirect to the next page (success.html)
-          location.href = '/success'; 
-        }
+
+          try {
+            const res = await fetch('/api/deposit/payment', {
+              method: 'POST',
+              body: JSON.stringify({plan, amount: newAmount, transactionId}),
+              headers: {
+                'Content-Type': 'application/json',
+                // 'Authorization': `Bearer ${token}`,
+              }
+            });
+
+            if (res.ok) {
+              const newDeposit = await res.json();
+              console.log('Deposit made:', newDeposit);
 
 
-      //   // Retrieve the 'jwt' cookie value
-      //   const token = getCookie('jwt');
-
-
-      //     try {
-      //       const res = await fetch('/api/payment', {
-      //         method: 'POST',
-      //         body: JSON.stringify({amount, transactionId}),
-      //         headers: {
-      //           'Content-Type': 'application/json',
-      //           'Authorization': `Bearer${token}`,
-      //         }
-      //       });
-
-      //       if (res.ok) {
-      //         const newDeposit = await response.json();
-      //         console.log('Deposit made:', newDeposit);
-
-
-      //         // Redirect to the next page or perform other actions...
-      //         window.location.href = '/success'
-      //       }else {
-      //         const errorData = await response.json();
-      //         console.error('Error making deposit:', errorData);
-      //         alert('Error making deposit. Please check your input and try again.');
-      //       }
-      //     } catch (error) {
-      //       console.error('Error making deposit:', error);
-      //       alert('An unexpected error occurred. Please try again later.')
-      //     }
+              // Redirect to the next page or perform other actions...
+              window.location.href = '/success'
+            }else {
+              const errorData = await res.json();
+              console.error('Error making deposit:', errorData);
+              alert('Error making deposit. Please check your input and try again.');
+            }
+          } catch (error) {
+            console.error('Error making deposit:', error);
+            alert('An unexpected error occurred. Please try again later.')
+          }
       });
 
 

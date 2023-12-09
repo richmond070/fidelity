@@ -25,6 +25,7 @@
     "@types/ejs": "^3.1.2",
     "@types/express": "^4.17.17",
     "@types/nodemailer": "^6.4.13",
+    "@types/ws": "^8.5.10",
     "axios": "^1.5.0",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
@@ -39,11 +40,15 @@
     "express-validator": "^7.0.1",
     "jquery": "^3.7.1",
     "jsonwebtoken": "^9.0.2",
-    "nodemailer": "^6.9.6"
+    "nodemailer": "^6.9.6",
+    "socket.io": "^4.7.2",
+    "socket.io-client": "^4.7.2",
+    "ws": "^8.14.2"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.3",
     "@types/node": "^20.5.9",
+    "@types/socket.io": "^3.0.2",
     "esbuild-register": "^3.4.2",
     "nodemon": "^3.0.1",
     "prisma": "^5.2.0",

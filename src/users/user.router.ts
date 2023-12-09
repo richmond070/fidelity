@@ -107,7 +107,10 @@ userRouter.post("/login", async (req: Request, res: Response) => {
             })
         }
         //const res_token = { type: "Bearer", token: token }
-        res.cookie('jwt', token, { httpOnly: true });
+        res.cookie('jwt', token,
+            { httpOnly: true }
+        );
+
 
 
         return res.status(200).json({

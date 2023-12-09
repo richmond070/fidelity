@@ -7,7 +7,7 @@
     border-bottom-left-radius: 30px;
     border-bottom-right-radius: 30px;background-color: whitesmoke;  " >
         <div style="display: block;">
-        <h1><strong>REAL ESTATE PLAN</strong></h1>
+        <h1 id="plan"><strong>REAL ESTATE</strong></h1>
 
         <h4>Please confirm your deposit</h4>
         </div> </div>
@@ -15,10 +15,13 @@
         <div class="containers">
     <div class="container" >
         <div >
+
           <center>
-            <h3> <strong>Order Summary</h3></strong> </center>
-            <h6><strong>Plan:</strong> Real estate account </h6>
-            <h6><strong>Profit:</strong> 75% biweekly (85% if invested for 3 months without withdrawal) </h6>
+           
+            <h3>Order Summary:</h3>
+            <h6 id=" plan">Real estate </h6>
+            <h6><strong>Profit:</strong> 75% biweekly </h6>
+
             <h6><strong>Principal return:</strong> Yes </h6>
             <h6><strong>Minimum deposit:</strong> $30,000.00 </h6> 
             <h6><strong>Maximum deposit:</strong> $50,000.00 </h6>
@@ -135,7 +138,7 @@
         const copyButton = document.getElementById('copyButton');
         const amountTextArea = document.getElementById('amountTextArea');
         const submitButton = document.getElementById('submitButton');
-
+        const planElement = document.getElementById('plan')
 
         amountTextArea.addEventListener('input', function (e) {
         const value = e.target.value;
@@ -150,24 +153,48 @@
           alert('Copied to clipboard');
         });
 
-        submitButton.addEventListener('click', () => {
-        const estateAmount = amountTextArea.value.trim();
+        submitButton.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const plan = planElement ? planElement.textContent.trim() : '';
+        const Amount = amountTextArea.value.trim();
+        const newAmount = parseInt(amount)
         // Check if the amount is within the range
-        if (estateAmount < 30000 || estateAmount > 50000) {
+        if (newAmount < 30000 || newAmount > 50000) {
                 alert('Kindly input an amount between $30,000.00 & $50,000.00');
                 return;
             }
-        const estatetransactionId = transactionIdTextArea.value.trim();
+        const transactionId = transactionIdTextArea.value.trim();
 
 
-        if (estateAmount === '' || estatetransactionId === '') {
+        if (newAmount === '' || transactionId === '') {
             alert('Please fill in the required fields appropriately.');
         } else {
-            // Save the transaction ID and amount to local storage
-            localStorage.setItem('estateInvestmentInfo', `Real estate plan investment: ${estateAmount}. Transaction ID: ${estatetransactionId}`);
+          try {
+            const res = await fetch('/api/deposit/payment', {
+              method: 'POST',
+              body: JSON.stringify({plan, amount: newAmount, transactionId}),
+              headers: {
+                'Content-Type': 'application/json',
+                // 'Authorization': `Bearer ${token}`,
+              }
+            });
 
-            // Redirect to the next page (success.html)
-            location.href = '/success'; 
+            if (res.ok) {
+              const newDeposit = await res.json();
+              console.log('Deposit made:', newDeposit);
+
+
+              // Redirect to the next page or perform other actions...
+              window.location.href = '/success'
+            }else {
+              const errorData = await res.json();
+              console.error('Error making deposit:', errorData);
+              alert('Error making deposit. Please check your input and try again.');
+            }
+          } catch (error) {
+            console.error('Error making deposit:', error);
+            alert('An unexpected error occurred. Please try again later.')
+          }
         }
     });
       </script>
