@@ -7,7 +7,7 @@
     border-bottom-left-radius: 30px;
     border-bottom-right-radius: 30px;background-color: whitesmoke;  ">
         <div style="display: block;">
-        <h1><strong>MERGER PLAN</strong></h1>
+        <h1 id="plan"><strong>MERGER</strong></h1>
 
         <h4>Please confirm your deposit</h4>
         </div> </div>
@@ -138,6 +138,7 @@
         const copyButton = document.getElementById('copyButton');
         const amountTextArea = document.getElementById('amountTextArea');
         const submitButton = document.getElementById('submitButton');
+        const planElement = document.getElementById('plan')
 
 
         amountTextArea.addEventListener('input', function (e) {
@@ -153,24 +154,48 @@
           alert('Copied to clipboard');
         });
 
-        submitButton.addEventListener('click', () => {
-        const mergeramount = amountTextArea.value.trim();
+        submitButton.addEventListener('click', async (e) => {
+          e.preventDefault();
+          const plan = planElement ? planElement.textContent.trim() : '';
+        const amount = amountTextArea.value.trim();
+        const newAmount = parseInt(amount)
         // Check if the amount is within the range
-        if (mergeramount < 50000) {
+        if (amount < 50000) {
                 alert('Kindly input an amount between $50,000.00');
                 return;
             }
-        const mergertransactionId = transactionIdTextArea.value.trim();
+        const transactionId = transactionIdTextArea.value.trim();
 
 
-        if (mergeramount === '' || mergertransactionId === '') {
+        if (amount === '' || transactionId === '') {
             alert('Please fill in the required fields appropriately.');
         } else {
-            // Save the transaction ID and amount to local storage
-            localStorage.setItem('mergerInvestmentInfo', `Merger plan investment: ${mergeramount}. Transaction ID: ${mergertransactionId}`);
+          try {
+            const res = await fetch('/api/deposit/payment', {
+              method: 'POST',
+              body: JSON.stringify({plan, amount: newAmount, transactionId}),
+              headers: {
+                'Content-Type': 'application/json',
+                // 'Authorization': `Bearer ${token}`,
+              }
+            });
 
-            // Redirect to the next page (success.html)
-            location.href = '/success'; 
+            if (res.ok) {
+              const newDeposit = await res.json();
+              console.log('Deposit made:', newDeposit);
+
+
+              // Redirect to the next page or perform other actions...
+              window.location.href = '/success'
+            }else {
+              const errorData = await res.json();
+              console.error('Error making deposit:', errorData);
+              alert('Error making deposit. Please check your input and try again.');
+            }
+          } catch (error) {
+            console.error('Error making deposit:', error);
+            alert('Sever error. Please try again later.')
+          }
         }
     });
       </script>

@@ -2,7 +2,12 @@
 <html>
 <head>
     <title>Eternal Trading</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" type="text/css" href="http://loclalhost:5000/styles.css">
+    <!-- Include the Socket.io client library -->
+  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>-->
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js" integrity="sha384-mZLF4UVrpi/QTWPA7BjNPEnkIfRFn4ZEO3Qt/HFklTJBj/gBOV8G3HcKn4NfQblz" crossorigin="anonymous"></script>
+  <!-- Include the Socket.IO client library -->
+  <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
     <!-- Admin Dashboard -->
@@ -28,17 +33,6 @@
                 <input type="submit" value="Send Email">
             </form>
         </div>
-
-        <div class="head"style="background-color: #3b288f;padding: 20px 20px;">
-            <span style="font-size:30px;cursor:pointer; color: gold ;" class="nav3"  >TRANSACTION ALERTS</span>
-        </div>
-        
-        <div class="tran-alerts" style="padding: 20px 20px;">
-            <!-- <h2>Transaction Alerts</h2> -->
-            <div id="transaction-alerts-container" style="font-size: 20px;"></div>
-            <button id="approveButton">Approve</button>
-            <button id="declineButton">Decline</button>
-        </div> </section>
         
         <div class="head"style="background-color: #3b288f;padding: 20px 20px;">
             <span style="font-size:30px;cursor:pointer; color: gold ;" class="nav3"  >WITHDRAWAL ALERTS</span>
@@ -56,21 +50,33 @@
         <span style="font-size:30px;cursor:pointer; color: gold ;" class="nav3"  >TRANSACTION HISTORY</span>
     </div>
     <section class="transaction-history">
-        
-        <!-- <h2>Transaction History</h2> -->
+
         <table id="transaction-history-table">
-            <thead>
-            <tr>
-                <th>Type</th>
-                <th>Amount</th>
-                <th>Date</th>
-                <th>Status</th>
-            </tr>
-            </thead>
-            <tbody id="transaction-history">
-                <!-- Transaction history rows will be added here using JavaScript -->
-            </tbody>
+            <% if (deposit && deposit.length > 0) { %>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>TransactionID</th>
+                        <th>confirm</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% deposit.forEach(deposit => { %>
+                        <tr>
+                            <td><%= deposit.plan %></td>
+                            <td><%= deposit.amount%></td>
+                            <td><%= deposit.transactionId%></td>
+                            <td><button type="button" onclick='verifyDeposit()'>verifyPayments</button></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            <% } else { %>
+                <p style="font-size:25px;cursor:pointer; color: gold ; text-align: center;" class="nav3 tex">No deposit data available.</p>
+            <% } %>
+
         </table>
+        
     </section>
   </div>
   
@@ -170,47 +176,54 @@ form {
             margin-top: 20px;
         }
     </style>
+    <!-- <script src="/socket.io/socket.io.js"></script> -->
     <script>
-        // //transactions
-        // const transactionAlertsContainer = document.getElementById('transaction-alerts-container');
-        // const approveButton = document.getElementById('approveButton');
-        // const declineButton = document.getElementById('declineButton');
-        // const transactionHistoryTable = document.querySelector('.transaction-history table');
-        // const alertsQueue = []; // Array to store alerts
-        // Transaction alerts section
+        // // Establish a webSocket connection
+        // const socket = io('http://localhost:5000');
 
+        // localStorage.debug = 'socket.io-client:socket'
 
-        const transactionAlertsContainer = document.getElementById('transaction-alerts-container');
-        const approveButton = document.getElementById('approveButton');
-        const declineButton = document.getElementById('declineButton');
-        const transactionHistoryTable = document.querySelector('.transaction-history table');
-        const alertsQueue = []; // Array to store alerts
+        // //Listen for updates to notifications'
+        // socket.on('newDeposit', (notification) => {
+        //     //Update the notifications section with the new deposit
+        //     const notificationsContainer = document.getElementById('notifications');
+        //     const newNotification = document.createElement('div');
+        //     newNotification.innerHTML = `
+        //         <p>New deposit:</p>
+        //         <p>User Id: ${notification.userId}</p>
+        //         <p>Amount: $${notification.amount}</p>
+        //         <p>Transaction ID:${notification.transactionId}</p>
+        //         <p>Plan: ${notification.plan}</p>
+        //         <button onclick= "verifyPayments('${notification.userId}')">Verify</button>
+        //         <button onclick = "rejectPayment('${notification.userId}')">Reject</button>
+        //     `;
+        //     notificationsContainer.appendChild(newNotification);
+        // })
 
-        // // Function to add an alert to the transaction alerts section
-        // function addTransactionAlert(alertMessage) {
-        //     const alertElement = document.createElement('p');
-        //     alertElement.textContent = alertMessage;
-        //     transactionAlertsContainer.appendChild(alertElement);
-        // }
-
-        // // Retrieve InvestmentInfo from local storage
-        // const investmentInfo = localStorage.getItem('investmentInfo');
-        // if (investmentInfo) {
-        //     addTransactionAlert(investmentInfo);
-        // }
-
-        // // Retrieve MergerInvestmentInfo from local storage
-        // const mergerInvestmentInfo = localStorage.getItem('MergerInvestmentInfo');
-        // if (mergerInvestmentInfo) {
-        //     addTransactionAlert(mergerInvestmentInfo);
-        // }
+        function verifyDeposit() {
+            //send a POST request to /api/verifyDeposit
+            fetch('/api/admin/verify-deposit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({}),
+            }) 
+            .then(response => response.json())
+            .then(data => {
+                //to handle the response data as needed
+                console.log(data);
+                alert('Payment confirmed ')
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            })
+        }
     </script>
-    <script src="/JAVASCRIPT/admin.js"></script>
+   <!-- <script src="/JAVASCRIPT/admin.js"></script>-->
     <script src="/JAVASCRIPT/admincontactclient.js"></script>
     <!-- <script src="/JAVASCRIPT/adminbasic.js"></script> -->
     <script src="/JAVASCRIPT/adminwithdraw.js"></script>
     <!-- <script src="/JAVASCRIPT/adminmerger.js"></script> -->
-  
-    <script src="script.js"></script>
 </body>
 </html>
