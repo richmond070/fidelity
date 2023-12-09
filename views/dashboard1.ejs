@@ -10,117 +10,78 @@
 
 
 	<body>
-		<div class="user-dashboard">
+		<!-- <div class="user-dashboard"> -->
 		<div id="mySidenav" class="sidenav">
 		<!-- <p class="logo"><span>E</span>ternal Trading</p> -->
         <!-- <img src="../ASSETS/WHITE.png" alt="Logo" class="imgLogo"> -->
+		<div class="close-button" id="closeBtn" style="visibility: hidden;">&times;</div>
 	  <a href="#" class="icon-a"><i class="fa fa-dashboard icons"></i>   Dashboard</a>
 	  <!-- <a href="#"class="icon-a"><i class="fa fa-file-invoice icons"></i>   Transactions</a> -->
 	  <a href="/plans"class="icon-a"><i class="fa fa-list icons"></i>   Plans</a>
-	  <!-- <a href="../HTML/deposit.html"class="icon-a"><i class="fa fa-donate icons"></i>   Deposit</a>
-	  <a href="../HTML/withdraw.html"class="icon-a"><i class="fa fa-hand-holding-usd icons"></i>   Withdraw</a> -->
+	  <a href="../views/plans.ejs"class="icon-a"><i class="fa fa-donate icons"></i>   Deposit</a>
+	  <a href="../views/withdraw.ejs"class="icon-a"><i class="fa fa-hand-holding-usd icons"></i>   Withdraw</a>
 	  <a href="/profile"class="icon-a"><i class="fa fa-user icons"></i>   Profile</a>
-	  <a href="#"class="icon-a"><i class="fa fa-door-open icons"></i>   Logout</a>
+	  <a href="#"class="icon-a" id="logoutBtn"><i class="fa fa-door-open icons"></i>   Logout</a>
 
 	</div>
-	<div id="main">
+	<div id="main" >
 
 		<div class="head" style="background: #3b288f;">
 			<div class="col-div-6" >
-	<span style="font-size:30px;cursor:pointer; color: gold ;" class="nav"  >☰ Dashboard</span>
-	<span style="font-size:30px;cursor:pointer; " class="nav2"  >☰ Dashboard</span>
+	<span style="font-size:30px;cursor:pointer;" class="nav" style="overflow: hidden;" >☰ Dashboard </span>
+	<span style="font-size:30px;cursor:pointer;" class="nav2"  >☰ Dashboard</span>
 	</div>
 		
-		<div class="col-div-61" style="color: black;">
+		<!-- <div class="col-div-61" style="color: black;"> -->
             <!-- <img src="../ASSETS/BLACK.png" alt="Logo" class="imgLogo">  -->
 		<!-- <div class="profile">
 
 			<img src="images/user.png" class="pro-img" />
 			<p>Manoj Adhikari <span>UI / UX DESIGNER</span></p>
 		</div> -->
-	</div>
+	<!-- </div> -->
 		<div class="clearfix"></div>
 	</div>
 
 		<div class="clearfix"></div>
 		<br/>
-	<div class="container" style="padding-left: 40px;padding-top: 20px;">
+	<div class="container" style="padding-left: 40px;padding-top: 20px;" >
 		<div class="col-div-3">
 			<div class="box">
+
 				<p style="font-size: 30px;">$<span id="displayDeposit" style="color: #fff;font-size: 30px;"><%= balance %></span>
+
                     <br/><span>Deposits</span></p>
-				<i class="fa fa-users box-icon"></i>
-			</div>
+				<i class="fa fa-donate box-icon"></i>
+			</div> 
 		</div>
 		<div class="col-div-3">
 			<div a class="box">
-				<p style="font-size: 30px;">$<span id="withdraw-primary" style="color: #fff;font-size: 30px;">00</span>
-					<br/><span>Total Withdrawals</span></p>
-				<i class="fa fa-list box-icon"></i>
+				<p style="font-size: 45px;">$<span id="withdraw-primary" style="color: #fff;font-size: 45px;">00</span>
+					<br/><span>Withdrawals</span></p>
+				<i class="fa fa-hand-holding-usd box-icon"></i>
 			</div>
 		</div>
 		<div class="col-div-3">
 			<div class="box">
+
 				<p style="font-size: 30px;">$<span id="balance-primary" style="color: #fff;font-size: 30px;"><%= roi %></span>
+
                     <br/><span>Balance</span></p>
 		
 				<i class="fa fa-shopping-bag box-icon"></i>
 			</div>
-		</div>
+		</div> 
 		<div class="col-div-3">
 			<div class="box">
+
 				<p style="font-size: 30px;">$<span id="activeInvestments" style="color: #fff;font-size: 30px;"><%= roi %></span>
                     <br/><span>Active investments</span></p>
+
 				<i class="fa fa-tasks box-icon"></i>
 			</div>
-		</div>
-		<!-- ref link -->
-		<div class="container" style="display: flex;align-items: center;">
-			<h6>Referral link:</h6>
-			<a href="https://www.eternaltrading.com?ref=12345" id="affiliateLink">https://www.eternaltrading.com?ref=12345</a>
-			<button id="copyButton">Copy</button>
-			<span id="copyStatus"></span>
-
-			<style>
-				/* .container {
-				  display: flex;
-				  align-items: center;
-				} */
-			  
-				#affiliateLink {
-				  text-decoration: none;
-				  color: #007bff;
-				  margin-right: 10px;
-				}
-			  
-				#copyButton {
-				  cursor: pointer;
-				}
-			  </style>
-
-			<script>
-				document.getElementById("copyButton").addEventListener("click", function() {
-				var affiliateLink = document.getElementById("affiliateLink");
-				var copyStatus = document.getElementById("copyStatus");
-				
-				// Create a temporary input element to copy the link
-				var tempInput = document.createElement("input");
-				tempInput.value = affiliateLink.href;
-				document.body.appendChild(tempInput);
-				tempInput.select();
-				document.execCommand("copy");
-				document.body.removeChild(tempInput);
-				
-				// Change the copy icon to a checkmark for a short while
-				copyStatus.innerText = "Copied!";
-				setTimeout(function() {
-					copyStatus.innerText = "";
-				}, 2000); // Display "Copied!" for 2 seconds
-				});
-			</script>
-  
-		  </div>
-		<!-- ref link -->
+		</div> 
+		
 		<div style="background-color: #007bff;">
 
 		</div>
@@ -131,51 +92,77 @@
         
     
 		<div class="clearfix"></div>
-		<br/><br/>  </div>
+		  </div>
 <!-- Deposit and withdraw -->
-	<div class="head"style="background-color: #3b288f;padding: 20px 20px;">
+	<div class="ref" style="display:;">
+	<div class="head"style="background-color: #3b288f;padding: 20px 20px;display: none;">
 		<span style="font-size:30px;cursor:pointer; color: gold ;" class="nav3"  >Deposit & Withdrawal</span>
 	</div>  
 
-	<div class="container" style="display: flex;padding: 20px 20px;justify-content: space-between;justify-content: space-around;">
-<!-- Deposit Form
-<div class="rounded p-8" style="width: 450px; justify-items: left; background-color: rgb(172, 156, 230)">
-    <h4 class="text-2xl mb-4">Deposit</h4>
-    <div style="justify-content: left; justify-items: left; text-align: left;">
-        <p><strong>Instructions:</strong> Copy the wallet address below and deposit your required amount into it. Ensure to copy the transaction ID after depositing and paste here, as it is required for your deposit to be approved.</p>
-    </div>
-    <br> <br>
-    <form id="deposit-form" onsubmit="handleDepositSubmission(); return false;">
-        <div style="justify-content: left; justify-items: left; text-align: left;">
-            <div class="copy-container">
-                <h4><strong>Wallet address:</strong>
-					<input type="text" class="border rounded gray-400 px-4 mb-4" id="copy-text" value="0xasaakhaashssshshshshs" readonly>
-					<button class="copy-button" onclick="copyWalletAddress()">Copy</button>
-					</h4>
-					
-            </div>
-            <h4>*<strong>The amount:</strong> <input id="deposit-amount" class="border rounded gray-400 px-4 mb-4" type="text" placeholder="Your deposit amount"></h4>
-            <h4>*<strong>Transaction ID:</strong> <input id="transaction-id" class="border rounded gray-400 px-4 mb-4" type="text" placeholder="Input transaction ID"></h4>
-        </div>
-        <button id="deposit-button" class="bg-red-700 text-white px-4 rounded font-bold py-2" type="submit">Deposit</button>
-    </form>
-</div> -->
+	<div class="container" style="display: flex;padding: 0px 0px;justify-content: space-between;justify-content: space-around;">
 
 <!-- Withdrawal Form -->
-<div class="bg-green-100 rounded p-8" style="width: 450px;margin: 40px;">
-    <h4 class="text-2xl mb-4">Withdraw</h4>
+<div class="bg-blue-100 rounded p-8" style="width: 450px;justify-self: center;padding: 0px;">
+	<!-- ref link -->
+	<div class="container" style="display: flex;align-items: center;">
+		<h6>Referral link:</h6>
+		<a href="https://www.eternaltrading.com?ref=12345" id="affiliateLink">https://www.eternaltrading.com?ref=12345</a>
+		<button id="copyButton">Copy</button>
+		<span id="copyStatus"></span>
+
+		<style>
+			/* .container {
+			  display: flex;
+			  align-items: center;
+			} */
+		  
+			#affiliateLink {
+			  text-decoration: none;
+			  color: #007bff;
+			  margin-right: 10px;
+			}
+		  
+			#copyButton {
+			  cursor: pointer;
+			}
+		  </style>
+
+		<script>
+			document.getElementById("copyButton").addEventListener("click", function() {
+			var affiliateLink = document.getElementById("affiliateLink");
+			var copyStatus = document.getElementById("copyStatus");
+			
+			// Create a temporary input element to copy the link
+			var tempInput = document.createElement("input");
+			tempInput.value = affiliateLink.href;
+			document.body.appendChild(tempInput);
+			tempInput.select();
+			document.execCommand("copy");
+			document.body.removeChild(tempInput);
+			
+			// Change the copy icon to a checkmark for a short while
+			copyStatus.innerText = "Copied!";
+			setTimeout(function() {
+				copyStatus.innerText = "";
+			}, 2000); // Display "Copied!" for 2 seconds
+			});
+		</script>
+
+	  </div>
+	<!-- ref link -->
+    <!-- <h4 class="text-2xl mb-4">Withdraw</h4>
     <div style="justify-content: left; justify-items: left; text-align: left;">
         <p><strong>Instructions:</strong> Paste your wallet address below and input your desired amount to be withdrawn. Your withdrawal will be approved upon request but might take between 0-6 hours to reflect in your wallet.</p>
     </div>
-    <br> <br>
-    <form id="withdrawal-form" onsubmit="handleWithdrawalSubmission(); return false;">
+    <br> <br> -->
+    <!-- <form id="withdrawal-form" onsubmit="handleWithdrawalSubmission(); return false;">
 		<div style="justify-content: left; justify-items: left; text-align: left;">
 			<h4>*<strong>Wallet address:</strong> <input id="wallet-address" class="border rounded gray-400 px-4 mb-4" type="text" placeholder="Your wallet address"></h4>
 			<h4>*<strong>The amount:</strong> <input id="withdrawal-amount" class="border rounded gray-400 px-4 mb-4" type="text" placeholder="The withdrawal amount"></h4>
 		</div>
 		<button id="withdraw-button" class="bg-red-700 text-white px-4 rounded font-medium py-2" type="submit">Withdraw</button>
-	</form>
-</div> </div>
+	</form> -->
+</div> </div> </div>
 
 <div class="head"style="background-color: #3b288f;padding: 20px 20px;">
 	<span style="font-size:30px;cursor:pointer; color: gold ;" class="nav3"  >Transaction history</span>
@@ -211,7 +198,7 @@
 	  </div>
 	</div>
   </div>
-	  
+  <div id="overlay"></div>
 	  
 	<!-- </table>
 			</div>
@@ -310,11 +297,13 @@
     /* border-bottom-right-radius: 30px; */
 }
 .sidenav{
-  position: absolute;
+  /* position: absolute; */
   top: 0;
   right: 25px;
   font-size: 36px;
 }
+
+
 #main {
   transition: margin-left .5s;
   padding: 16px;
@@ -323,6 +312,7 @@
 }
 .head{
 	padding:20px;
+	color: gold;
 }
 .col-div-6{
 	width: 50%;
@@ -391,7 +381,7 @@
 }
 .box p span{
 	font-size: 20px;
-	font-weight: 400;
+	font-weight: 500;
 	color: gold;
 }
 .box-icon{
@@ -521,6 +511,131 @@ td, th {
         .copied::before {
             content: "\f00c"; /* Checkmark icon (Font Awesome) */
         }
+
+		.blurred {
+    filter: blur(5px); /* Adjust the blur amount as needed */
+    transition: filter 0.5s;
+}
+
+#mySideNav,
+.icon-a,
+.icons,
+.logo {
+    transition: visibility 0.5s; /* Add visibility transition */
+}
+
+.overlay-effect .logo,
+.overlay-effect .icons,
+.overlay-effect .nav2 .icon-a {
+    visibility: hidden;
+}
+
+
+.close-button{
+	/* border: 2px solid gold; */
+	justify-content: center;
+	padding-left: 45%;
+	color: white;
+	font-size: 40px;
+}
+
+		@media screen and (max-width: 1200px) {
+	
+		.container{
+			display: block;
+			/* border: 4px solid black; */
+			/* padding-left: 110px;
+			margin-left: 0px; */
+			display: flex;
+			flex-direction: column;
+			padding-right: 30px;
+		
+
+		}
+
+		.col-div-3{
+			display: block;
+			width: 100%;
+			/* border: 4px solid black; */
+			padding: 0px;
+			padding-right: 20px;
+			margin-right: 20px;
+			padding-top: 20px;
+			padding-bottom: 20px;
+		}
+
+		.box{
+			border: 4px solid gold;
+			width: 100%;
+			height: 130px;
+			
+		}
+
+		.sidenav{
+			width: 200px;
+		}
+
+		#main {
+			transition: margin-left 0.5s;
+			padding: 16px;
+		}
+
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(0); /* Initial blur value */
+    pointer-events: none; /* Allow clicks to pass through the overlay */
+    transition: backdrop-filter 0.5s;
+}
+
+.overlay-effect #overlay {
+    backdrop-filter: blur(5px); /* Adjust the blur amount as needed */
+}
+
+.blurred {
+    filter: blur(5px); /* Adjust the blur amount as needed */
+    transition: filter 0.5s;
+}
+
+#mySideNav,
+.icon-a,
+.icons,
+.logo {
+    transition: visibility 0.5s; /* Add visibility transition */
+}
+
+.overlay-effect .logo,
+.overlay-effect .icons,
+.overlay-effect .nav2 .icon-a {
+    visibility: hidden;
+}
+
+
+.close-button{
+	/* border: 2px solid gold; */
+	justify-content: center;
+	padding-left: 45%;
+	color: white;
+	font-size: 40px;
+}
+
+		/* .ref{
+			padding-right: 40px;
+		} */
+
+		/* .head{
+			border: 4px solid gold;
+		} */
+
+		/* .bg-blue-100{
+			padding-right: 20px;
+			padding-left: 20px;
+			/* border: 5px solid yellow; */
+		
+	}
     
 
     </style>
@@ -537,6 +652,65 @@ td, th {
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script>
+$(document).ready(function() {
+    $("#mySidenav").css('width', '70px'); 
+    $("#main").css('margin-left', '70px');
+    $(".logo").css('visibility', 'hidden');
+    $(".logo span").css('visibility', 'visible');
+    $(".logo span").css('margin-left', '-10px');
+    $(".icon-a").css('visibility', 'hidden');
+    $(".icons").css('visibility', 'visible');
+    $(".icons").css('margin-left', '-8px');
+    $(".nav").css('display', 'none');
+    $(".nav2").css('display', 'block');
+
+
+	$("#logoutBtn").click(function() {
+        // Code to clear out cookies on a site if we need it
+        
+        // Redirect to the login page
+        window.location.href = "fidelity/views/login.ejs"; // Abeg put the login url for here. 
+    });
+
+
+	var isSidebarOpen = false;
+
+    // Function to toggle the sidebar state
+    function toggleSidebar() {
+        isSidebarOpen = !isSidebarOpen;
+
+        if (isSidebarOpen) {
+            // If the sidebar is open, apply blur effect
+            $("#mySidenav").css('width', '200px');
+            $("#main").addClass('blurred');
+            $("#overlay").addClass('blurred');
+            $(".icon-a").css('visibility', 'visible'); // Show the icon when sidebar is open
+			$("#closeBtn").css('visibility', 'visible');
+        } else {
+            // If the sidebar is closed, remove blur effect
+            $("#mySidenav").css('width', '70px');
+            $("#main").removeClass('blurred');
+            $("#overlay").removeClass('blurred');
+            $(".icon-a").css('visibility', 'hidden'); // Hide the icon when sidebar is closed
+			$("#closeBtn").css('visibility', 'hidden');
+        }
+
+        $(".nav, .nav2").toggle();
+        $(".logo, .icons").css('visibility', isSidebarOpen ? 'visible' : 'visible');
+		
+    }
+
+    $(".nav2").click(toggleSidebar);
+
+    // Handle click on the close button
+    $("#closeBtn").click(function() {
+        if (isSidebarOpen) {
+            toggleSidebar();
+        }
+    });
+});
+
+
 
 	  $(".nav").click(function(){
 	    $("#mySidenav").css('width','70px');
@@ -552,14 +726,33 @@ td, th {
 	  });
 
 	$(".nav2").click(function(){
-	    $("#mySidenav").css('width','300px');
-	    $("#main").css('margin-left','300px');
-	    $(".logo").css('visibility', 'visible');
-	     $(".icon-a").css('visibility', 'visible');
-	     $(".icons").css('visibility', 'visible');
-	     $(".nav").css('display','block');
-	      $(".nav2").css('display','none');
-	 });
+	    // $("#mySidenav").css('width','200px');
+	    // $("#main").css('margin-left','200px');
+	    // $(".logo").css('visibility', 'visible');
+	    //  $(".icon-a").css('visibility', 'visible');
+	    //  $(".icons").css('visibility', 'visible');
+	    //  $(".nav").css('display','block');
+	    //   $(".nav2").css('display','none');
+		//   $(".logo, .icon-a, .icons").css('display', 'inline-block');
+
+			// var isOpen = $("#mySidenav").css('width') === '200px';
+
+			// if (isOpen) {
+			// 	// If the sidebar is open, close it
+			// 	$("#mySidenav").css('width','70px');
+			// } else {
+			// 	// If the sidebar is closed, open it
+			// 	$("#mySidenav").css('width','200px');
+			// }
+
+			// $("#main").toggleClass('blurred');
+			// $("#overlay").toggleClass('blurred');
+			$(".nav").toggle();
+			$(".nav2").toggle();
+			// $(".logo").css('visibility', isOpen ? 'hidden' : 'visible');
+			// $(".icon-a").css('visibility', 'visible');
+			// $(".icons").css('visibility', 'visible');
+    });
 
 	</script>
 	<!-- <script src="script.js"></script> -->

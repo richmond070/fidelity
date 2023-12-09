@@ -1,27 +1,44 @@
 <%- include('partial/plansheader'); -%>
     <br> <br> <br><br>
 
-    <div class="container" style="border: 2px solid gold;" >
+    <div class="container" style="border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;background-color: whitesmoke;  " >
         <div style="display: block;">
         <h1><strong>GOLD PLAN</strong></h1>
 
         <h4>Please confirm your deposit</h4>
         </div> </div>
         <br> <br>
+        <div class="containers">
     <div class="container" >
         <div >
+
+          <center>
+
+            
+
             <h3>Order Summary:</h3>
             <h6 id="plan"><strong>GOLD</strong></h6>
-            <h6><strong>Profit:</strong> 10% every 48 hours </h6>
+            <h6><strong>Profit:</strong> 38% every 48 hours </h6>
+
             <h6><strong>Principal return:</strong> Yes </h6>
-            <h6><strong>Minimum deposit:</strong> $50.00 </h6> 
-            <h6><strong>Maximum deposit:</strong> $1,500.00 </h6>
+            <h6><strong>Minimum deposit:</strong> $5,100.00 </h6> 
+            <h6><strong>Maximum deposit:</strong> $10,000.00 </h6>
+            <h6><strong>Referral bonus:</strong>5% </h6>
+            <h6><strong> Perks:</strong> UNLIMITED DAILY TRADE, MIGRATION etc. </h6>
+            <h6><strong></strong>  </h6>
             <h6><strong>Deposit fee:</strong> 0.00% </h6> <br>
+        
+
+            <div class="containerss" style="text-align: center;justify-content: center;padding-top: 20px"> 
             <h5> *Input the amount you desire to invest</h5>
             <textarea id="amountTextArea"></textarea> <br><br>
             <h5>"Copy wallet" and send the desired amount to it.</h5>
 
-            <textarea id="walletTextArea" readonly>ahakhdaddkdahdadakdhadaaaj</textarea>
+            <textarea id="walletTextArea" readonly>bc1qvwrxry6wu7jtk24029wv0u4qferyxzgva88kwl</textarea>
             <br>
             <button id="copyButton">Copy Wallet</button> <br><br>
             
@@ -31,8 +48,10 @@
 
             <button id="submitButton">Submit</button> <br><br>
 
+          </div> <br><br>
+          
         </div>
-
+      </div>
     </div>
 
 
@@ -107,6 +126,21 @@
             background-color: #3b288f;
             color: whitesmoke;
         }
+        .containerss{
+          border-top-left-radius: 30px;
+          border-top-right-radius: 30px;
+          
+          border-bottom-left-radius: 30px;
+          border-bottom-right-radius: 30px;
+          background-color: whitesmoke;
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+        @media screen and (max-width: 1200px) {
+          .containers .container{
+            text-align: left;
+          }
+        }
       </style>
     <script>
         const walletTextArea = document.getElementById('walletTextArea');
@@ -135,8 +169,10 @@
         const amount = amountTextArea.value.trim();
         const newAmount = parseInt(amount)
         // Check if the amount is within the range
-        if (amount < 5100 || amount > 10000) {
-                alert('Kindly input an amount between $50 & $1500');
+
+        if (goldAmount < 5100 || goldAmount > 10000) {
+                alert('Kindly input an amount between $5,100.00 & $10,000.00');
+
                 return;
             }
         const transactionId = transactionIdTextArea.value.trim();
