@@ -135,7 +135,7 @@ if (investmentInfo) {
     if (goldInvestmentInfo) {
       // Calculate ROI 
     const [goldAmount] = goldInvestmentInfo.match(/\d+/);
-    const goldRoiAmount = (goldAmount * 0.10).toFixed(2);
+    const goldRoiAmount = (goldAmount * 0.38).toFixed(2);
 
     const date = new Date().toLocaleString();
     addTransactionToHistory('Gold plan', goldAmount, date, 'Approved');
@@ -159,7 +159,7 @@ if (investmentInfo) {
     if (standardInvestmentInfo) {
       // Calculate ROI 
     const [standardAmount] = standardInvestmentInfo.match(/\d+/);
-    const standardRoiAmount = (standardAmount * 0.75).toFixed(2);
+    const standardRoiAmount = (standardAmount * 0.15).toFixed(2);
 
     const date = new Date().toLocaleString();
     addTransactionToHistory('Standard plan', standardAmount, date, 'Approved');

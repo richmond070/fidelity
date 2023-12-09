@@ -1,38 +1,47 @@
 <%- include('partial/plansheader'); -%>
     <br> <br> <br><br>
 
-    <div class="container">
+    <div class="container" style="border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;background-color: whitesmoke;  ">
         <div style="display: block;">
         <h1 id="plan"><strong>MERGER</strong></h1>
 
         <h4>Please confirm your deposit</h4>
         </div> </div>
         <br> <br>
+        <div class="containers">
     <div class="container" >
         <div >
-            <h3>Order Summary:</h3>
+          <center>
+            <h3> <strong>Order Summary</h3></strong> </center>
             <h6><strong>Plan:</strong> Merger account </h6>
-            <h6><strong>Profit:</strong> 90% biweekly </h6>
+            <h6><strong>Profit:</strong> 90% biweekly (100% if invested for 3 months without withdrawal) </h6>
             <h6><strong>Principal return:</strong> Yes </h6>
             <h6><strong>Minimum deposit:</strong> $50,000.00 </h6> 
             <h6><strong>Maximum deposit:</strong> Unlimited </h6> 
             <h6><strong>Deposit fee:</strong> 0.00% </h6> <br>
-            <h5> *Input the amount you desire to invest</h5>
-            <textarea id="amountTextArea"></textarea> <br><br>
-            <h5>"Copy wallet" and send the desired amount to it.</h5>
 
-            <textarea id="walletTextArea" readonly>bc1qvwrxry6wu7jtk24029wv0u4qferyxzgva88kwl</textarea>
-            <br>
-            <button id="copyButton">Copy Wallet</button> <br><br>
-            
-            
-            <h5>*Transaction ID(required):</h5>
-            <textarea id="transactionIdTextArea"></textarea> <br>
 
-            <button id="submitButton">Submit</button> <br><br>
-
-        </div>
-
+            <div class="containerss" style="text-align: center;justify-content: center;padding-top: 20px"> 
+              <h5> *Input the amount you desire to invest</h5>
+              <textarea id="amountTextArea"></textarea> <br><br>
+              <h5>"Copy wallet" and send the desired amount to it.</h5>
+  
+              <textarea id="walletTextArea" readonly>bc1qvwrxry6wu7jtk24029wv0u4qferyxzgva88kwl</textarea>
+              <br>
+              <button id="copyButton">Copy Wallet</button> <br><br>
+              
+              
+              <h5>*Transaction ID(required):</h5>
+              <textarea id="transactionIdTextArea"></textarea> <br>
+  
+              <button id="submitButton">Submit</button> <br><br>
+  
+            </div> <br><br>
+      </div>
     </div>
 
 
@@ -107,6 +116,21 @@
         #submitButton:hover{
             background-color: #3b288f;
             color: whitesmoke;
+        }
+        .containerss{
+          border-top-left-radius: 30px;
+          border-top-right-radius: 30px;
+          
+          border-bottom-left-radius: 30px;
+          border-bottom-right-radius: 30px;
+          background-color: whitesmoke;
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+        @media screen and (max-width: 1200px) {
+          .containers .container{
+            text-align: left;
+          }
         }
       </style>
     <script>

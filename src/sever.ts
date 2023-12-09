@@ -129,15 +129,15 @@ app.get('/test', async (req, res) => {
     }
 });
 
-app.get('/basic', verifyToken, (req, res) => res.render('basic'));
-app.get('/estate', verifyToken, (req, res) => res.render('estate'));
-app.get('/etf', verifyToken, (req, res) => res.render('etf'));
-app.get('/gold', verifyToken, (req, res) => res.render('gold'));
-app.get('/immigration', verifyToken, (req, res) => res.render('immigration'));
-app.get('/insurance', verifyToken, (req, res) => res.render('insurance'));
-app.get('/merger', verifyToken, (req, res) => res.render('merger'));
-app.get('/platinum', verifyToken, (req, res) => res.render('platinum'));
-app.get('/standard', verifyToken, (req, res) => res.render('standard'));
+app.get('/basic',  (req, res) => res.render('basic'));
+app.get('/estate',  (req, res) => res.render('estate'));
+app.get('/etf',  (req, res) => res.render('etf'));
+app.get('/gold',  (req, res) => res.render('gold'));
+app.get('/immigration',  (req, res) => res.render('immigration'));
+app.get('/insurance',  (req, res) => res.render('insurance'));
+app.get('/merger',  (req, res) => res.render('merger'));
+app.get('/platinum',  (req, res) => res.render('platinum'));
+app.get('/standard',  (req, res) => res.render('standard'));
 
 app.get('/login', (req, res) => res.render('login'));
 app.get('/register', (req, res) => res.render('register'));
