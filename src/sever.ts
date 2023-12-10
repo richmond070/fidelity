@@ -14,7 +14,7 @@ import axios from "axios";
 // const { io } = require("socket.io-client");
 // import { Server as SocketIOServer } from "socket.io";
 // import { initializeSocket } from "./utils/socket";
-import { CustomRequest } from './template/customTemplate'
+// import { CustomRequest } from './template/customTemplate'
 
 import * as PaymentService from "./payment/payment.service"
 import * as UserService from "./users/users.service"
