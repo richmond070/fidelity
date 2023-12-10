@@ -10,9 +10,12 @@ exports.adminRouter.get("/user", admin_service_1.getUser);
 exports.adminRouter.get("/users", admin_service_1.getUsers);
 exports.adminRouter.delete("/user:id", admin_service_1.deleteUser);
 exports.adminRouter.post("/deposit", admin_service_1.deposit);
+exports.adminRouter.get("/getDeposit", admin_service_1.getAllDeposit);
 exports.adminRouter.post("/admin", admin_service_1.createAdmin);
 exports.adminRouter.get("/admin/:id", admin_service_1.getAdmin);
-exports.adminRouter.get("/admins", (0, auth_1.authorization)('ADMIN'), admin_service_1.getAdmins);
+exports.adminRouter.get("/admins", admin_service_1.getAdmins);
 exports.adminRouter.post("/login", admin_service_1.logAdmin);
 exports.adminRouter.delete("/admin:id", admin_service_1.deleteAdmin);
+exports.adminRouter.get('/unverified-deposits', (0, auth_1.authorization)('ADMIN'));
+exports.adminRouter.post('/verify-deposit', (0, auth_1.authorization)('ADMIN'), admin_service_1.verifyDeposit);
 //# sourceMappingURL=admin.router.js.map

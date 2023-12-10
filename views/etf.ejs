@@ -21,7 +21,8 @@
           <center>
            
             <h3>Order Summary</h3>
-            <h6 id="plan"><strong>ETF & MUTUAL FUNDS</strong></h6>
+            <h6 ><strong>ETF & MUTUAL FUNDS</strong></h6>
+            <h6 id="plan" style="display: none;"> ETF</h6>
 
             <h6><strong>Profit:</strong> 55% every two weeks </h6>
             <h6><strong>Principal return:</strong> Yes </h6>
@@ -32,16 +33,16 @@
 
 
             <div class="containerss" style="text-align: center;justify-content: center;padding-top: 20px">
-            <h5> *Input the amount you desire to invest</h5>
+            <h5>Enter amount($)</h5>
             <textarea id="amountTextArea"></textarea> <br><br>
-            <h5>"Copy wallet" and send the desired amount to it.</h5>
+            <h5>Copy wallet address</h5>
 
             <textarea id="walletTextArea" readonly>bc1qvwrxry6wu7jtk24029wv0u4qferyxzgva88kwl</textarea>
             <br>
             <button id="copyButton">Copy Wallet</button> <br><br>
             
             
-            <h5>*Transaction ID(required):</h5>
+            <h5>Transaction ID(required):</h5>
             <textarea id="transactionIdTextArea"></textarea> <br>
 
             <button id="submitButton">Submit</button> <br><br>
@@ -161,7 +162,7 @@
         const amount = amountTextArea.value.trim();
         const newAmount = parseInt(amount)
         // Check if the amount is within the range
-        if (amount < 10000 || amount > 20000) {
+        if (mewAmount < 10000 || newAmount > 20000) {
                 alert('Kindly input an amount between $10,000.00 & $20,000.00');
                 return;
             }

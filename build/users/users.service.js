@@ -34,7 +34,14 @@ const getUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
     return db_sever_1.prisma.user.findUnique({
         where: {
             id,
-        },
+        }, select: {
+            id: true,
+            fullName: true,
+            userName: true,
+            email: true,
+            password: true,
+            role: true
+        }
     });
 });
 exports.getUser = getUser;

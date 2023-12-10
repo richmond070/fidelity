@@ -17,6 +17,7 @@ import { initializeSocket } from "./utils/socket";
 import { CustomRequest } from './template/customTemplate'
 
 import * as PaymentService from "./payment/payment.service"
+import * as UserService from "./users/users.service"
 import { getAllDeposit, getUnverifiedDeposits } from "./admin/admin.service";
 
 import { userRouter } from "./users/user.router";
@@ -107,8 +108,9 @@ app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => res.render('home'));
 app.get('/homeloggedin', (req, res) => res.render('homeloggedin'));
+app.get('/immigration', (req, res) => res.render('migrationpage'));
 app.get('/about', (req, res) => res.render('about'));
-app.get('/aboutloggedin', (req, res) => res.render('aboutloggedin'));
+app.get('/aboutloggedin', verifyToken, (req, res) => res.render('aboutloggedin'));
 app.get('/edit', (req, res) => res.render('editprofile'));
 app.get('/adminDashboard', async (req, res) => {
     // Call the getAllDeposit function to retrieve deposit data
@@ -133,15 +135,15 @@ app.get('/test', async (req, res) => {
     }
 });
 
-app.get('/basic',  (req, res) => res.render('basic'));
-app.get('/estate',  (req, res) => res.render('estate'));
-app.get('/etf',  (req, res) => res.render('etf'));
-app.get('/gold',  (req, res) => res.render('gold'));
-app.get('/immigration',  (req, res) => res.render('immigration'));
-app.get('/insurance',  (req, res) => res.render('insurance'));
-app.get('/merger',  (req, res) => res.render('merger'));
-app.get('/platinum',  (req, res) => res.render('platinum'));
-app.get('/standard',  (req, res) => res.render('standard'));
+app.get('/basic', verifyToken, (req, res) => res.render('basic'));
+app.get('/estate', verifyToken, (req, res) => res.render('estate'));
+app.get('/etf', verifyToken, (req, res) => res.render('etf'));
+app.get('/gold', verifyToken, (req, res) => res.render('gold'));
+app.get('/immigration', verifyToken, (req, res) => res.render('immigration'));
+app.get('/insurance', verifyToken, (req, res) => res.render('insurance'));
+app.get('/merger', verifyToken, (req, res) => res.render('merger'));
+app.get('/platinum', verifyToken, (req, res) => res.render('platinum'));
+app.get('/standard', verifyToken, (req, res) => res.render('standard'));
 
 app.get('/login', (req, res) => res.render('login'));
 app.get('/register', (req, res) => res.render('register'));
@@ -170,7 +172,23 @@ app.get('/dashboard', verifyToken, authorization('USER'), async (req, res) => {
 // for the return on investment
 // app.get('/payment/roi', verifyToken, getROI);
 
-app.get('/profile', (req, res) => res.render('profile'))
+app.get('/profile', verifyToken, async (req, res) => {
+    try {
+        // Type guard to narrow down the type
+        if (typeof req.user !== 'number') {
+            return res.status(403).json({ message: 'Invalid user ID' });
+        }
+        const userId = req.user;
+        const id: number = parseInt(userId, 10);
+        const user = await UserService.getUser(id)
+
+        // Render the EJS template and pass the data
+        res.render('profile', { user })
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+
+})
 //app.get('/deposit', verifyToken, (req, res) => res.render('deposit'));
 
 app.get('/contact', (req, res) => res.render('contact'));

@@ -34,7 +34,14 @@ export const getUser = async (id: number): Promise<User | null> => {
     return prisma.user.findUnique({
         where: {
             id,
-        },
+        }, select: {
+            id: true,
+            fullName: true,
+            userName: true,
+            email: true,
+            password: true,
+            role: true
+        }
     });
 };
 

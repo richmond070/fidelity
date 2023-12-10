@@ -10,6 +10,7 @@
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
   />
+  <title>Eternal Trading</title>
   <link
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
@@ -27,22 +28,22 @@
                 <input type="checkbox" class="toggle-menu">
                 <div class="hamburger"></div>
                 <ul class="menu">
-                    <li><a href="/homeloggedin.html">Home</a></li>
-                    <li><a href="aboutloggedin.html">About</a></li>
+                    <li><a href="/homeloggedin">Home</a></li>
+                    <li><a href="/aboutloggedin">About</a></li>
             
 
                     <div class="dropdown">
-                        <li class="dropD"><a href="plans.html">Plans</a></li>
+                        <li class="dropD"><a href="/plans">Plans</a></li>
                     
                     </div>
 
                     <div class="dropdown">
-                        <li class="dropD"><a href="contact.html">Contact</a></li>
+                        <li class="dropD"><a href="/contact">Contact</a></li>
                     
                     </div>
 
                     <div class="dropdown">
-                      <li class="dropD"><a href="dashboard1.html">Dashboard</a></li>
+                      <li class="dropD"><a href="/dashboard">Dashboard</a></li>
                   
                   </div> 
 
@@ -55,33 +56,18 @@
 
     <div class="container rounded bg-white mt-5 mb-5">
         <div class="row">
-            <div class="col-md-3 border-right" style="width: 40%;">
-                <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px" src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"><span class="font-weight-bold">Donald</span><span class="text-black-50">donaldesohandi@gmail.com</span><span> </span></div>
-            </div>
             <div class="col-md-5 border-right" style="width: 60%;">
                 <div class="p-3 py-5">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h4 class="text-right">Profile Settings</h4>
                     </div>
-                    <div class="row mt-2">
-                        <div class="col-md-6"><label class="labels">Name</label><input type="text" class="form-control" placeholder="first name" value=""></div>
-                        <div class="col-md-6"><label class="labels">Surname</label><input type="text" class="form-control" value="" placeholder="surname"></div>
-                    </div>
                     <div class="row mt-3">
-                        <div class="col-md-12"><label class="labels">Mobile Number</label><input type="text" class="form-control" placeholder="enter phone number" value=""></div>
-                        <div class="col-md-12"><label class="labels">Address Line 1</label><input type="text" class="form-control" placeholder="enter address line 1" value=""></div>
-                        <div class="col-md-12"><label class="labels">Address Line 2</label><input type="text" class="form-control" placeholder="enter address line 2" value=""></div>
-                        <div class="col-md-12"><label class="labels">Postcode</label><input type="text" class="form-control" placeholder="enter postcode" value=""></div>
-                        <div class="col-md-12"><label class="labels">State</label><input type="text" class="form-control" placeholder="enter state" value=""></div>
-                        <div class="col-md-12"><label class="labels">Area</label><input type="text" class="form-control" placeholder="enter area" value=""></div>
-                        <div class="col-md-12"><label class="labels">Email ID</label><input type="text" class="form-control" placeholder="enter email id" value=""></div>
-                        <div class="col-md-12"><label class="labels">Education</label><input type="text" class="form-control" placeholder="education" value=""></div>
+                        <div class="col-md-12" id="username"><label class="labels">USERNAME</label><input type="text" class="form-control" name= 'userName'placeholder="enter new username" value=""></div>
+                        <div class="col-md-12" id="password"><label class="labels">PASSWORD</label><input type="text" class="form-control" name="password" value="" placeholder="Enter new number"></div>
+                        <div class="col-md-12" id="email"><label class="labels">EMAIL</label><input type="text" class="form-control" name="email" placeholder="enter new email" value=""></div>
+                        
                     </div>
-                    <div class="row mt-3">
-                        <div class="col-md-6"><label class="labels">Country</label><input type="text" class="form-control" placeholder="country" value=""></div>
-                        <div class="col-md-6"><label class="labels">State/Region</label><input type="text" class="form-control" value="" placeholder="state"></div>
-                    </div>
-                    <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="button">Save Profile</button></div>
+                    <div class="mt-5 text-center" id="submitButton"><button class="btn btn-primary profile-button" type="button"> Save Profile</button></div>
                 </div>
             </div>
             
@@ -142,6 +128,38 @@
 } */
     </style>
 
-    <script src="script.js"></script>
+    <!--<script src="script.js"></script>-->
+
+    <script>
+        const submitButton = document.getElementById('submitButton');
+  submitButton.addEventListener('click', async (e) => {
+    e.preventDefault();
+    // get values
+    const email = document.getElementById('email');
+    const password = document.getElementById('password');
+    const username = document.getElementById('username');
+
+    try {
+      const res = await fetch('/api/user/update', { 
+        method: 'PUT', 
+        body: JSON.stringify({ email, password, username }),
+        headers: {'Content-Type': 'application/json'}
+      });
+      const data = await res.json();
+      console.log(data);
+      if (data.errors) {
+        alert('Sorry cannot make changes at the moment ')
+      }
+      if (res.ok) {
+        alert('Profile updated successfully!')
+        window.location.href = '/dashboard';
+      }
+
+    }
+    catch (err) {
+      console.log(err);
+    }
+  });
+    </script>
 </body>
 </html>
