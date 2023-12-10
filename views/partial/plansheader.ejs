@@ -49,6 +49,11 @@
                     </div>
               </div> 
 
+              <div class="dropdown">
+                <li class="dropD" ><a href="/login.ejs" id="logoutLink">Logout</a></li>
+            
+            </div>
+
             </ul>
 
         </div>
@@ -64,3 +69,36 @@
   } 
 </script>
 <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Bro change this cookie name to the main cookie name you are using
+    const cookieName = 'sessionCookie';
+  
+    // I set the cookie expiration to weekly
+  function setCookie(name, value, days) {
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    const expires = 'expires=' + date.toUTCString();
+    document.cookie = name + '=' + value + ';' + expires + ';path=/';
+  }
+  
+    // handles logout
+    function logout() {
+      // Clears the cookie
+      clearCookie(cookieName);
+  
+      // Redirects to the logout page. 
+      window.location.href = '/login.ejs';
+    }
+  
+    // the logooout 
+    const logoutLink = document.getElementById('logoutLink');
+    if (logoutLink) {
+      logoutLink.addEventListener('click', function (event) {
+        event.preventDefault();
+        logout();
+      });
+    }
+  });
+  </script>
