@@ -38,6 +38,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.userRouter = void 0;
 const express_1 = __importDefault(require("express"));
 const express_validator_1 = require("express-validator");
+const auth_1 = require("../utils/auth");
 const UserService = __importStar(require("./users.service"));
 exports.userRouter = express_1.default.Router();
 exports.userRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -49,9 +50,13 @@ exports.userRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, func
         return res.status(500).json(error.message);
     }
 }));
-exports.userRouter.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const id = parseInt(req.params.id, 10);
+exports.userRouter.get("/userInfo", auth_1.verifyToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        if (typeof req.user !== 'number') {
+            return res.status(403).json({ message: 'Invalid user ID' });
+        }
+        const userId = req.user;
+        const id = parseInt(userId, 10);
         const user = yield UserService.getUser(id);
         if (user) {
             return res.status(200).json(user);
@@ -81,12 +86,16 @@ exports.userRouter.post("/signup", (0, express_validator_1.body)("fullName").isS
         return res.status(500).json(error.message);
     }
 }));
-exports.userRouter.put("/:id", (0, express_validator_1.body)("userName").isString(), (0, express_validator_1.body)("email").isString(), (0, express_validator_1.body)("password").isString(), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.userRouter.put("/update", (0, express_validator_1.body)("userName").isString(), (0, express_validator_1.body)("email").isString(), (0, express_validator_1.body)("password").isString(), auth_1.verifyToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    const id = parseInt(req.params.id, 10);
+    if (typeof req.user !== 'number') {
+        return res.status(403).json({ message: 'Invalid user ID' });
+    }
+    const userId = req.user;
+    const id = parseInt(userId, 10);
     try {
         const user = req.body;
         const updatedUser = yield UserService.updateUser(user, id);
@@ -126,7 +135,7 @@ exports.userRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0
                 message: "Wrong email or Password"
             });
         }
-        res.cookie("jwt", token, { httpOnly: true });
+        res.cookie('jwt', token, { httpOnly: true });
         return res.status(200).json({
             status: "OK!",
             message: "Successfully login",

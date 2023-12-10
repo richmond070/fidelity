@@ -271,7 +271,7 @@ gold
         /* border: 2px solid black; */
         padding: 0px;
     }
-    card
+    .card
     .containercontainer .container{
         /* border: 2px solid black; */
         padding: 60px;
@@ -291,6 +291,11 @@ gold
     .right{
         display: none;
     }
+
+    /* .google .google_translate_element {
+        padding: 4vw;
+        font-size: 30vw;
+    } */
 
 }
 
@@ -344,6 +349,7 @@ gold
         justify-items: center;
     }
 
+
 }
 
 /* FOOTER */
@@ -369,7 +375,9 @@ container
 }
 
 .footer a {
-    padding: .2rem;
+    padding: .4rem;
+    text-decoration: none;
+    color: #fff;
 }
 
 .footer h3 {
@@ -1329,6 +1337,10 @@ img {
     border-bottom-right-radius: 30px;
 }
 
-
+.footer-link a {
+    text-decoration: none;
+    list-style: none;
+    color: #ffff;
+}
 /* main.css */
 

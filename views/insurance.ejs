@@ -30,22 +30,23 @@
             <h6><strong>Deposit fee:</strong> 0.00% </h6> <br><br>
 
             <div class="containerss" style="text-align: center;justify-content: center;padding-top: 20px">
-              <h5> *Input the amount you desire to invest</h5>
-              <textarea id="amountTextArea"></textarea> <br><br>
-              <h5>"Copy wallet" and send the desired amount to it.</h5>
-  
-              <textarea id="walletTextArea" readonly>bc1qvwrxry6wu7jtk24029wv0u4qferyxzgva88kwl</textarea>
-              <br>
-              <button id="copyButton">Copy Wallet</button> <br><br>
-              
-              
-              <h5>*Transaction ID(required):</h5>
-              <textarea id="transactionIdTextArea"></textarea> <br>
-  
-              <button id="submitButton">Submit</button> <br><br>
-            </div></div>
-          </div> <br>
-        </div>
+            <h6> Enter amount($)</h6>
+            <textarea id="amountTextArea"></textarea> <br><br>
+            <h6>Copy wallet address.</h6>
+
+            <textarea id="walletTextArea" readonly>bc1qvwrxry6wu7jtk24029wv0u4qferyxzgva88kwl</textarea>
+            <br>
+            <button id="copyButton">Copy</button> <br><br>
+            
+            
+            <h6>Transaction ID(required):</h6>
+            <textarea id="transactionIdTextArea"></textarea> <br>
+
+            <button id="submitButton">Submit</button> <br><br>
+
+        </div></div><br>
+      </div>
+    </div>
 
 
 
@@ -163,7 +164,7 @@
         const amount = amountTextArea.value.trim();
         const newAmount = parseInt(amount)
         // Check if the amount is within the range
-        if (amount < 30000) {
+        if (newAmount < 30000) {
                 alert('Kindly input an amount above $30,000.00');
                 return;
             }

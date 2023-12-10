@@ -26,14 +26,17 @@ function verifyToken(req, res, next) {
     const token = req.cookies.jwt;
     let secretKey = process.env.JWT_SECRET_KEY || "richmond-ekezie-richard-031";
     if (!token) {
-        return res.status(401).json({ message: 'Authentication required' });
+        res.status(401).json({ message: 'Authentication required' });
     }
     jsonwebtoken_1.default.verify(token, secretKey, (err, payload) => {
         if (err) {
-            return res.status(403).json({ message: 'Invalid token' });
+            return res.status(401).json({ message: 'Invalid token' });
         }
-        req.user = payload.id;
-        next();
+        else {
+            const userId = payload.userId;
+            req.user = userId;
+            next();
+        }
     });
 }
 exports.verifyToken = verifyToken;

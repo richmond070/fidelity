@@ -41,36 +41,44 @@ const express_validator_1 = require("express-validator");
 const auth_1 = require("../utils/auth");
 const PaymentService = __importStar(require("./payment.service"));
 exports.paymentRouter = express_1.default.Router();
-exports.paymentRouter.get("/:userId", auth_1.verifyToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const id = parseInt(req.params.userId, 10);
+const user = function userId() {
+    return (req, res) => {
+        if (typeof req.user !== 'number') {
+            return res.status(403).json({ message: 'Invalid user ID' });
+        }
+    };
+};
+exports.paymentRouter.get("/user", auth_1.verifyToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const payment = yield PaymentService.listDeposit(id);
-        return res.status(200).json({ data: payment });
+        if (typeof req.user !== 'number') {
+            return res.status(403).json({ message: 'Invalid user ID' });
+        }
+        const user = req.user;
+        const id = parseInt(user, 10);
+        const deposits = yield PaymentService.listDeposit(id);
+        res.render('deposits', { deposits });
+        return res.status(200).json({ data: deposits });
     }
     catch (error) {
         return res.status(500).json(error.message);
     }
     ;
 }));
-exports.paymentRouter.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const id = parseInt(req.params.id, 10);
-    try {
-        const deposit = yield PaymentService.getDeposit(id);
-        if (deposit) {
-            return res.status(200).json({ data: deposit });
-        }
-    }
-    catch (error) {
-        return res.status(500).json(error.message);
-    }
-}));
-exports.paymentRouter.post("/payment", (0, express_validator_1.body)("transactionId").isString(), (0, express_validator_1.body)("amount").isInt(), (0, express_validator_1.body)("userId").isInt(), auth_1.verifyToken, (0, auth_1.authorization)("USER"), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.paymentRouter.post("/payment", (0, express_validator_1.body)("transactionId").isString(), (0, express_validator_1.body)("amount").isInt(), auth_1.verifyToken, (0, auth_1.authorization)("USER"), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
     try {
-        const deposit = req.body;
+        if (typeof req.user !== 'number') {
+            return res.status(403).json({ message: 'Invalid user ID' });
+        }
+        const deposit = {
+            transactionId: req.body.transactionId,
+            amount: req.body.amount,
+            userId: req.user,
+            plan: req.body.plan
+        };
         const newDeposit = yield PaymentService.makeDeposit(deposit);
         return res.status(201).json(newDeposit);
     }
@@ -107,5 +115,35 @@ exports.paymentRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, f
     catch (error) {
         return res.status(500).json(error.message);
     }
+}));
+exports.paymentRouter.get("/balance", auth_1.verifyToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (typeof req.user !== 'number') {
+            return res.status(403).json({ message: 'Invalid user ID' });
+        }
+        const user = req.user;
+        const id = parseInt(user, 10);
+        const listDeposit = yield PaymentService.getAvailableBalance(id);
+        return res.status(200).json({ data: listDeposit });
+    }
+    catch (error) {
+        return res.status(500).json(error.message);
+    }
+    ;
+}));
+exports.paymentRouter.get("/roi", auth_1.verifyToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (typeof req.user !== 'number') {
+            return res.status(403).json({ message: 'Invalid user ID' });
+        }
+        const user = req.user;
+        const id = parseInt(user, 10);
+        const listDeposit = yield PaymentService.calROI(id);
+        return res.status(200).json({ data: listDeposit });
+    }
+    catch (error) {
+        return res.status(500).json(error.message);
+    }
+    ;
 }));
 //# sourceMappingURL=payment.router.js.map

@@ -5,8 +5,8 @@ import { Deposit } from "@prisma/client";
 import { generateHash, compareHash } from "../utils/password";
 import Authentication from "../utils/auth";
 import { Roles } from "@prisma/client";
-import { Server } from "socket.io";
-import WebSocket from "ws";
+// import { Server } from "socket.io";import WebSocket from "ws";
+
 
 // //websocket sever instance
 // let wss: WebSocket.Server;

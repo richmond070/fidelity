@@ -2,12 +2,12 @@ import express from "express";
 import type { Request, Response, Router } from "express";
 import { body, validationResult } from "express-validator";
 import { verifyToken, authorization } from "../utils/auth";
-import { Server as WebSocketServer, WebSocket } from 'ws';
+// import { Server as WebSocketServer, WebSocket } from 'ws';
 import jwt from "jsonwebtoken";
 import { PrismaClient } from '@prisma/client';
 // import { getUnverifiedDeposits } from "../admin/admin.service";
-import { getSocketInstance } from "../utils/socket";
-import { Server } from "socket.io";
+// import { getSocketInstance } from "../utils/socket";
+// import { Server } from "socket.io";
 
 
 

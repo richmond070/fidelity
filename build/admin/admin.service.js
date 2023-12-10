@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteAdmin = exports.getAdmins = exports.getAdmin = exports.logAdmin = exports.createAdmin = exports.deposit = exports.deleteUser = exports.getUsers = exports.getUser = exports.createUser = void 0;
+exports.verifyDeposit = exports.getUnverifiedDeposits = exports.deleteAdmin = exports.getAdmins = exports.getAdmin = exports.logAdmin = exports.createAdmin = exports.getAllDeposit = exports.deposit = exports.deleteUser = exports.getUsers = exports.getUser = exports.createUser = void 0;
 const db_sever_1 = require("../utils/db.sever");
 const password_1 = require("../utils/password");
 const auth_1 = __importDefault(require("../utils/auth"));
@@ -111,13 +111,15 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.deleteUser = deleteUser;
 const deposit = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { transactionId, amount, userId } = req.body;
+    const { transactionId, amount, userId, plan } = req.body;
     try {
         const payment = yield db_sever_1.prisma.deposit.create({
             data: {
                 transactionId,
                 amount,
-                userId
+                userId,
+                plan,
+                isVerified: true
             }
         });
         res.status(201).json(payment);
@@ -131,6 +133,27 @@ const deposit = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.deposit = deposit;
+const getAllDeposit = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const deposit = yield db_sever_1.prisma.deposit.findMany({
+            where: {
+                isVerified: false
+            },
+            select: {
+                amount: true,
+                transactionId: true,
+                plan: true,
+                createdAt: true
+            }
+        });
+        res.render('admin', { deposit: deposit });
+    }
+    catch (error) {
+        console.error('Error fetching data from the database:', error.message);
+        res.status(500).send('Internal Sever Error');
+    }
+});
+exports.getAllDeposit = getAllDeposit;
 const createAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userName, fullName, email, password } = req.body;
     const hashedPassword = yield (0, password_1.generateHash)(password);
@@ -159,15 +182,15 @@ const createAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.createAdmin = createAdmin;
 const logAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password } = req.body;
+    const { userName, password } = req.body;
     try {
         const admin = yield db_sever_1.prisma.user.findUnique({
             where: {
-                email
+                userName
             },
         });
         if (!admin) {
-            throw new Error("Email is not correct!");
+            throw new Error("userName is not correct!");
         }
         if (admin.role !== 'ADMIN') {
             return res.status(403).json({ message: "User is not an admin!" });
@@ -261,4 +284,54 @@ const deleteAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.deleteAdmin = deleteAdmin;
+function getUnverifiedDeposits(res, req) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const unverifiedDeposits = yield db_sever_1.prisma.deposit.findMany({
+                where: {
+                    isVerified: false,
+                }, select: {
+                    amount: true,
+                    transactionId: true,
+                    plan: true
+                }
+            });
+            res.render('admin', { unverifiedDeposits });
+        }
+        catch (error) {
+            console.error('Error notifying admin:', error);
+            throw new Error('Failed to notify admin');
+        }
+    });
+}
+exports.getUnverifiedDeposits = getUnverifiedDeposits;
+function verifyDeposit(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const depositDetails = yield db_sever_1.prisma.deposit.findFirst({
+                where: {
+                    isVerified: false
+                }
+            });
+            if (!depositDetails) {
+                res.status(404).json({ error: 'No unverified deposit found for the user' });
+                return;
+            }
+            yield db_sever_1.prisma.deposit.update({
+                where: {
+                    id: depositDetails.id,
+                },
+                data: {
+                    isVerified: true,
+                },
+            });
+            res.status(200).json({ message: 'Deposit verified successfully' });
+        }
+        catch (error) {
+            console.error('Error in verifyDeposit:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    });
+}
+exports.verifyDeposit = verifyDeposit;
 //# sourceMappingURL=admin.service.js.map

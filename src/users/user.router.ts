@@ -2,6 +2,7 @@ import express from "express";
 import type { Request, Response } from "express";
 import { body, validationResult } from "express-validator";
 import generateToken from "../utils/auth";
+import { verifyToken } from "../utils/auth";
 
 import * as UserService from "./users.service";
 
@@ -18,9 +19,15 @@ userRouter.get("/", async (req: Request, res: Response) => {
 })
 
 //Get a single user by id 
-userRouter.get("/:id", async (req: Request, res: Response) => {
-    const id: number = parseInt(req.params.id, 10);
+userRouter.get("/userInfo", verifyToken, async (req: Request, res: Response) => {
+    // const id: number = parseInt(req.params.id, 10);
     try {
+        // Type guard to narrow down the type
+        if (typeof req.user !== 'number') {
+            return res.status(403).json({ message: 'Invalid user ID' });
+        }
+        const userId = req.user
+        const id: number = parseInt(userId, 10);
         const user = await UserService.getUser(id)
         if (user) {
             return res.status(200).json(user)
@@ -56,13 +63,18 @@ userRouter.post("/signup",
 
 
 //Updating a users information
-userRouter.put("/:id", body("userName").isString(), body("email").isString(),
-    body("password").isString(), async (req: Request, res: Response) => {
+userRouter.put("/update", body("userName").isString(), body("email").isString(),
+    body("password").isString(), verifyToken, async (req: Request, res: Response) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
-        const id: number = parseInt(req.params.id, 10)
+        // Type guard to narrow down the type
+        if (typeof req.user !== 'number') {
+            return res.status(403).json({ message: 'Invalid user ID' });
+        }
+        const userId = req.user
+        const id: number = parseInt(userId, 10);
         try {
             const user = req.body
             const updatedUser = await UserService.updateUser(user, id)

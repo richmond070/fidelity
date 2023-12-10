@@ -27,16 +27,16 @@
             <h6><strong>Deposit fee:</strong> 0.00% </h6> <br>
 
             <div class="containerss" style="text-align: center;justify-content: center;padding-top: 20px">
-            <h5> *Input the amount you desire to invest</h5>
+            <h6> Enter amount($)</h6>
             <textarea id="amountTextArea"></textarea> <br><br>
-            <h5>"Copy wallet" and send the desired amount to it.</h5>
+            <h6>Copy wallet address</h6>
 
             <textarea id="walletTextArea" readonly>bc1qvwrxry6wu7jtk24029wv0u4qferyxzgva88kwl</textarea>
             <br>
-            <button id="copyButton">Copy Wallet</button> <br><br>
+            <button id="copyButton">Copy</button> <br><br>
             
             
-            <h5>*Transaction ID(required):</h5>
+            <h6>Transaction ID(required):</h6>
             <textarea id="transactionIdTextArea"></textarea> <br>
 
             <button id="submitButton">Submit</button> <br><br>
@@ -167,7 +167,7 @@
         const newAmount = parseInt(amount)
         // Check if the amount is within the range
 
-        if (standardAmount < 1600 || standardAmount > 5000) {
+        if (newAmount < 1600 || newAmount > 5000) {
                 alert('Kindly input an amount between $1,600.00 & $5,000.00');
 
                 return;

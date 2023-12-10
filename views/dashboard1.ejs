@@ -17,9 +17,8 @@
 		<div class="close-button" id="closeBtn" style="visibility: hidden;">&times;</div>
 	  <a href="#" class="icon-a"><i class="fa fa-dashboard icons"></i>   Dashboard</a>
 	  <!-- <a href="#"class="icon-a"><i class="fa fa-file-invoice icons"></i>   Transactions</a> -->
-	  <a href="/plans"class="icon-a"><i class="fa fa-list icons"></i>   Plans</a>
-	  <a href="../views/plans.ejs"class="icon-a"><i class="fa fa-donate icons"></i>   Deposit</a>
-	  <a href="../views/withdraw.ejs"class="icon-a"><i class="fa fa-hand-holding-usd icons"></i>   Withdraw</a>
+	  <a href="/plans"class="icon-a"><i class="fa fa-donate icons"></i>   Deposit</a>
+	  <a href="/withdraw"class="icon-a"><i class="fa fa-hand-holding-usd icons"></i>   Withdraw</a>
 	  <a href="/profile"class="icon-a"><i class="fa fa-user icons"></i>   Profile</a>
 	  <a href="#"class="icon-a" id="logoutBtn"><i class="fa fa-door-open icons"></i>   Logout</a>
 
@@ -94,7 +93,7 @@
 		<div class="clearfix"></div>
 		  </div>
 <!-- Deposit and withdraw -->
-	<div class="ref" style="display:;">
+	<div class="ref" style="display:flex;">
 	<div class="head"style="background-color: #3b288f;padding: 20px 20px;display: none;">
 		<span style="font-size:30px;cursor:pointer; color: gold ;" class="nav3"  >Deposit & Withdrawal</span>
 	</div>  
@@ -539,7 +538,7 @@ td, th {
 	font-size: 40px;
 }
 
-		@media screen and (max-width: 1200px) {
+	@media screen and (max-width: 1200px) {
 	
 		.container{
 			display: block;
@@ -758,32 +757,32 @@ $(document).ready(function() {
 	<!-- <script src="script.js"></script> -->
 	  
 	<script>
-        window.onload = function() {
-					// Function to handle authentication status and redirect to the login page
-			function handleAuthenticationStatus(response) {
-				if (response.status === 401) {
-					// Authentication required, redirect to login page
-					window.location.href = '/login';
-				} else {
-					// Handle other cases or continue with the normal flow
-					var depositData = localStorage.getItem('depositData');
-					if (depositData) {
-						document.getElementById('displayDeposit').textContent = depositData;
-					}
-				}
-			}	
-        };
+        // window.onload = function() {
+		// 			// Function to handle authentication status and redirect to the login page
+		// 	function handleAuthenticationStatus(response) {
+		// 		if (response.status === 401) {
+		// 			// Authentication required, redirect to login page
+		// 			window.location.href = '/login';
+		// 		} else {
+		// 			// Handle other cases or continue with the normal flow
+		// 			var depositData = localStorage.getItem('depositData');
+		// 			if (depositData) {
+		// 				document.getElementById('displayDeposit').textContent = depositData;
+		// 			}
+		// 		}
+		// 	}	
+        // };
 
 				// Make a request to the server to check authentication status
-		fetch('/check-authentication-status') // Adjust the endpoint based on your server setup
-			.then(response => response.json())
-			.then(data => {
-				// Handle the authentication status
-				handleAuthenticationStatus(data);
-			})
-			.catch(error => {
-				console.error('Error:', error);
-			});
+		// fetch('/check-authentication-status') // Adjust the endpoint based on your server setup
+		// 	.then(response => response.json())
+		// 	.then(data => {
+		// 		// Handle the authentication status
+		// 		handleAuthenticationStatus(data);
+		// 	})
+		// 	.catch(error => {
+		// 		console.error('Error:', error);
+		// 	});
 	</script>
     
 </body>
