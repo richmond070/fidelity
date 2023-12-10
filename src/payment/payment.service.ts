@@ -183,5 +183,8 @@ export const calROI = async (userId: number): Promise<number> => {
     };
 
     const newBalance = newDeposit.reduce((total, deposit) => total + calculateNewBalance(deposit), 0);
-    return newBalance;
+    const roundedBalance = Math.round(newBalance * 10) / 10;
+
+    return roundedBalance;
+
 };
