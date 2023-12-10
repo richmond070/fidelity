@@ -1,17 +1,17 @@
-// socket.ts
+// // socket.ts
 
-import { Server } from 'socket.io';
+// import { Server } from 'socket.io';
 
-let ioInstance: Server;
+// let ioInstance: Server;
 
-export const initializeSocket = (server: any): Server => {
-    ioInstance = new Server(server);
-    return ioInstance;
-};
+// export const initializeSocket = (server: any): Server => {
+//     ioInstance = new Server(server);
+//     return ioInstance;
+// };
 
-export const getSocketInstance = (): Server => {
-    if (!ioInstance) {
-        throw new Error('Socket.IO not initialized');
-    }
-    return ioInstance;
-};
+// export const getSocketInstance = (): Server => {
+//     if (!ioInstance) {
+//         throw new Error('Socket.IO not initialized');
+//     }
+//     return ioInstance;
+// };

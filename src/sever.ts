@@ -11,9 +11,9 @@ import { verifyToken, authorization } from "./utils/auth";
 import axios from "axios";
 // import * as ws from 'ws';
 // import * as socketIo from 'socket.io';
-const { io } = require("socket.io-client");
-import { Server as SocketIOServer } from "socket.io";
-import { initializeSocket } from "./utils/socket";
+// const { io } = require("socket.io-client");
+// import { Server as SocketIOServer } from "socket.io";
+// import { initializeSocket } from "./utils/socket";
 import { CustomRequest } from './template/customTemplate'
 
 import * as PaymentService from "./payment/payment.service"
@@ -44,25 +44,25 @@ const httpServer = require('http').createServer(app)
 
 // const server = http.createServer(app)
 
-const socket = io('http://localhost:5000')
+// const socket = io('http://localhost:5000')
 
 // connect socket 
-const Socket = new SocketIOServer(httpServer)
+// const Socket = new SocketIOServer(httpServer)/
 
 // Initialize Socket.IO and make it available globally
-initializeSocket(httpServer);
+// initializeSocket(httpServer);
 
 
-// WebSockets setup
-Socket.on('connection', (socket: any) => {
-    console.log('A user connected');
-});
+// // WebSockets setup
+// Socket.on('connection', (socket: any) => {
+//     console.log('A user connected');
+// });
 
-// Listen for deposit notifications
-Socket.on('newDeposit', (data: any) => {
-    // Broadcast the new deposit notification to all connected clients
-    io.emit('newDeposit', data);
-});
+// // Listen for deposit notifications
+// Socket.on('newDeposit', (data: any) => {
+//     // Broadcast the new deposit notification to all connected clients
+//     io.emit('newDeposit', data);
+// });
 
 app.use(
     cors({
