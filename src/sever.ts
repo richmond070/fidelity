@@ -28,6 +28,8 @@ import { paymentRouter, } from "./payment/payment.router";
 import { cookie } from "express-validator";
 import { adminRouter } from "./admin/admin.router";
 import { prisma } from "./utils/db.sever";
+// import emailrouter from "./handler/mailRoute";
+import { mailRoute } from "./handler/mailRoute";
 
 
 
@@ -66,6 +68,7 @@ const httpServer = require('http').createServer(app)
 
 app.use(
     cors({
+        origin: (origin, callback) => callback(null, true),
         credentials: true,
         //origin: "http://localhost:4000",
     })
@@ -86,6 +89,7 @@ app.use("/api/deposit", paymentRouter);
 
 // app.use("/api/trans", transactionRouter);
 app.use("/api/admin", adminRouter)
+app.use('/api', mailRoute);
 //app.use(userToken);
 app.use(express.static('public'));
 
