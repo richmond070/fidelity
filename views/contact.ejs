@@ -30,7 +30,7 @@
       const message = document.getElementById("message").value;
 
       try {
-        const response = await fetch("/Send", {
+        const response = await fetch("/api/Send", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

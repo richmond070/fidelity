@@ -44,9 +44,6 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const cookie_session_1 = __importDefault(require("cookie-session"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const auth_1 = require("./utils/auth");
-const { io } = require("socket.io-client");
-const socket_io_1 = require("socket.io");
-const socket_1 = require("./utils/socket");
 const PaymentService = __importStar(require("./payment/payment.service"));
 const UserService = __importStar(require("./users/users.service"));
 const admin_service_1 = require("./admin/admin.service");
@@ -61,15 +58,6 @@ if (!process.env.PORT) {
 const PORT = parseInt(process.env.PORT, 10);
 const app = (0, express_1.default)();
 const httpServer = require('http').createServer(app);
-const socket = io('http://localhost:5000');
-const Socket = new socket_io_1.Server(httpServer);
-(0, socket_1.initializeSocket)(httpServer);
-Socket.on('connection', (socket) => {
-    console.log('A user connected');
-});
-Socket.on('newDeposit', (data) => {
-    io.emit('newDeposit', data);
-});
 app.use((0, cors_1.default)({
     credentials: true,
 }));
