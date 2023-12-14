@@ -51,6 +51,7 @@ const user_router_1 = require("./users/user.router");
 const payment_router_1 = require("./payment/payment.router");
 const admin_router_1 = require("./admin/admin.router");
 const db_sever_1 = require("./utils/db.sever");
+const mailRoute_1 = require("./handler/mailRoute");
 dotenv.config();
 if (!process.env.PORT) {
     process.exit(1);
@@ -59,6 +60,7 @@ const PORT = parseInt(process.env.PORT, 10);
 const app = (0, express_1.default)();
 const httpServer = require('http').createServer(app);
 app.use((0, cors_1.default)({
+    origin: (origin, callback) => callback(null, true),
     credentials: true,
 }));
 app.use(express_1.default.json());
@@ -72,6 +74,7 @@ app.use('/js', express_1.default.static(path_1.default.join(__dirname, 'node_mod
 app.use("/api/user", user_router_1.userRouter);
 app.use("/api/deposit", payment_router_1.paymentRouter);
 app.use("/api/admin", admin_router_1.adminRouter);
+app.use('/api', mailRoute_1.mailRoute);
 app.use(express_1.default.static('public'));
 app.use(function (req, res, next) {
     res.setHeader('Content-Type', 'text/html');

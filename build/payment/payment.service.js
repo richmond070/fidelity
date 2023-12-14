@@ -148,7 +148,8 @@ const calROI = (userId) => __awaiter(void 0, void 0, void 0, function* () {
         return deposit.amount;
     };
     const newBalance = newDeposit.reduce((total, deposit) => total + calculateNewBalance(deposit), 0);
-    return newBalance;
+    const roundedBalance = Math.round(newBalance * 10) / 10;
+    return roundedBalance;
 });
 exports.calROI = calROI;
 //# sourceMappingURL=payment.service.js.map
