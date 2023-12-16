@@ -12,5 +12,9 @@
             "dest": "src/sever.ts"
         }
     ], 
-    "files": ["views/**/*"]
+    "functions": {
+        "api/**/*.ts": {
+          "runtime": "@vercel/node"
+        }
+      }
 }
