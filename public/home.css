@@ -189,6 +189,105 @@ gold
     color: #3b288f;
 }
 
+/* investment cards*/
+.card-slider-container {
+    background-color: #FFFFFF;
+    padding: 20px;
+}
+  
+.card-slider-container h2 {
+    text-align: center;
+    padding: 3px;
+    margin: 2px;
+    text-decoration: underline;
+    text-transform: uppercase;
+}
+
+.card-slider-container p{
+    text-align: center;
+    padding: 3px;
+    margin: 2px;
+}
+
+.card-slider {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    margin-bottom: 30px;
+}
+  
+.card {
+    flex: 0 0 auto;
+    width: 400px;
+    margin: 30px;
+    scroll-snap-align: start;
+    border-radius: 5px;
+    border:solid #3b288f 4px;
+    background-color: #fff;
+    color: #000;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+  
+  
+.card h3 {
+    color: #000;
+    display: flex;
+    justify-self: center;
+    font-size: 24px;
+    margin: 20px;
+}
+  
+.card ul {
+    margin: 0 20px 20px;   
+}
+
+.card ul li {
+    display: flex;
+    gap: var(--gap, 4px);
+}
+
+.card a {
+    display: flex;
+    background-color: #3b288f;
+    color: #fff ;
+    padding: 10px 20px;
+    margin: 5px 25px;
+    text-decoration: none;
+    font-size: 16px;
+    justify-content:center;
+    align-items:end;
+    bottom: 10%;
+}
+  
+.slider-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+  
+.slider-buttons button {
+    background-color: #3b288f;
+    border: none;
+    color: gold;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin: 0 10px;
+}
+  
+.slider-buttons button:hover {
+    background-color: rgb(255, 231, 93);
+    color: #fff;
+}
+  
+.card-slider::-webkit-scrollbar {
+    display: none;
+}
+
+
 /* THE MEDIA QUERY */
 
 @media screen and (max-width: 992px) {
@@ -297,6 +396,36 @@ gold
         padding: 4vw;
         font-size: 30vw;
     } */
+
+    .card {
+        flex: 0 0 auto;
+        width: 150px;
+        margin: 30px;
+        scroll-snap-align: start;
+        border-radius: 5px;
+        border:solid #3b5998 3px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-slider {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        scrollbar-width: none;
+        margin-bottom: 30px;
+        height: auto;
+    }
+      
+    .card {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 30px;
+    }
+      
+    .card-slider::-webkit-scrollbar {
+        display: none;
+    }
 
 }
 
