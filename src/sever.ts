@@ -200,7 +200,8 @@ app.get('/contact', (req, res) => res.render('contact'));
 app.get('/verify', (req, res) => res.render('verify'));
 app.get('/success', (req, res) => res.render('success'));
 app.get('/successwithdraw', (req, res) => res.render('successwithdraw'));
-app.get('/withdraw', (req, res) => res.render('withdrawal1'));
+app.get('/withdraw', (req, res) => res.render('withdrawal'));
+
 
 
 
