@@ -85,7 +85,7 @@ app.get('/style.css', (req, res) => {
 app.set('view engine', 'ejs');
 app.get('/', (req, res) => res.render('home'));
 app.get('/homeloggedin', (req, res) => res.render('homeloggedin'));
-app.get('/immigration', (req, res) => res.render('migrationpage'));
+app.get('/migration', (req, res) => res.render('migrationpage'));
 app.get('/about', (req, res) => res.render('about'));
 app.get('/aboutloggedin', auth_1.verifyToken, (req, res) => res.render('aboutloggedin'));
 app.get('/edit', (req, res) => res.render('editprofile'));
