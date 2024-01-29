@@ -108,13 +108,13 @@ export const deleteAllUsers = async (): Promise<void> => {
 }
 
 export async function logUser(
-    email: string,
+    userName: string,
     password: string
 ): Promise<string | null> {
     try {
         const user = await prisma.user.findUnique({
             where: {
-                email: email,
+                userName: userName,
             },
         });
 

@@ -5,6 +5,9 @@ import { Deposit } from "@prisma/client";
 import { generateHash, compareHash } from "../utils/password";
 import Authentication from "../utils/auth";
 import { Roles } from "@prisma/client";
+import { transporter } from "../handler/mail";
+import ejs from "ejs";
+import path from 'path';
 // import { Server } from "socket.io";import WebSocket from "ws";
 
 
@@ -448,6 +451,9 @@ export async function verifyDeposit(req: Request, res: Response): Promise<void> 
             },
         });
 
+         // Send email to the user
+         await sendDepositConfirmationEmail(depositDetails);
+
         res.status(200).json({ message: 'Deposit verified successfully' });
     } catch (error) {
         console.error('Error in verifyDeposit:', error);
@@ -455,3 +461,29 @@ export async function verifyDeposit(req: Request, res: Response): Promise<void> 
     }
 }
 
+//Email for deposit to the client 
+async function sendDepositConfirmationEmail(depositDetails: any): Promise<void> {
+    try {
+        // Render the EJS template
+        const templatePath = path.join(__dirname, '../../views/emailDeposit.ejs');
+        const emailContent = await ejs.renderFile(templatePath, {
+            amount: depositDetails.amount,
+            plan: depositDetails.plan,
+            name: depositDetails.user.name,
+        });
+
+        // Compose the email
+        const mailOptions = {
+            from: "Eternal Trading <support@eternaltrading.org>",
+            to: depositDetails.user.email,
+            subject: 'Deposit Confirmation',
+            html: emailContent,
+        };
+
+        // Send the email using the imported transporter
+        await transporter.sendMail(mailOptions);
+        console.log('Email sent: Deposit confirmation');
+    } catch (error) {
+        console.error('Error sending email:', error);
+    }
+}

@@ -110,8 +110,8 @@ userRouter.delete("/", async (req: Request, res: Response) => {
 userRouter.post("/login", async (req: Request, res: Response) => {
 
     try {
-        const { email, password } = req.body;
-        const token = await UserService.logUser(email, password);
+        const { userName, password } = req.body;
+        const token = await UserService.logUser(userName, password);
         if (token === "") {
             return res.status(400).json({
                 status: "Bad Request!",

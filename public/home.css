@@ -356,7 +356,7 @@ gold
     }
     
     .container-fluid{
-	border: 2px solid black;
+	/*border: 2px solid black;*/
         display: inline-block;
         flex-wrap: wrap;
     }
@@ -373,7 +373,7 @@ gold
     }
     .card
     .containercontainer .container{
-         border: 2px solid black; 
+       /*  border: 2px solid black; */
         padding: 60px;
         /* padding-left: 50px;
         padding-top: 60px;
