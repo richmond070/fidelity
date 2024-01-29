@@ -469,7 +469,7 @@ async function sendDepositConfirmationEmail(depositDetails: any): Promise<void> 
         const emailContent = await ejs.renderFile(templatePath, {
             amount: depositDetails.amount,
             plan: depositDetails.plan,
-            name: depositDetails.user.name,
+            name: depositDetails.user.fullName,
         });
 
         // Compose the email
