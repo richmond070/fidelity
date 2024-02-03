@@ -173,7 +173,10 @@ export const calROI = async (userId: number): Promise<number> => {
     const calculateNewBalance = (deposit: any) => {
         const PlanConfig = PlanConfigs[deposit.plan];
         const depositDate = new Date(deposit.createdAt);
-        const timeElapsed = currentDate.getTime() - depositDate.getTime();
+        let currentBalance = deposit.amount;
+        let timeElapsed = currentDate.getTime() - depositDate.getTime();
+
+        const returnDuration = PlanConfig.durationInMs;
 
         // if (timeElapsed <= PlanConfig.durationInMs) {
         //     const dailyReturnRate = Math.pow(1 + PlanConfig.returnRate, timeElapsed / PlanConfig.durationInMs) - 1;
