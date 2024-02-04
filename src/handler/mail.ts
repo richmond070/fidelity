@@ -3,7 +3,7 @@ import nodemailer from "nodemailer";
 
 export const transporter = nodemailer.createTransport({
     host: "mail.privateemail.com",
-    port: 465,
+    port: 587,
     secure: true, // Replace with your SMTP service provider
     auth: {
         user: 'support@eternaltrading.org',
