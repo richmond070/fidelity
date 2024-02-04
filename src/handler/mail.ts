@@ -10,7 +10,7 @@ export const transporter = nodemailer.createTransport({
         pass: 'EternalTrading031' // Replace with your email password (or use environment variables)
     },
     tls: {
-        rejectUnauthorized: false
+        rejectUnauthorized: true
     }
 });
 
