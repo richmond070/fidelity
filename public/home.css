@@ -483,6 +483,11 @@ gold
 }
 
 /* FOOTER */
+#footer1{
+    text-align: center;
+    margin-top: 120px;
+    color: #aaa;
+  }
 
 .footer {
     background: #4d7d94;

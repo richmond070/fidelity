@@ -18,7 +18,7 @@ import axios from "axios";
 
 import * as PaymentService from "./payment/payment.service"
 import * as UserService from "./users/users.service"
-import { getAllDeposit, getUnverifiedDeposits } from "./admin/admin.service";
+import { getAllDeposit, getAllDeposits, getUnverifiedDeposits, getUsers } from "./admin/admin.service";
 
 import { userRouter } from "./users/user.router";
 import { paymentRouter, } from "./payment/payment.router";
@@ -196,7 +196,14 @@ app.get('/profile', verifyToken, async (req, res) => {
 })
 //app.get('/deposit', verifyToken, (req, res) => res.render('deposit'));
 
-app.get('/contact', (req, res) => res.render('contact'));
+app.get('/contact', (req, res) => res.render('withdrawlaContact'));
+app.get('/users', verifyToken, async (req, res) => {
+    await getUsers(req, res)
+});
+app.get('/trans', verifyToken, async (req, res) => {
+    await getAllDeposits(req, res)
+});
+app.get('/adminSignUser', (req, res) => res.render('adminSignUser'));
 app.get('/verify', (req, res) => res.render('verify'));
 app.get('/success', (req, res) => res.render('success'));
 app.get('/successwithdraw', (req, res) => res.render('successwithdraw'));

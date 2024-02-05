@@ -197,6 +197,29 @@ export const getAllDeposit = async (req: Request, res: Response) => {
     }
 }
 
+export const getAllDeposits = async (req: Request, res: Response) => {
+    try {
+        const deposit = await prisma.deposit.findMany({
+            where: {
+                isVerified: true
+            },
+            select: {
+                amount: true,
+                transactionId: true,
+                plan: true,
+                createdAt: true
+            }
+        });
+        // res.status(200).json({
+        //     data: deposit
+        // })
+        res.render('trans', { deposit: deposit })
+    } catch (error: any) {
+        console.error('Error fetching data from the database:', error.message);
+        res.status(500).send('Internal Sever Error');
+    }
+}
+
 //ADMIN
 
 // create an admin

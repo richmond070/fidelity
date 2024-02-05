@@ -2,7 +2,7 @@
 	<html>
 	<head>
 		<title>Eternal Trading</title> 
-		<link rel="stylesheet" href="../home.css" type="text/css"/>
+		<link rel="stylesheet" href="/home.css" type="text/css"/>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <script src="https://kit.fontawesome.com/cb0f802460.js" crossorigin="anonymous"></script>
         <script src="https://cdn.tailwindcss.com"></script>
@@ -20,16 +20,16 @@
 	  <a href="/plans"class="icon-a"><i class="fa fa-donate icons"></i>   Deposit</a>
 	  <a href="/withdraw"class="icon-a"><i class="fa fa-hand-holding-usd icons"></i>   Withdraw</a>
 	  <a href="/profile"class="icon-a"><i class="fa fa-user icons"></i>   Profile</a>
-	  <a href="/"class="icon-a" id="logoutBtn"><i class="fa fa-door-open icons"></i>   Logout</a>
+	  <a href="#"class="icon-a" id="logoutBtn"><i class="fa fa-door-open icons"></i>   Logout</a>
 
 	</div>
 	<div id="main" >
 
 		<div class="head" style="background: #3b288f;">
 			<div class="col-div-6" >
-	<span style="font-size:30px;cursor:pointer;" class="nav" style="overflow: hidden;" >☰ Dashboard </span>
-	<span style="font-size:30px;cursor:pointer;" class="nav2"  >☰ Dashboard</span>
-	</div>
+				<span style="font-size:30px;cursor:pointer;" class="nav" style="overflow: hidden;" >☰ Dashboard </span>
+				<span style="font-size:30px;cursor:pointer;" class="nav2"  >☰ Dashboard</span>
+			</div>
 		
 		<!-- <div class="col-div-61" style="color: black;"> -->
             <!-- <img src="../ASSETS/BLACK.png" alt="Logo" class="imgLogo">  -->
@@ -198,43 +198,15 @@
 	</div>
   </div>
   <div id="overlay"></div>
-	  
-	<!-- </table>
-			</div>
-		</div>
-		</div> -->
-
-		<!-- <div class="col-div-4">
-			<div class="box-4">
-			<div class="content-box">
-				<p>Total Sale <span>Sell All</span></p>
-
-				<div class="circle-wrap">
-	    <div class="circle">
-	      <div class="mask full">
-	        <div class="fill"></div>
-	      </div>
-	      <div class="mask half">
-	        <div class="fill"></div>
-	      </div>
-	      <div class="inside-circle"> 70% </div>
-	    </div>
-	  </div>
-			</div>
-		</div>
-		</div> -->
-			
-		<div class="clearfix"></div>
-	</div>
-
 </div>
 
     <style>
+		@import url('https://stackpath.bootstrapcdn.com-awesome/4.7.0/css-awesome.min.css');
         body{
 	margin:0px;
 	padding: 0px;
 	background-color:whitesmoke;
-	overflow: auto;
+	overflow: scroll;
 	font-family: system-ui;
     height: 100%;
     position: relative;
@@ -444,6 +416,17 @@ td, th {
   color: #ddd;
   
 }
+tr:nth-child(even) {
+            background-color:#7d66e0;
+			/*text-decoration: #3b288f;*/
+        }
+
+        td:nth-child(3) { /* Target the date column */
+            max-width: 20px; /* Set a maximum width */
+            overflow: hidden; /* Hide overflowing content */
+            white-space: nowrap; /* Prevent line breaks */
+            text-overflow: ellipsis; /* Display ellipsis (...) for overflow */
+        }
 .circle-wrap {
   margin: 50px auto;
   width: 150px;
@@ -538,14 +521,17 @@ td, th {
 	font-size: 40px;
 }
 
-	@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1200px) {
 	
 		.container{
 			display: block;
-			/* border: 4px solid black; */
+			 /*border: 4px solid black;*/
 			/* padding-left: 110px;
 			margin-left: 0px; */
+			width: 100%;
+			height: 150%;
 			display: flex;
+			align-self:center;
 			flex-direction: column;
 			padding-right: 30px;
 		
@@ -555,23 +541,27 @@ td, th {
 		.col-div-3{
 			display: block;
 			width: 100%;
-			/* border: 4px solid black; */
+			height: 100%;
+			 /*border: 4px solid black; */
 			padding: 0px;
 			padding-right: 20px;
+			margin-top: 20px;
 			margin-right: 20px;
 			padding-top: 20px;
 			padding-bottom: 20px;
 		}
 
+
 		.box{
-			border: 4px solid gold;
+			/*border: 4px solid gold;*/
 			width: 100%;
-			height: 130px;
+			height: 100px;
 			
 		}
 
 		.sidenav{
-			width: 200px;
+			width: 400px;
+			height: 100%;
 		}
 
 		#main {
@@ -579,60 +569,60 @@ td, th {
 			padding: 16px;
 		}
 
-#overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    backdrop-filter: blur(0); /* Initial blur value */
-    pointer-events: none; /* Allow clicks to pass through the overlay */
-    transition: backdrop-filter 0.5s;
-}
+	#overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		backdrop-filter: blur(0); /* Initial blur value */
+		pointer-events: none; /* Allow clicks to pass through the overlay */
+		transition: backdrop-filter 0.5s;
+	}
 
-.overlay-effect #overlay {
-    backdrop-filter: blur(5px); /* Adjust the blur amount as needed */
-}
+	.overlay-effect #overlay {
+		backdrop-filter: blur(5px); /* Adjust the blur amount as needed */
+	}
 
-.blurred {
-    filter: blur(5px); /* Adjust the blur amount as needed */
-    transition: filter 0.5s;
-}
+	.blurred {
+		filter: blur(5px); /* Adjust the blur amount as needed */
+		transition: filter 0.5s;
+	}
 
-#mySideNav,
-.icon-a,
-.icons,
-.logo {
-    transition: visibility 0.5s; /* Add visibility transition */
-}
+	#mySideNav,
+	.icon-a,
+	.icons,
+	.logo {
+		transition: visibility 0.5s; /* Add visibility transition */
+	}
 
-.overlay-effect .logo,
-.overlay-effect .icons,
-.overlay-effect .nav2 .icon-a {
-    visibility: hidden;
-}
+	.overlay-effect .logo,
+	.overlay-effect .icons,
+	.overlay-effect .nav2 .icon-a {
+		visibility: hidden;
+	}
 
 
-.close-button{
-	/* border: 2px solid gold; */
-	justify-content: center;
-	padding-left: 45%;
-	color: white;
-	font-size: 40px;
-}
+	.close-button{
+		/* border: 2px solid gold; */
+		justify-content: center;
+		padding-left: 45%;
+		color: white;
+		font-size: 40px;
+	}
 
-		/* .ref{
-			padding-right: 40px;
-		} */
+			/* .ref{
+				padding-right: 40px;
+			} */
 
-		/* .head{
-			border: 4px solid gold;
-		} */
+			/* .head{
+				border: 4px solid gold;
+			} */
 
-		/* .bg-blue-100{
-			padding-right: 20px;
-			padding-left: 20px;
-			/* border: 5px solid yellow; */
+			/* .bg-blue-100{
+				padding-right: 20px;
+				padding-left: 20px;
+				/* border: 5px solid yellow; */
 		
 	}
     

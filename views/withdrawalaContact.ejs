@@ -1,0 +1,109 @@
+<%- include('partial/homeheader'); -%> 
+<br> <br> <br>
+<body>
+  <h1>Email Form</h1>
+  
+  <form id="email-form">
+    <label for="to">To:</label>
+    <input type="email" id="to" name="to" required><br><br>
+    
+    <label for="subject">Subject:</label>
+    <input type="text" id="subject" name="subject" required><br><br>
+    
+    <label for="message">Message:</label><br>
+    <textarea id="message" name="message" rows="4" cols="50" required></textarea><br><br>
+    
+    <button type="submit">Send Email</button>
+  </form>
+  <br><br>
+
+  <%- include('partial/footer'); -%> 
+   
+  <style>
+    @import url('https://stackpath.bootstrapcdn.com-awesome/4.7.0/css-awesome.min.css');
+    body {
+        background-color: white;
+        color: black;
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+
+    h1 {
+        color: black;
+        text-align: center; /* Center the h1 text */
+    }
+
+    form {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        border: 1px solid black;
+        border-radius: 5px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    input,
+    textarea {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+    }
+
+    button {
+        background-color: black;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #333;
+    }
+
+    @media screen and (max-width: 600px) {
+        form {
+            max-width: 100%; /* Adjust to full width on smaller screens */
+        }
+    }
+</style>
+
+  <script>
+    const form = document.getElementById("email-form");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const to = document.getElementById("to").value;
+      const subject = document.getElementById("subject").value;
+      const message = document.getElementById("message").value;
+
+      try {
+        const response = await fetch("/api/Send", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ to, subject, text: message }),
+        });
+
+        if (response.ok) {
+          alert("Email sent successfully!");
+          form.reset();
+        } else {
+          alert("Error sending email. Please try again later.");
+        }
+      } catch (error) {
+        console.error("An error occurred:", error);
+        alert("Error sending email. Please try again later.");
+      }
+    });
+  </script>
+</body>
+</html>

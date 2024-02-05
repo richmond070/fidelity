@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @import url('https://stackpath.bootstrapcdn.com-awesome/4.7.0/css-awesome.min.css');
+        body {
+            background-color: white;
+            color: black;
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: black;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        td:nth-child(4) { /* Target the date column */
+            max-width: 65px; /* Set a maximum width */
+            overflow: hidden; /* Hide overflowing content */
+            white-space: nowrap; /* Prevent line breaks */
+            text-overflow: ellipsis; /* Display ellipsis (...) for overflow */
+        }
+
+        @media screen and (max-width: 600px) {
+            table {
+                font-size: 12px;
+            }
+        }
+    </style>
+    <title>Table Template</title>
+</head>
+<body>
+    <h1>Transaction Details</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Plan</th>
+                <th>Amount</th>
+                <th>Transaction ID</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody id="transaction-history">
+            <!-- Transaction history rows will be added here using JavaScript -->
+            <% deposit.forEach(deposit => { %>
+                <tr>
+                    <td><%= deposit.plan %></td>
+                    <td><%= deposit.amount %></td>
+                    <td><%= deposit.transactionId %></td>
+                    <td><%= deposit.createdAt %></td>
+                </tr>
+            <% }); %>
+        </tbody>
+        <!-- Add more rows as needed -->
+    </table>
+</body>
+</html>

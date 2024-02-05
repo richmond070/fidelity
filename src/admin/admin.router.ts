@@ -12,6 +12,7 @@ import {
     logAdmin,
     deleteAdmin,
     getAllDeposit,
+    getAllDeposits,
     verifyDeposit,
     // getUnverifiedDeposits,
 } from "./admin.service";
@@ -29,7 +30,8 @@ adminRouter.delete("/user:id", deleteUser);
 
 
 adminRouter.post("/deposit", deposit);
-adminRouter.get("/getDeposit", getAllDeposit)
+adminRouter.get("/getDeposit", getAllDeposit);
+adminRouter.get("/deposits", getAllDeposits)
 
 
 adminRouter.post("/admin", createAdmin);
