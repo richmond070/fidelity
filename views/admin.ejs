@@ -77,26 +77,22 @@
     <style>
         @import url('https://stackpath.bootstrapcdn.com-awesome/4.7.0/css-awesome.min.css');
         
-        body{
-	margin:0px;
-	padding: 0px;
-	background-color:whitesmoke;
-	overflow: scroll;
-	font-family: system-ui;
-    height: 100%;
-    position: relative;
-}
-        
-        /* admin */
+   /* admin */
+   html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
         .admin-dashboard {
-            width: 80%;
+            /* width: 80%; Remove this line to take full width */
             margin: 0 auto;
             padding: 20px;
             background-color: #f0f0f0;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
-
         .transaction-alerts,
 .transaction-history {
     margin-bottom: 20px;
