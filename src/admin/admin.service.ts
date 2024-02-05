@@ -102,9 +102,10 @@ export const getUsers = async (req: Request, res: Response) => {
             //     email: true
             // }
         })
-        res.status(200).json({
-            data: user
-        })
+     // res.status(200).json({
+        //     data: user
+        // })
+        res.render('allUsers', { user: user })
     } catch (error) {
         console.log(error)
         res.status(500).json({
