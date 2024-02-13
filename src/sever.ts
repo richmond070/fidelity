@@ -28,7 +28,6 @@ import { paymentRouter, } from "./payment/payment.router";
 import { cookie } from "express-validator";
 import { adminRouter } from "./admin/admin.router";
 import { prisma } from "./utils/db.sever";
-// import emailrouter from "./handler/mailRoute";
 import { mailRoute } from "./handler/mailRoute";
 
 

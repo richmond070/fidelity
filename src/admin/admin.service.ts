@@ -8,30 +8,6 @@ import { Roles } from "@prisma/client";
 import { transporter } from "../handler/mail";
 import ejs from "ejs";
 import path from 'path';
-// import { Server } from "socket.io";import WebSocket from "ws";
-
-
-// //websocket sever instance
-// let wss: WebSocket.Server;
-
-// // setup websocket sever
-// export function setupWebSocketSever(server: WebSocket.Server): void {
-//     wss = server;
-// }
-
-// // Function to notify the admin about a new deposit
-// export function notifyAdmin(deposit: Deposit): void {
-//     if (wss) {
-//         wss.clients.forEach((client) => {
-//             if (client.readyState === WebSocket.OPEN) {
-//                 client.send(JSON.stringify({
-//                     message: "New deposit pending approval",
-//                     deposit,
-//                 }))
-//             }
-//         })
-//     }
-// }
 
 // USER
 
@@ -411,40 +387,6 @@ export async function getUnverifiedDeposits(res: Response, req: Request): Promis
     }
 }
 
-// export const notifyAdminAboutDeposit = async (
-//     io: Server,
-//     userId: number,
-//     amount: number,
-//     transactionId: string,
-//     plan: string
-// ): Promise<void> => {
-//     try {
-//         //Perform admin notification logic here 
-//         const unverifiedDeposits = await prisma.deposit.findMany({
-//             where: {
-//                 isVerified: false,
-//             },
-//             select: {
-//                 amount: true,
-//                 transactionId: true,
-//                 plan: true,
-//             },
-//         });
-
-//         //Emit a webSocket event to notify admin
-//         io.emit('newDeposit', {
-//             userId,
-//             amount,
-//             transactionId,
-//             plan,
-//         });
-
-//         console.log(`Admin notified about user payment Amount: $${amount}, TransactionId: $${transactionId}`)
-//     } catch (error: any) {
-//         console.error('Error notifying admin:', error);
-//         throw new Error('Failed to notify admin')
-//     }
-// }
 
 // Function to verify a deposit
 
@@ -457,6 +399,9 @@ export async function verifyDeposit(req: Request, res: Response): Promise<void> 
         const depositDetails = await prisma.deposit.findFirst({
             where: {
                 isVerified: false
+            },
+            include: {
+                user: true,
             }
         })
 
@@ -475,15 +420,17 @@ export async function verifyDeposit(req: Request, res: Response): Promise<void> 
             },
         });
 
-         // Send email to the user
-         await sendDepositConfirmationEmail(depositDetails);
+        // Send email to the user
+        await sendDepositConfirmationEmail(depositDetails);
 
-        res.status(200).json({ message: 'Deposit verified successfully' });
+
+        //res.status(200).json({ message: 'Deposit verified successfully' });
     } catch (error) {
         console.error('Error in verifyDeposit:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
+
 
 //Email for deposit to the client 
 async function sendDepositConfirmationEmail(depositDetails: any): Promise<void> {
@@ -493,7 +440,7 @@ async function sendDepositConfirmationEmail(depositDetails: any): Promise<void> 
         const emailContent = await ejs.renderFile(templatePath, {
             amount: depositDetails.amount,
             plan: depositDetails.plan,
-            name: depositDetails.user.fullName,
+            name: depositDetails.user.userName,
         });
 
         // Compose the email
