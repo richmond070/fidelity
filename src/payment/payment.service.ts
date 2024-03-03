@@ -178,24 +178,21 @@ export const calROI = async (userId: number): Promise<number> => {
 
         const returnDuration = PlanConfig.durationInMs;
 
-        // if (timeElapsed <= PlanConfig.durationInMs) {
-        //     const dailyReturnRate = Math.pow(1 + PlanConfig.returnRate, timeElapsed / PlanConfig.durationInMs) - 1;
-        //     return deposit.amount * (1 + dailyReturnRate)
-        // }
-        // return deposit.amount;
+        if (timeElapsed < returnDuration) {
+            return currentBalance
+        }
 
-        const compoundingPeriods = timeElapsed / returnDuration;
-        const continuousReturnRate = Math.pow(1 + PlanConfig.returnRate, compoundingPeriods);
+        const numberOfPeriods = Math.floor(timeElapsed / PlanConfig.durationInMs)
+        const returnAmount = deposit.amount * PlanConfig.returnRate * numberOfPeriods;
 
-        currentBalance *= continuousReturnRate
-
-        return currentBalance
+        return deposit.amount + returnAmount;
 
     };
 
-    const newBalance = newDeposit.reduce((total, deposit) => total + calculateNewBalance(deposit), 0);
+    const newBalance = newDeposit.reduce((total, deposit) => total + calculateNewBalance(deposit), 0)
     const roundedBalance = Math.round(newBalance * 10) / 10;
 
     return roundedBalance;
+
 
 };

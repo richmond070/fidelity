@@ -97,14 +97,16 @@ export function verifyToken(req: Request, res: Response, next: NextFunction) {
     let secretKey = process.env.JWT_SECRET_KEY || "richmond-ekezie-richard-031";
 
     if (!token) {
-        res.status(401).json({ message: 'Authentication required' });
+       // res.status(401).json({ message: 'Authentication required' });
+       res.render('login')
     }
 
 
     jwt.verify(token, secretKey, (err: any, payload: any) => {
         if (err) {
             //send JSON response for invalid token
-            return res.status(401).json({ message: 'Invalid token' })
+           // return res.status(401).json({ message: 'Invalid token' })
+           res.render('home')
         } else {
             //JWT is valid; you can access the decoded payload
             const userId = payload.userId
@@ -135,7 +137,8 @@ export function authorization(role: any) {
         const accessToken = req.cookies.jwt;
 
         if (!accessToken) {
-            return res.status(401).json({ message: 'Access token required' });
+            res.render('/login')
+            //return res.status(401).json({ message: 'Access token required' });
         }
 
         //token verification 
