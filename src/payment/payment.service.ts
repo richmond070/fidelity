@@ -182,8 +182,11 @@ export const calROI = async (userId: number): Promise<number> => {
             return currentBalance
         }
 
-        const numberOfPeriods = Math.floor(timeElapsed / PlanConfig.durationInMs)
+        const numberOfPeriods = Math.floor(returnDuration / PlanConfig.durationInMs)
         const returnAmount = deposit.amount * PlanConfig.returnRate * numberOfPeriods;
+
+        //Reset the deposit date to the current date 
+        deposit.createdAt = currentDate.toISOString();
 
         return deposit.amount + returnAmount;
 
