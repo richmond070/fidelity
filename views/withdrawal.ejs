@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,6 +35,7 @@
             <input type="checkbox" class="toggle-menu">
             <div class="hamburger"></div>
             <ul class="menu">
+
                 <div class="dropdown">
                     <li class="dropD"><a href="/contact">Contact</a></li>
                 
@@ -89,10 +89,10 @@
     </div>
     <br> <br>
     <form id="withdrawal-form" onsubmit="handleWithdrawalSubmission(); return false;">
-      <div style="justify-content: left; justify-items: left; text-align: left;">
-        <h4>*<strong>Wallet address:</strong> <input id="walletAddress" class="border rounded gray-400 px-4 mb-4" type="text" placeholder="Your wallet address"></h4>
-        <h4>*<strong>The amount:</strong> <input id="amount" class="border rounded gray-400 px-4 mb-4" type="text" placeholder="The withdrawal amount"></h4>
-      </div>
+		<div style="justify-content: left; justify-items: left; text-align: left;">
+			<h4>*<strong>Wallet address:</strong> <input id="walletAddress" class="border rounded gray-400 px-4 mb-4" type="text" placeholder="Your wallet address"></h4>
+			<h4>*<strong>The amount:</strong> <input id="amount" class="border rounded gray-400 px-4 mb-4" type="text" placeholder="The withdrawal amount"></h4>
+		</div>
 		<button id="withdraw-button" class="bg-red-700 text-white px-4 rounded font-medium py-2" type="submit">Withdraw</button>
 	</form>
 </div> </div>
@@ -101,53 +101,53 @@
 <%- include('partial/footer'); -%>
   
   
-<script src="/JAVASCRIPT/userwithdrawal.js"></script>
-<script src="script.js"></script>
-<script>
-  document.getElementById('withdrawal-form').addEventListener('submit', function(event) {
-      event.preventDefault(); // Prevent default form submission behavior
-      
-      // Get form data
-      const walletAddress = document.getElementById('walletAddress').value;
-      const amount = document.getElementById('amount').value;
-      const newAmount = parseInt(amount)
+  <script src="/JAVASCRIPT/userwithdrawal.js"></script>
+    <script src="script.js"></script>
+    <script>
+      document.getElementById('withdrawal-form').addEventListener('submit', function(event) {
+          event.preventDefault(); // Prevent default form submission behavior
+          
+          // Get form data
+          const walletAddress = document.getElementById('walletAddress').value;
+          const amount = document.getElementById('amount').value;
+          const newAmount = parseInt(amount)
 
-      // Prepare data object
-      const data = {
-          walletAddress: walletAddress,
-          amount: newAmount
-      };
+          // Prepare data object
+          const data = {
+              walletAddress: walletAddress,
+              amount: newAmount
+          };
 
-      // Make a POST request to your backend route
-      fetch('/api/withdrawal/withdraw', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-              // 'Authorization': 'Bearer YOUR_TOKEN_HERE' // Add your JWT token here if required
-          },
-          body: JSON.stringify(data)
+          // Make a POST request to your backend route
+          fetch('/api/withdrawal/withdraw', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  // 'Authorization': 'Bearer YOUR_TOKEN_HERE' // Add your JWT token here if required
+              },
+              body: JSON.stringify(data)
+          })
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error('Network response was not ok');
+              }
+              return response.json();
+          })
+          .then(data => {
+              // Handle successful response
+              console.log(data);
+              // Redirect to the next page or perform other actions...
+              window.location.href = '/dashboard'
+              alert('Withdrawal request has been sent to the admin please wait');
+          })
+          .catch(error => {
+              // Handle error
+              console.error('There was a problem with your fetch operation:', error);
+              alert('Withdrawal failed. Please try again later.');
+          });
       })
-      .then(response => {
-          if (!response.ok) {
-              throw new Error('Network response was not ok');
-          }
-          return response.json();
-      })
-      .then(data => {
-          // Handle successful response
-          console.log(data);
-          // Redirect to the next page or perform other actions...
-          window.location.href = '/dashboard'
-          alert('Withdrawal request has been sent to the admin please wait');
-      })
-      .catch(error => {
-          // Handle error
-          console.error('There was a problem with your fetch operation:', error);
-          alert('Withdrawal failed. Please try again later.');
-      });
-  })
 
-  // document.getElementById('withdrawal-form').addEventListener('submit', handleWithdrawalSubmission);
-</script>
+      // document.getElementById('withdrawal-form').addEventListener('submit', handleWithdrawalSubmission);
+    </script>
   </body>
   </html>
