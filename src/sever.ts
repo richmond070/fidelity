@@ -10,11 +10,7 @@ import http from "http";
 import { verifyToken, authorization } from "./utils/auth";
 import axios from "axios";
 // import * as ws from 'ws';
-// import * as socketIo from 'socket.io';
-// const { io } = require("socket.io-client");
-// import { Server as SocketIOServer } from "socket.io";
-// import { initializeSocket } from "./utils/socket";
-// import { CustomRequest } from './template/customTemplate'
+import { withdrawRouter } from "./withdraw/withdraw.router";
 
 import * as PaymentService from "./payment/payment.service"
 import * as UserService from "./users/users.service"
@@ -43,27 +39,7 @@ const PORT: number = parseInt(process.env.PORT as string, 10);
 const app = express();
 const httpServer = require('http').createServer(app)
 
-// const server = http.createServer(app)
 
-// const socket = io('http://localhost:5000')
-
-// connect socket 
-// const Socket = new SocketIOServer(httpServer)/
-
-// Initialize Socket.IO and make it available globally
-// initializeSocket(httpServer);
-
-
-// // WebSockets setup
-// Socket.on('connection', (socket: any) => {
-//     console.log('A user connected');
-// });
-
-// // Listen for deposit notifications
-// Socket.on('newDeposit', (data: any) => {
-//     // Broadcast the new deposit notification to all connected clients
-//     io.emit('newDeposit', data);
-// });
 
 app.use(
     cors({
@@ -117,7 +93,8 @@ app.get('/aboutloggedin', verifyToken, (req, res) => res.render('aboutloggedin')
 app.get('/edit', (req, res) => res.render('editprofile'));
 app.get('/adminDashboard', async (req, res) => {
     // Call the getAllDeposit function to retrieve deposit data
-    await getAllDeposit(req, res);
+    // await getAllDeposit(req, res);
+    res.render('admin')
 });
 app.get('/admin', (req, res) => res.render('adminLogin'));
 app.get('/newadmin', (req, res) => res.render("adminsignup"));

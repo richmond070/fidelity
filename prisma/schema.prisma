@@ -33,6 +33,15 @@ model Deposit {
   userId        Int
 }
 
+model Withdrawal {
+  id            Int     @id @default(autoincrement())
+  walletAddress String
+  amount        Int
+  isVerified    Boolean
+  user          User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        Int
+}
+
 enum Roles {
   USER
   ADMIN

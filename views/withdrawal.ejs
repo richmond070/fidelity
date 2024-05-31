@@ -89,10 +89,10 @@
     </div>
     <br> <br>
     <form id="withdrawal-form" onsubmit="handleWithdrawalSubmission(); return false;">
-		<div style="justify-content: left; justify-items: left; text-align: left;">
-			<h4>*<strong>Wallet address:</strong> <input id="wallet-address" class="border rounded gray-400 px-4 mb-4" type="text" placeholder="Your wallet address"></h4>
-			<h4>*<strong>The amount:</strong> <input id="withdrawal-amount" class="border rounded gray-400 px-4 mb-4" type="text" placeholder="The withdrawal amount"></h4>
-		</div>
+      <div style="justify-content: left; justify-items: left; text-align: left;">
+        <h4>*<strong>Wallet address:</strong> <input id="walletAddress" class="border rounded gray-400 px-4 mb-4" type="text" placeholder="Your wallet address"></h4>
+        <h4>*<strong>The amount:</strong> <input id="amount" class="border rounded gray-400 px-4 mb-4" type="text" placeholder="The withdrawal amount"></h4>
+      </div>
 		<button id="withdraw-button" class="bg-red-700 text-white px-4 rounded font-medium py-2" type="submit">Withdraw</button>
 	</form>
 </div> </div>
@@ -101,39 +101,53 @@
 <%- include('partial/footer'); -%>
   
   
-  <script src="/JAVASCRIPT/userwithdrawal.js"></script>
-    <script src="script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-          // Bro change this cookie name to the main cookie name you are using
-          const cookieName = 'sessionCookie';
-        
-          // I set the cookie expiration to weekly
-        function setCookie(name, value, days) {
-          const date = new Date();
-          date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-          const expires = 'expires=' + date.toUTCString();
-          document.cookie = name + '=' + value + ';' + expires + ';path=/';
-        }
-        
-          // handles logout
-          function logout() {
-            // Clears the cookie
-            clearCookie(cookieName);
-        
-            // Redirects to the logout page. 
-            window.location.href = '/login';
+<script src="/JAVASCRIPT/userwithdrawal.js"></script>
+<script src="script.js"></script>
+<script>
+  document.getElementById('withdrawal-form').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent default form submission behavior
+      
+      // Get form data
+      const walletAddress = document.getElementById('walletAddress').value;
+      const amount = document.getElementById('amount').value;
+      const newAmount = parseInt(amount)
+
+      // Prepare data object
+      const data = {
+          walletAddress: walletAddress,
+          amount: newAmount
+      };
+
+      // Make a POST request to your backend route
+      fetch('/api/withdrawal/withdraw', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              // 'Authorization': 'Bearer YOUR_TOKEN_HERE' // Add your JWT token here if required
+          },
+          body: JSON.stringify(data)
+      })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Network response was not ok');
           }
-        
-          // the logooout 
-          const logoutLink = document.getElementById('logoutLink');
-          if (logoutLink) {
-            logoutLink.addEventListener('click', function (event) {
-              event.preventDefault();
-              logout();
-            });
-          }
-        });
-        </script>
+          return response.json();
+      })
+      .then(data => {
+          // Handle successful response
+          console.log(data);
+          // Redirect to the next page or perform other actions...
+          window.location.href = '/dashboard'
+          alert('Withdrawal request has been sent to the admin please wait');
+      })
+      .catch(error => {
+          // Handle error
+          console.error('There was a problem with your fetch operation:', error);
+          alert('Withdrawal failed. Please try again later.');
+      });
+  })
+
+  // document.getElementById('withdrawal-form').addEventListener('submit', handleWithdrawalSubmission);
+</script>
   </body>
   </html>
