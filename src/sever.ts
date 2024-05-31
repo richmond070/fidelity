@@ -61,6 +61,7 @@ app.use('/js', express.static(path.join(__dirname, 'node_modules/jquery/dist')))
 
 app.use("/api/user", userRouter);
 app.use("/api/deposit", paymentRouter);
+app.use("/api/withdrawal", withdrawRouter);
 
 // app.use("/api/trans", transactionRouter);
 app.use("/api/admin", adminRouter)
