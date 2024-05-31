@@ -20,6 +20,7 @@ model User {
   password  String
   role      Roles     @default(USER)
   Deposit   Deposit[]
+  Withdrawal Withdrawal[]
 }
 
 model Deposit {
