@@ -49,8 +49,9 @@ const UserService = __importStar(require("./users/users.service"));
 const admin_service_1 = require("./admin/admin.service");
 const user_router_1 = require("./users/user.router");
 const payment_router_1 = require("./payment/payment.router");
+const withdraw_router_1 = require("./withdraw/withdraw.router");
 const admin_router_1 = require("./admin/admin.router");
-const db_sever_1 = require("./utils/db.sever");
+const mailRoute_1 = require("./handler/mailRoute");
 dotenv.config();
 if (!process.env.PORT) {
     process.exit(1);
@@ -59,6 +60,7 @@ const PORT = parseInt(process.env.PORT, 10);
 const app = (0, express_1.default)();
 const httpServer = require('http').createServer(app);
 app.use((0, cors_1.default)({
+    origin: (origin, callback) => callback(null, true),
     credentials: true,
 }));
 app.use(express_1.default.json());
@@ -71,12 +73,14 @@ app.use('/js', express_1.default.static(path_1.default.join(__dirname, 'node_mod
 app.use('/js', express_1.default.static(path_1.default.join(__dirname, 'node_modules/jquery/dist')));
 app.use("/api/user", user_router_1.userRouter);
 app.use("/api/deposit", payment_router_1.paymentRouter);
+app.use("/api/withdrawal", withdraw_router_1.withdrawRouter);
 app.use("/api/admin", admin_router_1.adminRouter);
+app.use('/api', mailRoute_1.mailRoute);
 app.use(express_1.default.static('public'));
-app.use(function (req, res, next) {
+app.use(function (err, req, res, next) {
     res.setHeader('Content-Type', 'text/html');
     res.setHeader('Access-Control-Allow-Headers', 'Content-type,Authorization');
-    next();
+    next(err);
 });
 app.get('/style.css', (req, res) => {
     res.header('Content-Type', 'text/css');
@@ -89,26 +93,14 @@ app.get('/migration', (req, res) => res.render('migrationpage'));
 app.get('/about', (req, res) => res.render('about'));
 app.get('/aboutloggedin', auth_1.verifyToken, (req, res) => res.render('aboutloggedin'));
 app.get('/edit', (req, res) => res.render('editprofile'));
-app.get('/adminDashboard', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, admin_service_1.getAllDeposit)(req, res);
+app.get('/adminDashboard', auth_1.verifyToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.render('admin');
 }));
 app.get('/admin', (req, res) => res.render('adminLogin'));
+app.get('/newadmin', (req, res) => res.render("adminsignup"));
 app.get('/plans', (req, res) => res.render('plans'));
 app.get('/test', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const deposit = yield db_sever_1.prisma.deposit.findMany({
-            select: {
-                amount: true,
-                transactionId: true,
-                createdAt: true,
-            }
-        });
-        res.render('test', { deposit });
-    }
-    catch (error) {
-        console.error('Error fetching data from the database:', error.message);
-        res.status(500).send('Internal Sever Error');
-    }
+    res.render('test');
 }));
 app.get('/basic', auth_1.verifyToken, (req, res) => res.render('basic'));
 app.get('/estate', auth_1.verifyToken, (req, res) => res.render('estate'));
@@ -131,10 +123,13 @@ app.get('/dashboard', auth_1.verifyToken, (0, auth_1.authorization)('USER'), (re
         const roi = yield PaymentService.calROI(id);
         const deposits = yield PaymentService.listDeposit(id);
         const balance = yield PaymentService.getAvailableBalance(id);
+        const users = yield UserService.getUser(id);
+        const totalBalance = yield PaymentService.getFinalBalance(id);
+        const withdraw = yield PaymentService.totalWithdraws(id);
         console.log('deposit:', deposits);
         console.log('roi:', roi);
         console.log('balance:', balance);
-        res.render('dashboard1', { deposits, roi, balance });
+        res.render('dashboard1', { deposits, roi, balance, users, totalBalance, withdraw });
     }
     catch (error) {
         res.status(500).json({ error: error.message });
@@ -154,10 +149,34 @@ app.get('/profile', auth_1.verifyToken, (req, res) => __awaiter(void 0, void 0, 
         res.status(500).json({ error: error.message });
     }
 }));
-app.get('/contact', (req, res) => res.render('contact'));
+app.get('/contact', (req, res) => res.render('withdrawlaContact'));
+app.get('/users', auth_1.verifyToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, admin_service_1.getUsers)(req, res);
+}));
+app.get('/trans', auth_1.verifyToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, admin_service_1.getAllDeposits)(req, res);
+}));
+app.get('/adminSignUser', (req, res) => res.render('adminSignUser'));
 app.get('/verify', (req, res) => res.render('verify'));
 app.get('/success', (req, res) => res.render('success'));
 app.get('/successwithdraw', (req, res) => res.render('successwithdraw'));
+app.get('/withdraw', auth_1.verifyToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (typeof req.user !== 'number') {
+            return res.status(403).json({ message: 'Invalid user ID' });
+        }
+        const user = req.user;
+        const id = parseInt(user, 10);
+        const roi = yield PaymentService.calROI(id);
+        const balance = yield PaymentService.getAvailableBalance(id);
+        const users = yield UserService.getUser(id);
+        const withdraw = yield PaymentService.totalWithdraws(id);
+        res.render('withdrawal', { roi, balance, users, withdraw });
+    }
+    catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}));
 httpServer.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
 });
