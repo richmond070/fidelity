@@ -126,7 +126,7 @@ app.get('/dashboard', verifyToken, authorization('USER'), async (req, res) => {
         const roi = await PaymentService.calROI(id)
         const deposits = await PaymentService.listDeposit(id);
         const balance = await PaymentService.getAvailableBalance(id);
-        const profile = await UserService.getUser(id);
+        const users = await UserService.getUser(id);
         const totalBalance = await PaymentService.getFinalBalance(id)
         const withdraw = await PaymentService.totalWithdraws(id)
 
@@ -134,7 +134,7 @@ app.get('/dashboard', verifyToken, authorization('USER'), async (req, res) => {
         console.log('roi:', roi)
         console.log('balance:', balance)
         // Render the EJS template and pass the data
-        res.render('dashboard1', { deposits, roi, balance, profile, totalBalance, withdraw });
+        res.render('dashboard1', { deposits, roi, balance, users, totalBalance, withdraw });
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }
