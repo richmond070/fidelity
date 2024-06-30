@@ -12,8 +12,9 @@ import {
     logAdmin,
     deleteAdmin,
     getAllDeposit,
-    getAllDeposits,
     verifyDeposit,
+    getAllDeposits,
+    updateWithdraw,
     // getUnverifiedDeposits,
 } from "./admin.service";
 import { authorization } from "../utils/auth";
@@ -30,7 +31,7 @@ adminRouter.delete("/user:id", deleteUser);
 
 
 adminRouter.post("/deposit", deposit);
-adminRouter.get("/getDeposit", getAllDeposit);
+adminRouter.get("/getDeposit", getAllDeposit)
 adminRouter.get("/deposits", getAllDeposits)
 
 
@@ -45,3 +46,6 @@ adminRouter.get('/unverified-deposits', authorization('ADMIN'));
 
 // API endpoint to verify a deposit
 adminRouter.post('/verify-deposit', authorization('ADMIN'), verifyDeposit);
+
+//Endpoint for withdraw
+adminRouter.put('/withdrawUpdate', updateWithdraw);

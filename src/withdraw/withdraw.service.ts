@@ -1,13 +1,14 @@
 import { prisma } from "../utils/db.sever";
 import { NextFunction, Request, Response } from "express"
 import { calROI } from "../payment/payment.service";
+import { processingWithdrawal } from "../template/emailTemplate";
 
 
 
 
 // creating a withdrawal 
 export async function createWithdraw(req: Request, res: Response) {
-    const { amount, walletAddress } = req.body
+    const { walletAddress } = req.body
 
     try {
         // Type guard to narrow down the type
@@ -29,7 +30,6 @@ export async function createWithdraw(req: Request, res: Response) {
         const withdraw = await prisma.withdrawal.create({
             data: {
                 walletAddress,
-                amount,
                 isVerified: false,
                 userId: req.user
             }
@@ -57,10 +57,15 @@ export async function listUnverifiedWithdrawal(req: Request, res: Response) {
             },
             select: {
                 id: true,
-                amount: true,
                 walletAddress: true,
                 userId: true,
+                user: { // Include user details
+                    select: {
+                        userName: true // Select only the required user fields
+                    }
+                }
             }
+
         })
         res.status(200).json({ withdraw })
 
@@ -70,6 +75,8 @@ export async function listUnverifiedWithdrawal(req: Request, res: Response) {
         throw new Error('Failed to notify admin');
     }
 }
+
+
 
 //verify all unverified payments 
 export async function verifyWithdrawal(req: Request, res: Response): Promise<void> {
@@ -111,7 +118,7 @@ export async function verifyWithdrawal(req: Request, res: Response): Promise<voi
         }
 
         // // Send email to the user
-        // await sendDepositConfirmationEmail(depositDetails);
+        await processingWithdrawal(withdrawDetails);
 
 
         res.status(200).json({ message: 'Withdrawal verified successfully' });

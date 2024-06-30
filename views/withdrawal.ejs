@@ -3,151 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eternal Trading</title> 
     <link rel="stylesheet" href="/home.css">
     <link rel="stylesheet" href="/main.css">
-    <link rel="stylesheet" href="/fidelity/public/home.css" type="text/css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-  />
+    />
   <link
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
 />
        <!-- <link rel='stylesheet' id='vital-style-css' href='wp-content/themes/vital/style.min04ee.css?ver=1637323202' type='text/css' media='all'/> -->
-       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-       <script src="https://kit.fontawesome.com/cb0f802460.js" crossorigin="anonymous"></script>
-       <script src="https://cdn.tailwindcss.com"></script>
-    </head>
+</head>
 <body>
- <!-- <nav>
-    <header>
-        <div class="logo">
-          <img src="../ASSETS/WHITE.png" alt="Logo" class="imgLogo">
-        </div>
-        <div class="google" style="display: flex;overflow: hidden;width: 150px;height: 30px;">
-          <div id="google_translate_element"></div>
-          </div>
-        <div class="navigation">
-            <input type="checkbox" class="toggle-menu">
-            <div class="hamburger"></div>
-            <ul class="menu">
-
-                <div class="dropdown">
-                    <li class="dropD"><a href="/contact">Contact</a></li>
-                
-                </div>
-
-                <div class="dropdown">
-                  <li class="dropD"><a href="/dashboard">Dashboard</a></li>
-              
-              </div> 
-
-              <div class="dropdown">
-                <li class="dropD" ><a href="/login.ejs" id="logoutLink">Logout</a></li>
-            
+    <nav>
+        <header>
+            <div class="logo">
+               <a href="/dashboard"> <img src="/ASSETS/WHITE.png" alt="Logo" class="imgLogo"></a>
             </div>
+            
+        </header>
+    </nav>
 
-            </ul>
-
-        </div>
-    </header>
-</nav>-->
-
-<script type="text/javascript">
-  function googleTranslateElementInit() {
-      new google.translate.TranslateElement(
-          {pageLanguage: 'en'},
-          'google_translate_element'
-      );
-  } 
-</script>
-<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-<!-- Deposit and withdraw -->
-<div class="head"style="background-color: #3b288f;padding: 20px 20px 20px 20px; display: flex;">
-  <div class="logo">
-    <img src="../ASSETS/WHITE.png" alt="Logo" class="imgLogo">
-  </div>
-    <!--<span style="font-size:20px;cursor:pointer; text-align: center; color: gold ;" class="nav3"  >Withdrawal</span>-->
-</div>  
-
-<div class="container" style="display: flex;padding: 20px 20px;justify-content: space-between;justify-content: space-around;">
-
-
-<!-- Withdrawal Form -->
-<div class="bg-green-100 rounded p-8" style="width: 450px;margin: 40px;">
-
-  <!--<div class="google" style="display: flex;overflow: hidden;width: 150px;height: 30px;">
-    <div id="google_translate_element"></div>
-    </div>-->
-  <h4 class="text-2xl mb-4" style="display: block; background-color:#3b288f ; width: 50%; color: gold; padding: 15px; align-self: center;">Withdraw</h4>
-    <div style="justify-content: left; justify-items: left; text-align: left;">
-        <p><strong>Instructions:</strong> Paste your wallet address below and input your desired amount to be withdrawn. Your withdrawal will be approved upon request but might take between 0-6 hours to reflect in your wallet.</p>
+    <div class="note">
+      <h2>Account details</h2>
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Deposit</th>
+            <th>Available balance</th>
+            <th>Withdraw</th>
+          </tr>
+        </thead>
+        <tbody id="userTableBody">
+          <!-- Data will be inserted here by Javascript -->
+          <tr>
+            <td data-label="Deposit" class="blue-text"><%= balance %></td>
+            <td data-label="Available balance" class="green-text"><%= roi %></td>
+            <td data-label="Withdraw" class="red-text"><%= withdraw%></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <br> <br>
-    <form id="withdrawal-form" onsubmit="handleWithdrawalSubmission(); return false;">
-		<div style="justify-content: left; justify-items: left; text-align: left;">
-			<h4>*<strong>Wallet address:</strong> <input id="walletAddress" class="border rounded gray-400 px-4 mb-4" type="text" placeholder="Your wallet address"></h4>
-			<h4>*<strong>The amount:</strong> <input id="amount" class="border rounded gray-400 px-4 mb-4" type="text" placeholder="The withdrawal amount"></h4>
-		</div>
-		<button id="withdraw-button" class="bg-red-700 text-white px-4 rounded font-medium py-2" type="submit">Withdraw</button>
-	</form>
-</div> </div>
+</body>
 
+<style>
+   body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f8f8f8;
+    }
 
-<%- include('partial/footer'); -%>
-  
-  
-  <script src="/JAVASCRIPT/userwithdrawal.js"></script>
-    <script src="script.js"></script>
-    <script>
-      document.getElementById('withdrawal-form').addEventListener('submit', function(event) {
-          event.preventDefault(); // Prevent default form submission behavior
-          
-          // Get form data
-          const walletAddress = document.getElementById('walletAddress').value;
-          const amount = document.getElementById('amount').value;
-          const newAmount = parseInt(amount)
+    .note {
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      background-color: #fff;
+      max-width: 800px;
+      width: 100%;
+    }
 
-          // Prepare data object
-          const data = {
-              walletAddress: walletAddress,
-              amount: newAmount
-          };
+    h2 {
+      text-align: center;
+    }
 
-          // Make a POST request to your backend route
-          fetch('/api/withdrawal/withdraw', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-                  // 'Authorization': 'Bearer YOUR_TOKEN_HERE' // Add your JWT token here if required
-              },
-              body: JSON.stringify(data)
-          })
-          .then(response => {
-              if (!response.ok) {
-                  throw new Error('Network response was not ok');
-              }
-              return response.json();
-          })
-          .then(data => {
-              // Handle successful response
-              console.log(data);
-              // Redirect to the next page or perform other actions...
-              window.location.href = '/dashboard'
-              alert('Withdrawal request has been sent to the admin please wait');
-          })
-          .catch(error => {
-              // Handle error
-              console.error('There was a problem with your fetch operation:', error);
-              alert('Withdrawal failed. Please try again later.');
-          });
-      })
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
 
-      // document.getElementById('withdrawal-form').addEventListener('submit', handleWithdrawalSubmission);
-    </script>
-  </body>
-  </html>
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f4f4f4;
+    }
+
+    tr{
+      font-weight: bold;
+    }
+    .blue-text {
+      color: blue;
+    }
+
+    .green-text {
+      color: green;
+    }
+
+    .red-text {
+      color: red;
+    }
+</style>
+</html>    

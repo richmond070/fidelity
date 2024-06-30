@@ -5,9 +5,8 @@ import { Deposit } from "@prisma/client";
 import { generateHash, compareHash } from "../utils/password";
 import Authentication from "../utils/auth";
 import { Roles } from "@prisma/client";
-import { transporter } from "../handler/mail";
-import ejs from "ejs";
-import path from 'path';
+import { sendDepositConfirmationEmail, sendWithdrawalConfirmationEmail } from "../template/emailTemplate";
+
 
 // USER
 
@@ -78,7 +77,7 @@ export const getUsers = async (req: Request, res: Response) => {
             //     email: true
             // }
         })
-     // res.status(200).json({
+        // res.status(200).json({
         //     data: user
         // })
         res.render('allUsers', { user: user })
@@ -111,24 +110,6 @@ export const deleteUser = async (req: Request, res: Response) => {
         })
     }
 }
-
-
-// TRANSACTION
-
-//to get all transaction numbers 
-// export const getTransaction = async (req: Request, res: Response) => {
-//     try {
-//         const transactionNumbers = await prisma.transaction.findMany()
-//         res.status(200).json({
-//             data: transactionNumbers
-//         })
-//     } catch (error) {
-//         console.log(error)
-//         res.status(500).json({
-//             error: "Server error"
-//         })
-//     }
-// }
 
 
 //DEPOSIT
@@ -167,7 +148,10 @@ export const getAllDeposit = async (req: Request, res: Response) => {
                 createdAt: true
             }
         });
-        res.render('admin', { deposit: deposit })
+        // res.render('admin', { deposit: deposit })
+        res.status(200).json({
+            data: deposit
+        })
     } catch (error: any) {
         console.error('Error fetching data from the database:', error.message);
         res.status(500).send('Internal Sever Error');
@@ -187,9 +171,6 @@ export const getAllDeposits = async (req: Request, res: Response) => {
                 createdAt: true
             }
         });
-        // res.status(200).json({
-        //     data: deposit
-        // })
         res.render('trans', { deposit: deposit })
     } catch (error: any) {
         console.error('Error fetching data from the database:', error.message);
@@ -259,9 +240,6 @@ export const logAdmin = async (req: Request, res: Response) => {
         return res.status(200).json({
             accessToken
         })
-        // else {
-        //     throw new Error('Password is not correct!')
-        // }
     } catch (error) {
         console.log(error)
         throw error
@@ -357,39 +335,12 @@ export async function getUnverifiedDeposits(res: Response, req: Request): Promis
             }
         });
 
-        // // Emit a WebSocket event to notify admin
-        // if (io) {
-        //     io.emit('newDeposit', {
-        //         amount,
-        //         transactionId,
-        //         plan,
-        //     });
-        // // }
-
-        // // Log information about the new deposit
-        // const depositInfo = {
-        //     amount,
-        //     transactionId,
-        //     plan,
-        // };
-        // console.log(`A client just deposited $${amount} with a transaction ID: ${transactionId}`);
-
-        // Return the deposit information
-        // return depositInfo;
         res.render('admin', { unverifiedDeposits })
-        // res.status(200).json({ unverifiedDeposits });
     } catch (error) {
-        // console.error('Error in getUnverifiedDeposits:', error);
-        // // res.status(500).json({ error: 'Internal Server Error' });
-
         console.error('Error notifying admin:', error);
         throw new Error('Failed to notify admin');
     }
 }
-
-
-// Function to verify a deposit
-
 
 
 //to verify a deposit 
@@ -432,29 +383,49 @@ export async function verifyDeposit(req: Request, res: Response): Promise<void> 
 }
 
 
-//Email for deposit to the client 
-async function sendDepositConfirmationEmail(depositDetails: any): Promise<void> {
+//Withdrawal 
+//trying to update the withdrawal amount and batch id 
+
+export const updateWithdraw = async (req: Request, res: Response) => {
+
+    const { userName, amount, batch_id } = req.body
     try {
-        // Render the EJS template
-        const templatePath = path.join(__dirname, '../../views/emailDeposit.ejs');
-        const emailContent = await ejs.renderFile(templatePath, {
-            amount: depositDetails.amount,
-            plan: depositDetails.plan,
-            name: depositDetails.user.userName,
+        const user = await prisma.user.findUnique({
+            where: { userName: userName },
+            include: { Withdrawal: true }
         });
 
-        // Compose the email
-        const mailOptions = {
-            from: "Eternal Trading <support@eternaltrading.org>",
-            to: depositDetails.user.email,
-            subject: 'Deposit Confirmation',
-            html: emailContent,
-        };
+        if (!user) {
+            throw new Error(`${userName} has no request`);
+        }
 
-        // Send the email using the imported transporter
-        await transporter.sendMail(mailOptions);
-        console.log('Email sent: Deposit confirmation');
+        //Find a verified withdrawal for the user
+        const verifiedWithdrawal = user.Withdrawal.find(withdrawal => withdrawal.isVerified);
+
+        if (!verifiedWithdrawal) {
+            throw new Error('No verified withdrawal request by this user');
+        }
+
+        //Update the amount and batchId  of the verified withdrawal
+        const updateWithdrawal = await prisma.withdrawal.update({
+            where: {
+                id: verifiedWithdrawal.id
+            },
+            data: {
+                amount: amount,
+                batch_id: batch_id
+            },
+            include: {
+                user: true // Include the user details in the updated withdrawal
+            }
+        });
+        // res.status(200).json({
+        //     data: updateWithdrawal
+        // })
+
+        await sendWithdrawalConfirmationEmail(updateWithdrawal)
     } catch (error) {
-        console.error('Error sending email:', error);
+        console.error(error)
+        res.status(500).json({ error: "An error has occured, please wait." })
     }
 }

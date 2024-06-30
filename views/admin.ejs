@@ -1,44 +1,59 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Eternal Trading</title>
-    <link rel="stylesheet" type="text/css" href="http://localhost:5000/styles.css">
-    <!-- Include the Socket.io client library -->
-    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>-->
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js" integrity="sha384-mZLF4UVrpi/QTWPA7BjNPEnkIfRFn4ZEO3Qt/HFklTJBj/gBOV8G3HcKn4NfQblz" crossorigin="anonymous"></script>
-    <!-- Include the Socket.IO client library -->
-    <script src="/socket.io/socket.io.js"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/fontawesome.min.css">
+    <title>Eternal trading</title>
 </head>
 
 <body>
-    <!-- Admin Dashboard -->
-    <div class="admin-dashboard">
-        <center>
-            <h1>ADMIN PAGE</h1>
+    <header class="primary-header flex">
 
-            <section class="transaction-alerts">
-                <div class="head" style="background-color: #3b288f; padding: 20px 20px;">
-                    <span style="font-size: 30px; cursor: pointer; color: gold;" class="nav3">CONTACT CLIENT</span>
-                </div>
-                <br><br>
+        <div class="logo"> <img src="/ASSETS/WHITE.png" alt="Logo" class="imgLogo"></div>
 
-                <div class="admin-navbar">
-                    <button id="all-users"><a href="/users" style="color: #ffffff;">User</a></button>
-                    <button id="contact"><a href="/contact" style="color: #ffffff;">Withdrawal</a></button>
-                    <button id="trans"><a href="/trans" style="color: #ffffff;">Transaction</a></button>
-                    <button id="admin-user"><a href="adminSignUser" style="color: #ffffff;">Create User</a></button>
-                </div>
-                <br><br><br>
-                <div class="head" style="background-color: #3b288f; padding: 20px 20px;">
-                    <span style="font-size: 30px; cursor: pointer; color: gold;" class="nav3">WITHDRAWAL ALERTS</span>
+        <button class="mobile-nav-toggle" aria-controls="primary-navigation" aria-expanded="false">
+            <span style="font-size:30px;cursor:pointer;" style="overflow: hidden;">☰</span>
+
+        </button>
+
+        <!--navbar-->
+        <nav>
+
+            <ul id="primary-navigation" data-visible='false' class="primary-navigation flex">
+                <li class="active">
+                    <a href="/users"> <span aria-hidden="true"></span>Client</a>
+                </li>
+                <li>
+                    <a href="/contact">
+                        <span aria-hidden="true"></span>Withdrawal</a>
+                </li>
+                <li>
+                    <a href="/trans">
+                        <span aria-hidden="true"></span>Transactions</a>
+                </li>
+                <li>
+                    <a href="#">
+                        <span aria-hidden="true"></span>Update</a>
+                </li>
+                <li>
+                    <a href="/adminSignUser">
+                        <span aria-hidden="true"></span>Create new user</a>
+                </li>
+        </nav>
+    </header>
+    <br>
+                <div class="head" style="background-color: #f6f6f8; padding: 20px 20px;">
+                    <span style="font-size: 3.5vh; cursor: pointer; color: rgb(5, 5, 5);" class="nav3">WITHDRAWAL ALERTS</span>
                 </div>
                 <!-- Withdrawal Section -->
 
                     <section class="transaction-history">
                         <table id="transaction-history-table">
                             <tr>
-                                <th>Amount</th>
+                               <th>Username</th> 
                                 <th class="transaction-id-column">Wallet Address</th>
                                 <th>Action</th>
                               </tr>
@@ -46,9 +61,9 @@
                         </table>
                     </section>
 
-                    <br><br><br>
-                <div class="head" style="background-color: #3b288f; padding: 20px 20px;">
-                    <span style="font-size: 30px; cursor: pointer; color: gold;" class="nav3">TRANSACTION HISTORY</span>
+                    <br>
+                <div class="head" style="background-color: #fcfcfd; padding: 20px 20px;">
+                    <span style="font-size: 3.5vh; cursor: pointer; color: rgb(7, 7, 7);" class="nav3">TRANSACTION HISTORY</span>
                 </div>
                 <section class="transaction-history">
                     <table id="transaction-history-table">
@@ -62,122 +77,32 @@
                     </table>
                 </section>
             </section>
-        </center>
-    </div>
 
-    <style>
-        @import url('https://stackpath.bootstrapcdn.com-awesome/4.7.0/css-awesome.min.css');
-        
-        body{
-	margin:0px;
-	padding: 0px;
-	background-color:whitesmoke;
-	overflow: scroll;
-	font-family: system-ui;
-    height: 100%;
-    position: relative;
-}
-
-        /* admin */
-        .admin-dashboard {
-            width: 80%;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f0f0f0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .transaction-alerts,
-.transaction-history {
-    margin-bottom: 20px;
-    padding: 20px;
-    background-color: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 5px;
-    overflow-x: auto; /* Add this line to enable horizontal scrolling */
-}
-
-/* Add or modify this within your existing style */
-table#transaction-history-table {
-    width: 100%; /* Set a suitable width */
-    table-layout:auto; /* Prevent the table from expanding beyond its specified width */
-}
-        .admin-navbar {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 20px;
-        }
-
-        button {
-            background-color: black;
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #333;
-        }
-
-        a {
-            color: #ffffff;
-            text-decoration: none;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        th,
-        td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        .verify-button {
-            background-color: #7d66e0;
-            color: white;
-            padding: 8px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .verify-button:hover {
-            background-color: #573fcf;
-        }
-
-        h1 {
-            color: black;
-            text-align: center;
-        }
-
-        .head {
-            border-top-left-radius: 30px;
-            border-top-right-radius: 30px;
-            border-bottom-left-radius: 30px;
-            border-bottom-right-radius: 30px;
-        }
-
-        /* Style for the withdrawal section */
-        .withdrawal-section {
-            padding: 20px;
-            border: 1px solid #ccc;
-            margin-top: 20px;
-        }
-    </style>
+            <form action="/withdrawUpdate">
+                <h2>Withdrawal confirmation</h2>
+                <label for="userName">Username</label>
+                <input type="text" name="userName"  />
+                <label for="amount">Amount</label>
+                <input type="text" name="amount"  />
+                <label for="batch_id">Batch Id</label>
+                <input type="text" name="batch_id"  />
+                <button>send</button>
+              </form>
 
     <script>
+        const primaryNav = document.querySelector(".primary-navigation");
+        const navToggle =  document.querySelector(".mobile-nav-toggle");
+
+        navToggle.addEventListener("click", () => {
+            const visibility = primaryNav.getAttribute("data-visible");
+
+            if(visibility === "false") {
+                primaryNav.setAttribute("data-visible", true);
+            } else if (visibility === "true"){
+                primaryNav.setAttribute("data-visible", false);  
+            }
+        }) 
+
         // Client-side JavaScript (AJAX) for Deposit Data
         const depositXhr = new XMLHttpRequest();
         depositXhr.open('GET', '/api/admin/getDeposit', true);
@@ -294,8 +219,8 @@ table#transaction-history-table {
         withdrawalData.forEach(withdrawal => {
             const row = document.createElement('tr');
 
-            const amountCell = document.createElement('td');
-            amountCell.textContent = withdrawal.amount;
+            const usernameCell = document.createElement('td');
+            usernameCell.textContent = withdrawal.user.userName;
 
             const walletAddressCell = document.createElement('td');
             walletAddressCell.textContent = withdrawal.walletAddress;
@@ -318,7 +243,7 @@ table#transaction-history-table {
                 .then(data => {
                     //to handle the response data as needed
                     console.log(data);
-                    alert('Withdrawal confirmed ')
+                    alert('Withdrawal Processing')
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -328,14 +253,382 @@ table#transaction-history-table {
 
             actionCell.appendChild(verifyButton);
 
-            row.appendChild(amountCell);
+            row.appendChild(usernameCell);
             row.appendChild(walletAddressCell);
             row.appendChild(actionCell);
 
             withdrawalTable.appendChild(row);
         });
         }
-    </script>
-</body>
 
+        //withdrawal confirmation
+        const form = document.querySelector('form');
+  
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // get values
+            const userName= form.userName.value;
+            const amount= form.amount.value;
+            const batch_id= form.batch_id.value;
+            const newAmount = parseInt(amount)
+
+            try {
+            const res = await fetch('/api/admin/withdrawUpdate', { 
+                method: 'PUT', 
+                body: JSON.stringify({ userName, amount:newAmount, batch_id }),
+                headers: {'Content-Type': 'application/json'}
+            });
+            const data = await res.json();
+            const token = data.token;
+            console.log(data);
+
+            if (res.ok) {
+                console.log(data);
+                    alert('Withdrawal confirmed ')
+            }
+
+            }
+            catch (err) {
+            console.log(err);
+            }
+        });
+</script>
+</body>
+<style>
+/* google fonts */
+@import url('https://stackpath.bootstrapcdn.com-awesome/4.7.0/css-awesome.min.css');
+
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    position: relative;
+    background-position: center;
+    background-size: cover;
+    background-color: lavender;
+    color: #fff;
+    max-width: 100%;
+    max-height: 100vh;
+    overflow-x: hidden;
+    font-family: 'Quicksand', sans-serif;
+}
+
+a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.flex {
+    display: flex;
+    gap: var(--gap, 1rem);
+}
+
+.primary-header {
+    align-items: center;
+    justify-content: space-between;
+    background-color: #3b288f;
+}
+
+.mobile-nav-toggle {
+    display: none;
+}
+
+.primary-navigation {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    background: hsl (0 0% 100% / 0.1);
+    backdrop-filter: blur(1rem);
+}
+
+.primary-navigation a {
+    text-decoration: none;
+}
+
+.primary-navigation a>[aria-hidden="true"] {
+    font-weight: 700;
+    margin-inline-end: 0.75em;
+}
+
+
+
+@supports (backdrop-filter: blur(1rem)) {
+    .primary-navigation {
+        background: hsl (0 0% 100% / 0.5);
+        backdrop-filter: blur(0.2rem);
+    }
+
+
+}
+
+nav {
+    padding: 2vw;
+    font-size: 1.5vw;
+
+}
+
+nav a {
+    color: #fff;
+}
+
+.imgLogo {
+    width: 15rem;
+    filter: grayscale(100%);
+    -webkit-filter: grayscale(100%);
+    filter: brightness(0) invert(1);
+    /* border: 2px solid #fff; */
+}
+
+.transaction-alerts,
+.transaction-history {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #f5f4f8;
+    border: 1px solid #050408;
+    border-radius: 5px;
+    overflow-x: auto; /* Add this line to enable horizontal scrolling */
+}
+
+/* Add or modify this within your existing style */
+table #transaction-history-table {
+    width: 100%; /* Set a suitable width */
+    table-layout:auto; /* Prevent the table from expanding beyond its specified width */
+    color: #050505;
+}
+        .admin-navbar {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: black;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #333;
+        }
+
+        a {
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            border: 1px solid #070505;
+            padding: 8px;
+            text-align: left;
+            color: #050505;
+        }
+
+        th {
+            background-color: #f2f2f5;
+            color: #050505;
+        }
+
+        .verify-button {
+            background-color: #050507;
+            color: white;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .verify-button:hover {
+            background-color: #573fcf;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+       /* .head {
+            border-top-left-radius: 30px;
+            border-top-right-radius: 30px;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+        }*/
+
+        /* Style for the withdrawal section */
+        .withdrawal-section {
+            padding: 20px;
+            border: 1px solid #ccc;
+            margin-top: 20px;
+        }
+
+        form h2{
+            color: #fff;
+            font-size: 2.4vw;
+            font-weight: 900;
+            margin-bottom: 40px;
+        }
+form{
+  width: 50%;
+  margin: 0 auto;
+  padding: 30px;
+  box-shadow: 1px 2px 3px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  background: #573fcf;
+}
+input{
+  padding: 10px 12px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  font-size: 1em;
+  width: 100%;
+}
+label{
+    color: #fff;
+  display: block;
+  margin: 20px 0 10px;
+}
+button{
+  margin-top: 30px;
+ /* border-radius: 36px;
+  /*background: #FEE996;*/
+  border:0;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 0.8em;
+  display: block;
+  padding: 10px 16px;
+  letter-spacing: 2px;
+}
+/*media query screen */
+@media (min-width:320px) and (max-width: 768px) {
+
+    body,
+    html {
+        position: relative;
+        background-position: center;
+        background-size: cover;
+        background-color: #f7f4f4;
+        color: #fafafa;
+        max-width: 100%;
+        max-height: 100vh;
+        overflow-x: hidden;
+        font-family: Georgia, 'Times New Roman', Times, serif;
+    }
+
+    .primary-header {
+        align-items: center;
+        justify-content: space-evenly;
+        background-color: #3b288f;
+    }
+
+    .primary-navigation {
+        --gap: 2em;
+
+        position: fixed;
+        z-index: 1000;
+        inset: 0 0 0 30%;
+
+        flex-direction: column;
+        padding: min(30vh, 10rem) 2em;
+
+        background: hsl (0 0% 100% / 1);
+        backdrop-filter: blur(5rem);
+
+        transform: translateX(100%);
+
+
+    }
+
+    .primary-navigation[data-visible="true"] {
+        transform: translateX(0%);
+    }
+
+ 
+    .mobile-nav-toggle {
+        display: block;
+        position: fixed;
+        z-index: 9999;
+        background-color: transparent;
+        border: teal;
+        color: #fff;
+        background-image: url("https://www.flaticon.com/premium-icon/navigation_2811759");
+       /* width: 3rem;
+        height: 2rem;*/
+
+        aspect-ratio: 3;
+        /*top: 5rem;*/
+        right: 2rem;
+    }
+
+    nav li {
+        font-size: 5vw;
+        padding: 0;
+    }
+
+    nav a {
+        color: #050505;
+    }
+
+        .imgLogo {
+        width: 10rem;
+        filter: grayscale(100%);
+        -webkit-filter: grayscale(100%);
+        filter: brightness(0) invert(1);
+        /* border: 2px solid #fff; */
+    }
+
+    form h2{
+            color: #fff;
+            font-size: 1em;
+            font-weight: 900;
+            margin-bottom: 40px;
+        }
+form{
+  width: 100%;
+  margin: 0 auto;
+  padding: 30px;
+  box-shadow: 1px 2px 3px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  background: #573fcf;
+}
+input{
+  padding: 10px 12px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  font-size: 1em;
+  width: 100%;
+}
+label{
+    color: #ffff;
+  display: block;
+  margin: 20px 0 10px;
+}
+button{
+  margin-top: 30px;
+ /* border-radius: 36px;
+  /*background: #FEE996;*/
+  border:0;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 0.8em;
+  display: block;
+  padding: 10px 16px;
+  letter-spacing: 2px;
+}
+}
+</style>
 </html>

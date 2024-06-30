@@ -2,15 +2,8 @@ import express from "express";
 import type { Request, Response, Router } from "express";
 import { body, validationResult } from "express-validator";
 import { verifyToken, authorization } from "../utils/auth";
-// import { Server as WebSocketServer, WebSocket } from 'ws';
 import jwt from "jsonwebtoken";
 import { PrismaClient } from '@prisma/client';
-// import { getUnverifiedDeposits } from "../admin/admin.service";
-// import { getSocketInstance } from "../utils/socket";
-// import { Server } from "socket.io";
-
-
-
 
 import * as PaymentService from "./payment.service";
 import { createSecretKey } from "crypto";
@@ -45,18 +38,18 @@ paymentRouter.get("/user", verifyToken, async (req: Request, res: Response) => {
     };
 });
 
-// paymentRouter.get("/:id", async (req: Request, res: Response) => {
-//     const id: number = parseInt(req.params.id, 10);
+paymentRouter.get("/:id", async (req: Request, res: Response) => {
+    const id: number = parseInt(req.params.id, 10);
 
-//     try {
-//         const deposit = await PaymentService.getDeposit(id)
-//         if (deposit) {
-//             return res.status(200).json({ data: deposit })
-//         }
-//     } catch (error: any) {
-//         return res.status(500).json(error.message);
-//     }
-// });
+    try {
+        const deposit = await PaymentService.getDeposit(id)
+        if (deposit) {
+            return res.status(200).json({ data: deposit })
+        }
+    } catch (error: any) {
+        return res.status(500).json(error.message);
+    }
+});
 
 
 // to make payment 
@@ -85,11 +78,6 @@ paymentRouter.post("/payment", body("transactionId").isString(), body("amount").
 
             // Call the makeDeposit function to create the deposit
             const newDeposit = await PaymentService.makeDeposit(deposit);
-
-            // Notify admin about the deposit
-            // await getUnverifiedDeposits(req.app.get('io') as Server, req.user, req.body.amount, req.body.transactionId, req.body.plan, res);
-            // const io = getSocketInstance();
-            // io.emit('newDeposit', { message: 'New deposit received' })
 
             return res.status(201).json(newDeposit);
         } catch (error: any) {
@@ -147,6 +135,7 @@ paymentRouter.get("/balance", verifyToken, async (req: Request, res: Response) =
         // Render the EJS template and pass the data
         return res.status(200).json({ data: listDeposit })
     } catch (error: any) {
+        console.error(error)
         return res.status(500).json(error.message);
     };
 })
@@ -163,7 +152,26 @@ paymentRouter.get("/roi", verifyToken, async (req: Request, res: Response) => {
         // Render the EJS template and pass the data
         return res.status(200).json({ data: listDeposit })
     } catch (error: any) {
+        console.error(error)
         return res.status(500).json(error.message);
     };
 
 })
+
+// Route for updating a user's deposit
+paymentRouter.put('/update-deposit', async (req: Request, res: Response) => {
+    try {
+        // Retrieve username, email, transactionId, and amount from request body
+        const { username, email, transactionId, amount } = req.body;
+
+        // Call service function to update deposit amount
+        const updatedDeposit = await PaymentService.updateDepositAmount(username, email, transactionId, amount);
+
+        // Return success response with updated deposit details
+        res.status(200).json({ message: 'Deposit updated successfully', deposit: updatedDeposit });
+    } catch (error) {
+        // Handle errors
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});

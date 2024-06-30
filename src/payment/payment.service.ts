@@ -2,6 +2,7 @@ import { prisma } from "../utils/db.sever";
 import { verifyToken } from "../utils/auth";
 import { User, getUser } from "../users/users.service"
 import { Request, Response } from "express";
+import { promises } from "dns";
 
 type Deposit = {
     id: number;
@@ -156,7 +157,6 @@ export const getAvailableBalance = async (userId: number): Promise<number> => {
     return availableBalance
 };
 
-//get a new balance with a ROI
 export const calROI = async (userId: number): Promise<number> => {
     const newDeposit = await prisma.deposit.findMany({
         where: {
@@ -172,14 +172,14 @@ export const calROI = async (userId: number): Promise<number> => {
 
     const calculateNewBalance = (deposit: any) => {
         const PlanConfig = PlanConfigs[deposit.plan];
-        const depositDate = new Date(deposit.createdAt);
+        const depositDate = new Date(deposit.createdAt)
         let currentBalance = deposit.amount;
         let timeElapsed = currentDate.getTime() - depositDate.getTime();
 
         const returnDuration = PlanConfig.durationInMs;
 
         if (timeElapsed < returnDuration) {
-            return currentBalance
+            return currentBalance;
         }
 
         const numberOfPeriods = Math.floor(returnDuration / PlanConfig.durationInMs)
@@ -188,14 +188,88 @@ export const calROI = async (userId: number): Promise<number> => {
         //Reset the deposit date to the current date 
         deposit.createdAt = currentDate.toISOString();
 
-        return deposit.amount + returnAmount;
-
+        return deposit.amount + returnAmount
     };
 
-    const newBalance = newDeposit.reduce((total, deposit) => total + calculateNewBalance(deposit), 0)
+    const newBalance = newDeposit.reduce((total, deposit) => total + calculateNewBalance(deposit), 0);
     const roundedBalance = Math.round(newBalance * 10) / 10;
 
     return roundedBalance;
-
-
 };
+
+
+// calculate new balance with the collected rio and total balance withdrawn
+
+export const totalWithdraws = async (userId: number): Promise<number> => {
+    const withdraws = await prisma.withdrawal.findMany({
+        where: {
+            userId: userId,
+            isVerified: true
+        }
+    });
+
+    const totalWithdrawals = withdraws.reduce((total, withdrawal) => total + Number(withdrawal.amount), 0);
+    return totalWithdrawals
+}
+
+
+//Function to get final balance
+export const getFinalBalance = async (userId: number): Promise<number> => {
+    const roiBalance = await calROI(userId);
+    const totalWithdrawals = await totalWithdraws(userId);
+
+    const finalBalance = roiBalance - totalWithdrawals;
+    return Math.round(finalBalance * 10) / 10;
+}
+
+// Define a function to update deposit amount
+export async function updateDepositAmount(username: string, email: string, transactionId: string, amount: number): Promise<any> {
+    try {
+        // Find the user by username or email
+        const user = await prisma.user.findFirst({
+            where: {
+                OR: [
+                    { userName: username },
+                    { email: email }
+                ]
+            }
+        });
+
+        console.log(`User found: ${user ? user.id : "not found"}`);
+
+        // If user not found, throw error
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        // Find the deposit by transactionId and associated user
+        const deposit = await prisma.deposit.findFirst({
+            where: {
+                transactionId: transactionId,
+                userId: user.id
+            }
+        });
+
+        // If deposit not found, throw error
+        if (!deposit) {
+            throw new Error('Deposit not found');
+        }
+
+        // Update the deposit amount
+        const updatedDeposit = await prisma.deposit.update({
+            where: {
+                id: deposit.id
+            },
+            data: {
+                amount: amount
+            }
+        });
+
+        // Return the updated deposit
+        return updatedDeposit;
+    } catch (error) {
+        throw error;
+    }
+}
+
+

@@ -1,6 +1,7 @@
 import Authentication from "../utils/auth";
 import { prisma } from "../utils/db.sever";
 import { generateHash, compareHash } from "../utils/password";
+import * as bcrypt from 'bcrypt';
 
 export type User = {
     id: number;
@@ -12,7 +13,7 @@ export type User = {
 };
 
 type logUser = {
-    email: string;
+    userName: string;
     password: string;
 };
 
@@ -119,7 +120,7 @@ export async function logUser(
         });
 
         if (!user) {
-            throw new Error("Email is not correct!");
+            throw new Error("Username is not correct!");
         }
 
         const passwordMatch = await compareHash(password, user.password);
@@ -138,3 +139,44 @@ export async function logUser(
         throw error;
     }
 }
+
+
+// function to authenticate user with just username or email
+export async function findUser(
+    userName: string
+): Promise<string | null> {
+    try {
+        const user = await prisma.user.findUnique({
+            where: {
+                userName: userName,
+            },
+        });
+
+        if (!user) {
+            throw new Error("Username is not correct!");
+        }
+        else {
+            return Authentication.generateToken(
+                user.id,
+                user.role,
+            );
+        }
+
+    } catch (error) {
+        throw error;
+    }
+}
+
+//update the password
+export const updatePassword = async (userId: number, newPassword: string): Promise<void> => {
+    const hashedPassword = await generateHash(newPassword);
+    console.log(`Hashed password ${hashedPassword}`)
+    await prisma.user.update({
+        where: {
+            id: userId,
+        },
+        data: {
+            password: hashedPassword
+        }
+    });
+};

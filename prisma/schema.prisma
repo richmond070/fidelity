@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "windows"]
 }
 
 datasource db {
@@ -11,16 +12,17 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  updateAt  DateTime  @updatedAt
-  fullName  String
-  userName  String    @unique
-  email     String    @unique
-  password  String
-  role      Roles     @default(USER)
-  Deposit   Deposit[]
-  Withdrawal Withdrawal[]
+  id                   Int          @id @default(autoincrement())
+  createdAt            DateTime     @default(now())
+  updateAt             DateTime     @updatedAt
+  fullName             String
+  userName             String       @unique
+  email                String       @unique
+  password             String
+  passwordUpdatedCount Int          @default(0)
+  role                 Roles        @default(USER)
+  Deposit              Deposit[]
+  Withdrawal           Withdrawal[]
 }
 
 model Deposit {
@@ -30,6 +32,7 @@ model Deposit {
   amount        Int
   transactionId String   @unique
   isVerified    Boolean
+  isUpdated     Boolean  @default(false)
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        Int
 }
@@ -37,7 +40,8 @@ model Deposit {
 model Withdrawal {
   id            Int     @id @default(autoincrement())
   walletAddress String
-  amount        Int
+  amount        Int     @default(0)
+  batch_id      String  @default("abcd")
   isVerified    Boolean
   user          User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        Int
