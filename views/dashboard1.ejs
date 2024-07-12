@@ -309,7 +309,7 @@ a {
 @supports (backdrop-filter: blur(1rem)) {
     .primary-navigation {
         background: hsl (0 0% 100% / 1);
-        backdrop-filter: blur(0.5rem);
+        backdrop-filter: blur(0.1rem);
     }
 
 
@@ -468,7 +468,7 @@ td:nth-child(3) { /* Target the date column */
     text-align: center;
 }
 
-@media screen and (max-width: 768px) {
+@media (min-width:320px) and (max-width: 768px) {
 
     body, html {
         max-width: 100%;
@@ -497,22 +497,28 @@ td:nth-child(3) { /* Target the date column */
         flex-direction: column;
         padding: min(30vh, 10rem) 2em;
 
-        background: hsl (0 0% 100% / 1);
-        backdrop-filter: blur(5rem);
+        background: #3b288f;
+        /*backdrop-filter: blur(5rem);*/
 
         transform: translateX(100%);
 
 
     }
 
+    /*dropdown menu*/
     .primary-navigation li ul.dropdown {
         width: 70%;
-        background-color:#3b288f;
+        height: 10%;
+        background-color:#8971f3;
         position: absolute;
         z-index: 999;
         display: none;
         padding-left: 2vw;
         padding-bottom: 2vw;
+    }
+
+    .primary-navigation li ul.dropdown li{
+        padding: 5%;
     }
 
     .primary-navigation[data-visible="true"] {
@@ -527,11 +533,11 @@ td:nth-child(3) { /* Target the date column */
         border: teal;
         color: #fff;
         background-image: url("https://www.flaticon.com/premium-icon/navigation_2811759");
-       /* width: 3rem;
-        height: 2rem;*/
+       width: 4rem;
+        height: 2rem;
 
         aspect-ratio: 3;
-        /*top: 5rem;*/
+        top: 1rem;
         right: 2rem;
     }
 
