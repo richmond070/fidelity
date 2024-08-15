@@ -182,7 +182,7 @@ export async function findUser(
         });
         // If userName does not exist return error else authenticate the user after search
         if (!user) {
-            throw new Error("Username is not correct!");
+            throw new Error("Email is not correct!");
         }
         else {
             return Authentication.generateToken(

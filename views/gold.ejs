@@ -1,7 +1,7 @@
 <%- include('partial/plansheader'); -%>
     <br> <br> <br><br>
 
-    <div id="container">
+    <div id="container"></div>
     <div class="container" style="border-top-left-radius: 30px;
     border-top-right-radius: 30px;
     
@@ -275,7 +275,7 @@
                       const newDeposit = await res.json();
                       console.log('Deposit made:', newDeposit);
                       showFormMessage(newDeposit.message, true)
-                      setTimeout(() => window.location.href = '/dashboard', 1000)
+                      setTimeout(() => window.location.href = '/dashboard', 4000)
                       //window.location.href = '/success';
                   } else {
                       const errorData = await res.json();
