@@ -1,6 +1,8 @@
+import { Prisma } from "@prisma/client";
 import Authentication from "../utils/auth";
 import { prisma } from "../utils/db.sever";
 import { generateHash, compareHash } from "../utils/password";
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import * as bcrypt from 'bcrypt';
 
 export type User = {
@@ -16,6 +18,11 @@ type logUser = {
     userName: string;
     password: string;
 };
+
+interface PrismaUniqueConstraintErrorMeta {
+    target: string[];
+}
+
 
 export const listUsers = async (): Promise<User[]> => {
     const defaultRole = 'USER';
@@ -51,48 +58,68 @@ export const createUser = async (user: Omit<User, "id">): Promise<User> => {
 
     const hashedPassword = await generateHash(password);
     const defaultRole = 'USER';
-    return prisma.user.create({
-        data: {
-            fullName,
-            userName,
-            email,
-            password: hashedPassword,
-            role: defaultRole
-        },
-        select: {
-            id: true,
-            fullName: true,
-            userName: true,
-            email: true,
-            password: true,
-            role: true
-        },
-    });
+    try {
+        return await prisma.user.create({
+            data: {
+                fullName,
+                userName,
+                email,
+                password: hashedPassword,
+                role: defaultRole
+            },
+            select: {
+                id: true,
+                fullName: true,
+                userName: true,
+                email: true,
+                password: true,
+                role: true
+            },
+        });
+    } catch (error: any) {
+        if (error instanceof PrismaClientKnownRequestError) {
+            if (error.code === 'P2002') {
+                const meta = error.meta as unknown as PrismaUniqueConstraintErrorMeta; // Type assertion
+                const targetField = meta.target[0];
+                throw new Error(`${targetField} is already in use`);
+            }
+        }
+        throw error; // Re-throw the error if it's not handled
+    }
 };
 
 export const updateUser = async (
     user: Omit<User, "id">,
     id: number
 ): Promise<User> => {
-    const { userName, email, password } = user;
-    return prisma.user.update({
-        where: {
-            id,
-        },
-        data: {
-            userName,
-            email,
-            password,
-        },
-        select: {
-            id: true,
-            fullName: true,
-            userName: true,
-            email: true,
-            password: true,
-            role: true
-        },
-    });
+    try {
+        return prisma.user.update({
+            where: {
+                id,
+            },
+            data: {
+                ...user,
+            },
+            select: {
+                id: true,
+                fullName: true,
+                userName: true,
+                email: true,
+                password: true,
+                role: true
+            },
+        });
+    } catch (error: any) {
+        if (error instanceof PrismaClientKnownRequestError) {
+            if (error.code === 'P2002') {
+                const meta = error.meta as unknown as PrismaUniqueConstraintErrorMeta; // Type assertion
+                const targetField = meta.target[0];
+                throw new Error(`${targetField} is already in use`);
+            }
+        }
+        throw error; // Re-throw the error if it's not handled
+    }
+
 };
 
 export const deleteUser = async (id: number): Promise<void> => {
@@ -108,6 +135,7 @@ export const deleteAllUsers = async (): Promise<void> => {
     await prisma.user.deleteMany()
 }
 
+// Login an existing user 
 export async function logUser(
     userName: string,
     password: string
@@ -143,15 +171,16 @@ export async function logUser(
 
 // function to authenticate user with just username or email
 export async function findUser(
-    userName: string
+    email: string
 ): Promise<string | null> {
     try {
+        // Find the Username
         const user = await prisma.user.findUnique({
             where: {
-                userName: userName,
+                email: email,
             },
         });
-
+        // If userName does not exist return error else authenticate the user after search
         if (!user) {
             throw new Error("Username is not correct!");
         }
@@ -169,14 +198,25 @@ export async function findUser(
 
 //update the password
 export const updatePassword = async (userId: number, newPassword: string): Promise<void> => {
-    const hashedPassword = await generateHash(newPassword);
-    console.log(`Hashed password ${hashedPassword}`)
+    // Hash the new password
+    const hashedPassword = generateHash(newPassword);
+    console.log(`Hashed password  for user ${userId}: ${hashedPassword}`)
+
+    // Update the user's password in the database 
     await prisma.user.update({
         where: {
             id: userId,
         },
         data: {
             password: hashedPassword
-        }
+        },
+        select: {
+            id: true,
+            fullName: true,
+            userName: true,
+            email: true,
+            password: true,
+            role: true
+        },
     });
 };

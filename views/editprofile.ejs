@@ -6,49 +6,93 @@
   <link rel="stylesheet" href="/main.css">
 </head>
 <body>
-  
-    <form>
-        <h3> Update profile </h3>
-        <label for="userName">Username</label>
-        <input type="text" class="form-control" name= 'userName'placeholder="new username" value="">
-        <label for="email">Email</label>
-        <input type="text" class="form-control" name="email" placeholder="new email" value="">
-        <label for="userName">Password</label>
-        <input type="text" class="form-control" name="password" value="" placeholder="new password">
-        <button id="submitButton" class="btn btn-primary profile-button" type="button"> Save Profile</button>
-    </form>
-    <!--<script src="script.js"></script>-->
+  <form>
+    <div id="formMessage" class="message"></div>
+    <h3>Update Profile</h3>
+    <label for="userName">Username</label>
+    <input type="text" class="form-control" id="userName" name="userName" placeholder="new username" value="">
+    
+    <label for="email">Email</label>
+    <input type="text" class="form-control" id="email" name="email" placeholder="new email" value="">
+    
+    <label for="password">Password</label>
+    <input type="password" class="form-control" id="password" name="password" placeholder="new password" value="">
+    
+    <button id="submitButton" class="btn btn-primary profile-button" type="button">Save Profile</button>
+</form>
 
-    <script>
-        const submitButton = document.getElementById('submitButton');
-        submitButton.addEventListener('click', async (e) => {
-    e.preventDefault();
-    // get values
-    const email = document.getElementById('email');
-    const password = document.getElementById('password');
-    const username = document.getElementById('username');
+<script>
+   const formMessage = document.querySelector('#formMessage');
+  document.getElementById('submitButton').addEventListener('click', async (e) => {
+      e.preventDefault();
 
-    try {
-      const res = await fetch('/api/user/update', { 
-        method: 'PUT', 
-        body: JSON.stringify({ email, password, username }),
-        headers: {'Content-Type': 'application/json'}
-      });
-      const data = await res.json();
-      console.log(data);
-      if (data.errors) {
-        alert('Sorry cannot make changes at the moment ')
+    // reset errors
+    formMessage.textContent = '';
+
+      // Get input values
+      const userName = document.getElementById('userName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      // Construct the data object with only the filled fields
+      const data = {};
+      if (userName) data.userName = userName;
+      if (email) data.email = email;
+      if (password) data.password = password;
+
+      try {
+          const res = await fetch('/api/user/update', { 
+              method: 'PUT', 
+              body: JSON.stringify(data),
+              headers: { 'Content-Type': 'application/json' }
+          });
+          const responseData = await res.json();
+
+          if (responseData.errors) {
+             // alert('Sorry, cannot make changes at the moment.');
+             const firstError = responseData.errors[0];
+            formMessage.textContent = firstError.msg;
+            formMessage.classList.add('error');
+          } else if (res.ok) {
+            formMessage.textContent = responseData.message
+            formMessage.classList.add('success')
+            setTimeout(() => window.location.href = '/dashboard', 1000)
+          } else {
+             // alert('Something went wrong, please try again.');
+              formMessage.textContent = responseData.message || 'An error occurred. Please try again.';
+            formMessage.classList.add('error');
+          }
+      } catch (err) {
+          // console.error('Error:', err);
+          // alert('An error occurred. Please try again later.');
+          console.error('Network error:', err);
+          formMessage.textContent = 'Network error. Please try again.';
+          formMessage.classList.add('error');
       }
-      if (res.ok) {
-        alert('Profile updated successfully!')
-        window.location.href = '/dashboard';
-      }
-
-    }
-    catch (err) {
-      console.log(err);
-    }
   });
-    </script>
+</script>
+
+<style>
+  /* styles.css */
+
+.message {
+    padding: 10px;
+    border-radius: 4px;
+    margin: 10px 0;
+    text-align: center;
+}
+
+.message.error {
+    color: #fdd;
+    background-color: red;
+}
+
+.message.success {
+    color: #dfd;
+    background-color: green;
+}
+
+</style>
+
 </body>
 </html>

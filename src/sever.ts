@@ -115,6 +115,8 @@ app.get('/standard', verifyToken, (req, res) => res.render('standard'));
 
 app.get('/login', (req, res) => res.render('login'));
 app.get('/register', (req, res) => res.render('register'));
+app.get('/password', (req, res) => res.render('password'));
+app.get('/updatePassword', (req, res) => res.render('updatePassword'));
 app.get('/dashboard', verifyToken, authorization('USER'), async (req, res) => {
     try {
         // Type guard to narrow down the type
@@ -133,6 +135,7 @@ app.get('/dashboard', verifyToken, authorization('USER'), async (req, res) => {
         console.log('deposit:', deposits)
         console.log('roi:', roi)
         console.log('balance:', balance)
+        console.log('user:', users)
         // Render the EJS template and pass the data
         res.render('dashboard1', { deposits, roi, balance, users, totalBalance, withdraw });
     } catch (error: any) {

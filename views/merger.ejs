@@ -1,6 +1,7 @@
 <%- include('partial/plansheader'); -%>
     <br> <br> <br><br>
 
+    <div id="container">
     <div class="container" style="border-top-left-radius: 30px;
     border-top-right-radius: 30px;
     
@@ -43,29 +44,24 @@
             </div> <br><br>
       </div>
     </div>
+    </div>
 
-
-
+    <div id="formMessage" class="hidden">
+      <div class="message-box">
+          <p id="formMessageText">Message goes here...</p>
+          <button id="close-popout">Close</button>
+      </div>
+    </div>
 
     <%- include('partial/footer'); -%>
 
 
-
-
-
-
-
-
-
-
-
     <style>
-
       @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
 
-      body{
-        font-family: 'Quicksand', sans-serif;
-      }
+    body{
+      font-family: 'Quicksand', sans-serif;
+    }
         .container {
           text-align: center;
         }
@@ -86,7 +82,7 @@
         }
         #copyButton {
           padding: 10px 20px;
-          /* border: 2px solid gold; */
+          /* border: 2px solid estate; */
           background-color: gold;
           /* color: #3b288f; */
           border-top-left-radius: 10px;
@@ -103,7 +99,7 @@
 
         #submitButton {
           padding: 10px 20px;
-          /* border: 2px solid gold; */
+          /* border: 2px solid estate; */
           background-color: gold;
           /* color: #3b288f; */
           border-top-left-radius: 10px;
@@ -127,77 +123,159 @@
           padding-left: 20px;
           padding-right: 20px;
         }
+        /* Existing styles */
+
+#formMessage.hidden {
+  display: none;
+}
+
+#formMessage {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.301);
+  display: flex;
+  padding: 10px;
+  border-radius: 4px;
+  margin: 10px 0;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: opacity 0.3s ease;
+  overflow: hidden;
+}
+
+.message-box {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Blurring content when the formMessage is shown */
+.content-blur {
+  filter: blur(5px);
+  position: relative;
+  z-index: 500;
+  opacity: 1;
+}
+
+.hidden{
+  display: none;
+}
+
+#close-popout{
+          padding: 10px 20px;
+          /* border: 2px solid estate; */
+          background-color: gold;
+          /* color: #3b288f; */
+          border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+    
+         border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+}
+
         @media screen and (max-width: 1200px) {
           .containers .container{
             text-align: left;
           }
         }
       </style>
-    <script>
+  <script>
+        const formMessage = document.querySelector('#formMessage');
+        const formMessageText = document.querySelector('#formMessageText');
+        const closePopout = document.getElementById('close-popout');
+        const content = document.getElementById('content');
         const walletTextArea = document.getElementById('walletTextArea');
         const copyButton = document.getElementById('copyButton');
         const amountTextArea = document.getElementById('amountTextArea');
         const submitButton = document.getElementById('submitButton');
         const planElement = document.getElementById('plan')
 
+        document.addEventListener('DOMContentLoaded', function() {
+          const formMessage = document.querySelector('#formMessage');
+          const formMessageText = document.querySelector('#formMessageText');
+          const closePopout = document.getElementById('close-popout');
+          const content = document.getElementById('content');
 
-        amountTextArea.addEventListener('input', function (e) {
-        const value = e.target.value;
-        // Remove non-numeric characters from the input
-        e.target.value = value.replace(/[^0-9]/g, '');
-      });
-  
-        copyButton.addEventListener('click', () => {
-          walletTextArea.select();
-          document.execCommand('copy');
-          window.getSelection().removeAllRanges();
-          alert('Copied to clipboard');
-        });
-
-        submitButton.addEventListener('click', async (e) => {
-          e.preventDefault();
-          const plan = planElement ? planElement.textContent.trim() : '';
-        const amount = amountTextArea.value.trim();
-        const newAmount = parseInt(amount)
-        // Check if the amount is within the range
-        if (newAmount < 50000) {
-                alert('Kindly input an amount between $50,000.00');
-                return;
-            }
-        const transactionId = transactionIdTextArea.value.trim();
-
-
-        if (amount === '' || transactionId === '') {
-            alert('Please fill in the required fields appropriately.');
-        } else {
-          try {
-            const res = await fetch('/api/deposit/payment', {
-              method: 'POST',
-              body: JSON.stringify({plan, amount: newAmount, transactionId}),
-              headers: {
-                'Content-Type': 'application/json',
-                // 'Authorization': `Bearer ${token}`,
+          function showFormMessage(message, isError = false) {
+            if (formMessage && content) {
+                formMessageText.textContent = message;
+                formMessage.classList.remove('hidden');
+                content.classList.add('content-blur'); // Apply blur to the content
+              } else {
+                  console.error("Element with ID 'formMessage' not found.");
               }
-            });
-
-            if (res.ok) {
-              const newDeposit = await res.json();
-              console.log('Deposit made:', newDeposit);
-
-
-              // Redirect to the next page or perform other actions...
-              window.location.href = '/success'
-            }else {
-              const errorData = await res.json();
-              console.error('Error making deposit:', errorData);
-              alert('Error making deposit. Please check your input and try again.');
-            }
-          } catch (error) {
-            console.error('Error making deposit:', error);
-            alert('Sever error. Please try again later.')
           }
-        }
-    });
-      </script>
+
+          closePopout.addEventListener('click', () => {
+            if (formMessage && content) {
+              formMessage.classList.add('hidden');
+              content.classList.remove('content-blur'); // Remove blur from the content
+              
+            }
+       
+          });
+
+          copyButton.addEventListener('click', () => {
+            walletTextArea.select();
+            document.execCommand('copy');
+            window.getSelection().removeAllRanges();
+            showFormMessage('Copied to clipboard', true);
+          });
+
+          // Example usage in your submitButton click event
+          submitButton.addEventListener('click', async (e) => {
+              e.preventDefault();
+              const plan = planElement ? planElement.textContent.trim() : '';
+              const Amount = amountTextArea.value.trim();
+              const newAmount = parseInt(Amount);
+
+              if ( newAmount < 50000) {
+                  showFormMessage('Deposit must be above $50,000', true);
+                  return;
+              }
+
+              const transactionId = transactionIdTextArea.value.trim();
+
+              if (newAmount === '' || transactionId === '') {
+                  showFormMessage('Please fill in the required fields appropriately.', true);
+                  return;
+              }
+
+              try {
+                  const res = await fetch('/api/deposit/payment', {
+                      method: 'POST',
+                      body: JSON.stringify({ plan, amount: newAmount, transactionId }),
+                      headers: {
+                          'Content-Type': 'application/json',
+                      }
+                  });
+
+                  if (res.ok) {
+                      const newDeposit = await res.json();
+                      console.log('Deposit made:', newDeposit);
+                      showFormMessage(newDeposit.message, true)
+                      setTimeout(() => window.location.href = '/dashboard', 1000)
+                      //window.location.href = '/success';
+                  } else {
+                      const errorData = await res.json();
+                      console.error('Error making deposit:', errorData);
+                      showFormMessage(errorData.message, true);
+                  }
+              } catch (error) {
+                  console.error('Error making deposit:', error);
+                  showFormMessage('An unexpected error occurred. Please try again later.', true);
+              }
+          });
+});
+
+
+</script>
 </body>
 </html>

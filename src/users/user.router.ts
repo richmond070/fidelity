@@ -54,21 +54,38 @@ userRouter.post("/signup",
             res.status(201).json({
                 success: true,
                 user: newUser,
-                redirect: '/verify',
-                message: 'signup successful, please login'
+                message: 'Sign Up was successful !!!'
             });
 
-            //email for user registration
-            await userRegistration(newUser)
+            try {
+                // email for user registration
+                await userRegistration(newUser);
+                console.log('Registration email sent successfully');
+            } catch (emailError: any) {
+                console.error('Failed to send registration email:', emailError)
+                return res.status(500).json(emailError.message)
+            }
         } catch (error: any) {
-            return res.status(500).json(error.message);
+            console.error('Error in signup route:', error);
+            let statusCode = 500;
+            let errorMessage = 'Internal server error';
+
+            if (error.message.includes('userName')) {
+                statusCode = 400;
+                errorMessage = 'Username has been taken';
+            } else if (error.message.includes('email')) {
+                statusCode = 400;
+                errorMessage = 'Email is already in use';
+            }
+
+            return res.status(statusCode).json({ message: errorMessage });
         }
     });
 
 
 //Updating a users information
-userRouter.put("/update", body("userName").isString(), body("email").isString(),
-    body("password").isString(), verifyToken, async (req: Request, res: Response) => {
+userRouter.put("/update", body("userName").optional(), body("email").optional(),
+    body("password").optional(), verifyToken, async (req: Request, res: Response) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
@@ -82,9 +99,24 @@ userRouter.put("/update", body("userName").isString(), body("email").isString(),
         try {
             const user = req.body
             const updatedUser = await UserService.updateUser(user, id)
-            return res.status(200).json(updatedUser)
+            return res.status(200).json({
+                updatedUser,
+                message: "Update successful"
+            })
         } catch (error: any) {
-            return res.status(500).json(error.message);
+            console.error('Error in update  route:', error);
+            let statusCode = 500;
+            let errorMessage = 'Internal server error';
+
+            if (error.message.includes('userName')) {
+                statusCode = 400;
+                errorMessage = 'Username has been taken';
+            } else if (error.message.includes('email')) {
+                statusCode = 400;
+                errorMessage = 'Email is already in use';
+            }
+
+            return res.status(statusCode).json({ message: errorMessage });
         }
     });
 
@@ -119,7 +151,7 @@ userRouter.post("/login", async (req: Request, res: Response) => {
         if (token === "") {
             return res.status(400).json({
                 status: "Bad Request!",
-                message: "Wrong email or Password"
+                message: "Wrong username or Password"
             })
         }
         //const res_token = { type: "Bearer", token: token }
@@ -127,18 +159,20 @@ userRouter.post("/login", async (req: Request, res: Response) => {
             { httpOnly: true }
         );
 
-
-
         return res.status(200).json({
             status: "OK!",
             message: "Successfully login",
             result: token,
+            redirectUrl: '/login'
         });
 
 
     } catch (error: any) {
         console.log(error)
-        return res.status(500).json(error.message)
+        return res.status(500).json({
+            status: "Internal Server Error",
+            message: error.message || 'An unexpected error occurred'
+        })
     }
 })
 
@@ -169,12 +203,12 @@ userRouter.post("/login", async (req: Request, res: Response) => {
 userRouter.post("/findUser", async (req: Request, res: Response) => {
 
     try {
-        const { userName, password } = req.body;
-        const token = await UserService.findUser(userName);
+        const { email } = req.body;
+        const token = await UserService.findUser(email);
         if (token === "") {
             return res.status(400).json({
                 status: "Bad Request!",
-                message: "Wrong email or Password"
+                message: "Wrong Email "
             })
         }
         //const res_token = { type: "Bearer", token: token }
@@ -186,14 +220,18 @@ userRouter.post("/findUser", async (req: Request, res: Response) => {
 
         return res.status(200).json({
             status: "OK!",
-            message: "Successfully login",
+            message: "Your account was found",
             result: token,
+            redirectUrl: '/updatePassword'
         });
 
 
     } catch (error: any) {
         console.log(error)
-        return res.status(500).json(error.message)
+        return res.status(500).json({
+            status: "Internal Server Error",
+            message: error.message || 'An unexpected error occurred'
+        })
     }
 })
 
@@ -204,15 +242,19 @@ userRouter.put("/updatePassword", body("password").isString(), verifyToken, asyn
         return res.status(400).json({ errors: errors.array() });
     }
     // Type guard to narrow down the type
-    if (typeof req.user !== 'number') {
+
+    const userId = req.user
+    if (typeof userId !== 'number') {
         return res.status(403).json({ message: 'Invalid user ID' });
     }
-    const userId = req.user
-    const id: number = parseInt(userId, 10);
+
+    const { password } = req.body
+    //const id: number = parseInt(userId, 10);
     try {
-        const user = req.body
-        const updatedUser = await UserService.updateUser(user, id)
-        return res.status(200).json(updatedUser)
+        await UserService.updatePassword(userId, password);
+        // const user = req.body
+        // const updatedUser = await UserService.updateUser(user, id)
+        return res.status(200).json({ message: 'Password updated successfully' })
     } catch (error: any) {
         return res.status(500).json(error.message);
     }

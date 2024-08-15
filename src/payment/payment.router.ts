@@ -79,10 +79,21 @@ paymentRouter.post("/payment", body("transactionId").isString(), body("amount").
             // Call the makeDeposit function to create the deposit
             const newDeposit = await PaymentService.makeDeposit(deposit);
 
-            return res.status(201).json(newDeposit);
+            return res.status(201).json({
+                newDeposit,
+                message: "Congratulations. Your deposit has been successfully submitted. It will become active when the admin confirms it."
+            });
         } catch (error: any) {
-            console.error("error:", error);
-            return res.status(500).json(error.message);
+            console.error('Error in update  route:', error);
+            let statusCode = 500;
+            let errorMessage = 'Internal server error';
+
+            if (error.message.includes('transactionId')) {
+                statusCode = 400;
+                errorMessage = 'Please use a valid ID';
+            }
+
+            return res.status(statusCode).json({ message: errorMessage });
         }
     });
 

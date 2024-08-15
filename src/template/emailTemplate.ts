@@ -87,7 +87,7 @@ export async function processingWithdrawal(withdrawalDetails: any): Promise<void
     }
 }
 
-
+// Email after registration
 export async function userRegistration(userDetails: any): Promise<void> {
     try {
         // Render the EJS template
@@ -113,3 +113,28 @@ export async function userRegistration(userDetails: any): Promise<void> {
 }
 
 
+
+//Email verification 
+export async function emailVerification(userDetails: any): Promise<void> {
+    try {
+        // Render the EJS template
+        const templatePath = path.join(__dirname, '../../views/emailVerification.ejs');
+        const emailContent = await ejs.renderFile(templatePath, {
+            name: userDetails.userName,
+        });
+
+        // Compose the email
+        const mailOptions = {
+            from: "Eternal Trading <support@eternaltrading.org>",
+            to: userDetails.email,
+            subject: 'Request for change of password',
+            html: emailContent,
+        };
+
+        // Send the email using the imported transporter
+        await transporter.sendMail(mailOptions);
+        console.log('Email sent: link sent');
+    } catch (error) {
+        console.error('Error sending email:', error);
+    }
+}

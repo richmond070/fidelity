@@ -168,7 +168,12 @@ export const getAllDeposits = async (req: Request, res: Response) => {
                 amount: true,
                 transactionId: true,
                 plan: true,
-                createdAt: true
+                createdAt: true,
+                user: { // Include user details
+                    select: {
+                        userName: true // Select only the required user fields
+                    }
+                }
             }
         });
         res.render('trans', { deposit: deposit })

@@ -24,31 +24,6 @@
             <div class="logo">
                 <img src="/ASSETS/WHITE.png" alt="Logo" class="imgLogo">
             </div>
-
-            <div class="navigation">
-                <input type="checkbox" class="toggle-menu">
-                <div class="hamburger"></div>
-                <ul class="menu">
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/about">About</a></li>
-            
-
-                    <div class="dropdown">
-                        <li class="dropD"><a href="/plans">Plans</a></li>
-                    
-                    </div>
-
-                    <div class="dropdown">
-                        <li class="dropD"><a href="/contact">Contact</a></li>
-                    
-                    </div>
-
-                    <div class="google" style="display: flex;overflow: hidden;width: 150px;height: 30px;">
-                      <div id="google_translate_element"></div>
-                      </div>
-                </ul>
-
-            </div>
         </header>
     </nav>
 
@@ -63,22 +38,17 @@
       </script>
       <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
-
-
 <form>
   <h2>Register</h2>
   <label for="fullName">Full name</label>
   <input type="text" name="fullName"  />
-  <div class="name error"></div>
   <label for="userName">User Name</label>
   <input type="text" name="userName"  />
-  <div class="email error"></div>
   <label for="email">Email</label>
   <input type="text" name="email"  />
-  <div class="email error"></div>
   <label for="password">Password</label>
   <input type="password" name="password"  />
-  <div class="password error"></div>
+  <div id="formError" class="message"></div>
   <button>Register</button>
   <p id="register">Already have an account? <a href="/login">Login</a></p>
 </form>
@@ -87,15 +57,13 @@
 
 <script>
   const form = document.querySelector('form');
-  const emailError = document.querySelector('.email.error');
-  const passwordError = document.querySelector('.password.error');
+  const formError = document.querySelector('#formError');
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     // reset errors
-    emailError.textContent = '';
-    passwordError.textContent = '';
+    formError.textContent = '';
 
     // get values
     const fullName = form.fullName.value;
@@ -112,17 +80,46 @@
       });
       const data = await res.json();
       console.log(data);
-      if (data.errors) {
-        emailError.textContent = data.errors.email;
-        passwordError.textContent = data.errors.password;
+      if (res.ok && data.success) {
+          formError.textContent = data.message
+            formError.classList.add('success')
+            setTimeout(() => window.location.href = '/verify', 1000)
+        }else {
+        if (data.errors) {
+          // Display the first error message found
+          const firstError = data.errors[0];
+          formError.textContent = firstError.msg;
+          formError.classList.add('error');
+        } else {
+          formError.textContent = data.message || 'An error occurred. Please try again.';
+          formError.classList.add('error');
+        }
       }
-      if (res.ok) {
-        window.location.href = '/verify';
-      }
-
-    }
-    catch (err) {
-      console.log(err);
+    } catch (err) {
+      console.error('Network error:', err);
+      formError.textContent = 'Network error. Please try again.';
+      formError.classList.add('error');
     }
   });
 </script>
+
+<style>
+  /* styles.css */
+
+.message {
+    padding: 10px;
+    border-radius: 4px;
+    margin: 10px 0;
+}
+
+.message.error {
+    color: red;
+    background-color: #fdd;
+}
+
+.message.success {
+    color: green;
+    background-color: #dfd;
+}
+
+</style>

@@ -1,6 +1,7 @@
 <%- include('partial/plansheader'); -%>
     <br> <br> <br><br>
 
+    <div id="contai"></div>
     <div class="container" style="border-top-left-radius: 30px;
     border-top-right-radius: 30px;
     
@@ -45,223 +46,240 @@
     </div><br>
     </div>
   </div>
+</div>
 
-
-
+<div id="formMessage" class="hidden">
+  <div class="message-box">
+      <p id="formMessageText">Message goes here...</p>
+      <button id="close-popout">Close</button>
+  </div>
+</div>
 
 <!-- footer -->
 <%- include('partial/footer'); -%>
 <!-- footer -->
 
 
-
-
-
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
 
-  body{
-    font-family: 'Quicksand', sans-serif;
-  }
-  .container {
-    text-align: center;
-  }
+body{
+  font-family: 'Quicksand', sans-serif;
+}
+    .container {
+      text-align: center;
+    }
+    #walletTextArea {
+      width: 300px;
+      height: 30px;
+      resize: none;
+    }
+    #amountTextArea {
+      width: 300px;
+      height: 30px;
+      resize: none;
+    }
+    #transactionIdTextArea {
+      width: 300px;
+      height: 30px;
+      resize: none;
+    }
+    #copyButton {
+      padding: 10px 20px;
+      /* border: 2px solid estate; */
+      background-color: gold;
+      /* color: #3b288f; */
+      border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
 
-  
-        #walletTextArea {
-          width: 300px;
-          height: 30px;
-          resize: none;
-        }
-        #amountTextArea {
-          width: 300px;
-          height: 30px;
-          resize: none;
-        }
-        #transactionIdTextArea {
-          width: 300px;
-          height: 30px;
-          resize: none;
-        }
-        #copyButton {
-          padding: 10px 20px;
-          /* border: 2px solid gold; */
-          background-color: gold;
-          /* color: #3b288f; */
-          border-top-left-radius: 10px;
-          border-top-right-radius: 10px;
-    
-         border-bottom-left-radius: 10px;
-        border-bottom-right-radius: 10px;
-        }
+     border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    }
 
-        #copyButton:hover{
-            background-color: #3b288f;
-            color: whitesmoke;
-        }
+    #copyButton:hover{
+        background-color: #3b288f;
+        color: whitesmoke;
+    }
 
-        #submitButton {
-          padding: 10px 20px;
-          /* border: 2px solid gold; */
-          background-color: gold;
-          /* color: #3b288f; */
-          border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-    
-         border-bottom-left-radius: 10px;
-        border-bottom-right-radius: 10px;
-        }
+    #submitButton {
+      padding: 10px 20px;
+      /* border: 2px solid estate; */
+      background-color: gold;
+      /* color: #3b288f; */
+      border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
 
-        #submitButton:hover{
-            background-color: #3b288f;
-            color: whitesmoke;
-        }
-        .containerss{
-          border-top-left-radius: 30px;
-          border-top-right-radius: 30px;
-          
-          border-bottom-left-radius: 30px;
-          border-bottom-right-radius: 30px;
-          background-color: whitesmoke;
-          padding-left: 20px;
-          padding-right: 20px;
-        }
+     border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    }
 
-        @media screen and (max-width: 1200px) {
-          .containers .container{
-            text-align: left;
+    #submitButton:hover{
+        background-color: #3b288f;
+        color: whitesmoke;
+    }
+    .containerss{
+      border-top-left-radius: 30px;
+      border-top-right-radius: 30px;
+      
+      border-bottom-left-radius: 30px;
+      border-bottom-right-radius: 30px;
+      background-color: whitesmoke;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+    /* Existing styles */
+
+#formMessage.hidden {
+display: none;
+}
+
+#formMessage {
+position: fixed;
+top: 0;
+left: 0;
+width: 100vw;
+height: 100vh;
+background-color: rgba(0, 0, 0, 0.301);
+display: flex;
+padding: 10px;
+border-radius: 4px;
+margin: 10px 0;
+text-align: center;
+align-items: center;
+justify-content: center;
+z-index: 1000;
+transition: opacity 0.3s ease;
+overflow: hidden;
+}
+
+.message-box {
+background: rgba(255, 255, 255, 0.9);
+padding: 20px;
+border-radius: 10px;
+text-align: center;
+box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Blurring content when the formMessage is shown */
+.content-blur {
+filter: blur(5px);
+position: relative;
+z-index: 500;
+opacity: 1;
+}
+
+.hidden{
+display: none;
+}
+
+#close-popout{
+      padding: 10px 20px;
+      /* border: 2px solid estate; */
+      background-color: gold;
+      /* color: #3b288f; */
+      border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+
+     border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+    @media screen and (max-width: 1200px) {
+      .containers .container{
+        text-align: left;
+      }
+    }
+  </style>
+<script>
+    const formMessage = document.querySelector('#formMessage');
+    const formMessageText = document.querySelector('#formMessageText');
+    const closePopout = document.getElementById('close-popout');
+    const content = document.getElementById('content');
+    const walletTextArea = document.getElementById('walletTextArea');
+    const copyButton = document.getElementById('copyButton');
+    const amountTextArea = document.getElementById('amountTextArea');
+    const submitButton = document.getElementById('submitButton');
+    const planElement = document.getElementById('plan')
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const formMessage = document.querySelector('#formMessage');
+      const formMessageText = document.querySelector('#formMessageText');
+      const closePopout = document.getElementById('close-popout');
+      const content = document.getElementById('content');
+
+      function showFormMessage(message, isError = false) {
+        if (formMessage && content) {
+            formMessageText.textContent = message;
+            formMessage.classList.remove('hidden');
+            content.classList.add('content-blur'); // Apply blur to the content
+          } else {
+              console.error("Element with ID 'formMessage' not found.");
           }
+      }
+
+      closePopout.addEventListener('click', () => {
+        if (formMessage && content) {
+          formMessage.classList.add('hidden');
+          content.classList.remove('content-blur'); // Remove blur from the content
+          
         }
-
-      </style>
-
-    <script>
-      const walletTextArea = document.getElementById('walletTextArea');
-      const copyButton = document.getElementById('copyButton');
-      const amountTextArea = document.getElementById('amountTextArea');
-      const submitButton = document.getElementById('submitButton');
-      const planElement = document.getElementById('plan')
-
-
-      amountTextArea.addEventListener('input', function (e) {
-        e.preventDefault();
-        const value = e.target.value;
-        // Remove non-numeric characters from the input
-        e.target.value = value.replace(/[^0-9]/g, '');
-      });
-  
-      copyButton.addEventListener('click', (e) => {
-          e.preventDefault();
-          walletTextArea.select();
-          document.execCommand('copy');
-          window.getSelection().removeAllRanges();
-          alert('Copied to clipboard');
+   
       });
 
+      copyButton.addEventListener('click', () => {
+        walletTextArea.select();
+        document.execCommand('copy');
+        window.getSelection().removeAllRanges();
+        showFormMessage('Copied to clipboard', true);
+      });
+
+      // Example usage in your submitButton click event
       submitButton.addEventListener('click', async (e) => {
-        e.preventDefault();
-        const plan = planElement ? planElement.textContent.trim() : '';
-        const amount = amountTextArea.value.trim();
-        const newAmount = parseInt(amount)
-        // Check if the amount is within the range
-        if (newAmount < 50 || newAmount > 1500) {
-          alert('Kindly input an amount between $50 and $1500');
-          return;
-        }
-        const transactionId = transactionIdTextArea.value.trim();
+          e.preventDefault();
+          const plan = planElement ? planElement.textContent.trim() : '';
+          const Amount = amountTextArea.value.trim();
+          const newAmount = parseInt(Amount);
 
+          if (newAmount < 50 || newAmount > 1500) {
+              showFormMessage('Deposit must be between $50 & $1500', true);
+              return;
+          }
 
-        if (amount === '' || transactionId === '') {
-          alert('Please fill in the required fields appropriately.');
-        } 
+          const transactionId = transactionIdTextArea.value.trim();
+
+          if (newAmount === '' || transactionId === '') {
+              showFormMessage('Please fill in the required fields appropriately.', true);
+              return;
+          }
 
           try {
-            const res = await fetch('/api/deposit/payment', {
-              method: 'POST',
-              body: JSON.stringify({plan, amount: newAmount, transactionId}),
-              headers: {
-                'Content-Type': 'application/json',
-                // 'Authorization': `Bearer ${token}`,
+              const res = await fetch('/api/deposit/payment', {
+                  method: 'POST',
+                  body: JSON.stringify({ plan, amount: newAmount, transactionId }),
+                  headers: {
+                      'Content-Type': 'application/json',
+                  }
+              });
+
+              if (res.ok) {
+                  const newDeposit = await res.json();
+                  console.log('Deposit made:', newDeposit);
+                  showFormMessage(newDeposit.message, true)
+                  setTimeout(() => window.location.href = '/dashboard', 1000)
+                  //window.location.href = '/success';
+              } else {
+                  const errorData = await res.json();
+                  console.error('Error making deposit:', errorData);
+                  showFormMessage(errorData.message, true);
               }
-            });
-
-            if (res.ok) {
-              const newDeposit = await res.json();
-              console.log('Deposit made:', newDeposit);
-
-
-              // Redirect to the next page or perform other actions...
-              window.location.href = '/success'
-            }else {
-              const errorData = await res.json();
-              console.error('Error making deposit:', errorData);
-              alert('Error making deposit. Please check your input and try again.');
-            }
           } catch (error) {
-            console.error('Error making deposit:', error);
-            alert('An unexpected error occurred. Please try again later.')
+              console.error('Error making deposit:', error);
+              showFormMessage('An unexpected error occurred. Please try again later.', true);
           }
       });
+});
 
 
-      // // Function to retrieve cookie value by name
-      // function getCookie(name) {
-      //   const cookies = document.cookie.split(';');
-      //   for (const cookie of cookies) {
-      //     const [cookieName, cookieValue] = cookie.trim().split('=');
-      //     if (cookieName === name) {
-      //       return cookieValue;
-      //     }
-      //   }
-      //   return null;
-      // }
-
-        // const amountTextArea = document.getElementById('amountTextArea');
-        // const transactionIdTextArea = document.getElementById('transactionIdTextArea');
-        // //const userIdTextArea = document.getElementById('userIdTextArea');
-        // //const createdAtTextArea = document.getElementById('createdAtTextArea');
-        // const submitButton = document.getElementById('submitButton');
-
-        // submitButton.addEventListener('click', async () => {
-        //   const amount = amountTextArea.value.trim();
-        //   const transactionId = transactionIdTextArea.value.trim();
-        //   //const userId = userIdTextArea.value.trim();
-        //   //const createdAt = createdAtTextArea.value.trim(); // Assuming createdAt is in a valid date format
-
-        //   if (amount === '' || transactionId === '') {
-        //     alert('Please fill in all the required fields appropriately.');
-        //   } else {
-        //     // Retrieve the 'jwt' cookie value
-        //     const jwtToken = getCookie('jwt');
-
-        //     // Make a POST request to store the deposit
-        //     try {
-        //       const response = await fetch('/payment', {
-        //         method: 'POST',
-        //         headers: {
-        //           'Content-Type': 'application/json',
-        //           'Authorization': 'Bearer ' + jwtToken,
-        //         },
-        //         body: JSON.stringify({ amount, transactionId, }),
-        //       });
-
-        //       if (response.ok) {
-        //         const newDeposit = await response.json();
-        //         console.log('Deposit made:', newDeposit);
-        //         // Redirect to the next page or perform other actions...
-        //       } else {
-        //         const errorData = await response.json();
-        //         console.error('Error making deposit:', errorData);
-        //         alert('Error making deposit. Please check your input and try again.');
-        //       }
-        //     } catch (error) {
-        //       console.error('Error making deposit:', error);
-        //       alert('An unexpected error occurred. Please try again later.');
-        //     }
-        //   }
-        // });
-
-
-    </script>
+</script>
 </body>
 </html> 

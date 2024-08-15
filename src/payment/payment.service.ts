@@ -3,6 +3,7 @@ import { verifyToken } from "../utils/auth";
 import { User, getUser } from "../users/users.service"
 import { Request, Response } from "express";
 import { promises } from "dns";
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 type Deposit = {
     id: number;
@@ -20,6 +21,10 @@ type DepositMade = {
     isVerified?: boolean;
 };
 
+// prisma unique constraint for error handling 
+interface PrismaUniqueConstraintErrorMeta {
+    target: string[];
+}
 interface PlanConfig {
     returnRate: number;
     durationInMs: number;
@@ -116,15 +121,27 @@ export const makeDeposit = async (deposit: Omit<DepositMade, "createdAt">): Prom
     const { transactionId, amount, userId, plan } = deposit;
     // const parsedDate: Date = new Date(createdAt);
 
-    return prisma.deposit.create({
-        data: {
-            transactionId,
-            amount,
-            userId,
-            plan,
-            isVerified: false
+    try {
+        return prisma.deposit.create({
+            data: {
+                transactionId,
+                amount,
+                userId,
+                plan,
+                isVerified: false
+            }
+        })
+    } catch (error: any) {
+        if (error instanceof PrismaClientKnownRequestError) {
+            if (error.code === 'P2002') {
+                const meta = error.meta as unknown as PrismaUniqueConstraintErrorMeta; // Type assertion
+                const targetField = meta.target[0];
+                throw new Error(`${targetField} is already in use`);
+            }
         }
-    })
+        throw error; // Re-throw the error if it's not handled
+    }
+
 };
 
 // to delete a particular payment 

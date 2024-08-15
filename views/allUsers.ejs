@@ -44,6 +44,10 @@
             table {
                 font-size: 12px;
             }
+
+            .user-id-column{
+                display: none;
+            }
         }
     </style>
     <title>User Details Table</title>
@@ -53,7 +57,7 @@
     <table>
         <thead>
             <tr>
-                <th>User ID</th>
+                <th class="user-id-column">User ID</th>
                 <th>Fullname</th>
                 <th>Username</th>
                 <th>Email</th>
@@ -63,7 +67,7 @@
             <!-- User details rows will be added here using JavaScript -->
             <% user.forEach(user => { %>
                 <tr>
-                    <td><%= user.id %></td>
+                    <td class="user-id-column"><%= user.id %></td>
                     <td><%= user.fullName %></td>
                     <td><%= user.userName %></td>
                     <td><%= user.email %></td>
