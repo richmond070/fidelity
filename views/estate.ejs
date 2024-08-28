@@ -8,8 +8,7 @@ border-top-right-radius: 30px;
 border-bottom-left-radius: 30px;
 border-bottom-right-radius: 30px;background-color: whitesmoke;  " >
     <div style="display: block;">
-    <h1 id="plan"><strong>REAL ESTATE</strong></h1>
-
+    <h1><strong>REAL ESTATE</strong></h1>
     <h4>Please confirm your deposit</h4>
     </div> </div>
     <br> <br>
@@ -20,7 +19,8 @@ border-bottom-right-radius: 30px;background-color: whitesmoke;  " >
       <center>
        
         <h3>Order Summary:</h3>
-        <h6 id=" plan">Real estate </h6>
+        <h6>Real estate </h6>
+        <h6 id="plan" style="display: none;"> RealEstate</h6>
         <h6><strong>Profit:</strong> 75% biweekly </h6>
 
         <h6><strong>Principal return:</strong> Yes </h6>
@@ -230,12 +230,13 @@ display: none;
    
       });
 
-      copyButton.addEventListener('click', () => {
-        walletTextArea.select();
-        document.execCommand('copy');
-        window.getSelection().removeAllRanges();
-        showFormMessage('Copied to clipboard', true);
-      });
+      copyButton.addEventListener('click', async (e) => {
+    e.preventDefault();
+    walletTextArea.select();
+    document.execCommand('copy');
+    window.getSelection().removeAllRanges();
+    showFormMessage('Copied to clipboard', true);
+  });
 
       // Example usage in your submitButton click event
       submitButton.addEventListener('click', async (e) => {
@@ -269,7 +270,7 @@ display: none;
                   const newDeposit = await res.json();
                   console.log('Deposit made:', newDeposit);
                   showFormMessage(newDeposit.message, true)
-                  setTimeout(() => window.location.href = '/dashboard', 4000)
+                  setTimeout(() => window.location.href = '/dashboard', 3000)
                   //window.location.href = '/success';
               } else {
                   const errorData = await res.json();

@@ -81,9 +81,19 @@ export async function listUnverifiedWithdrawal(req: Request, res: Response) {
 //verify all unverified payments 
 export async function verifyWithdrawal(req: Request, res: Response): Promise<void> {
     try {
+        // get the id 
+        const { id } = req.body
+
+        if (!id) {
+            console.error('Deposit ID is missing in request')
+            res.status(400).json({ error: 'Deposit ID is required' })
+            return
+        }
+
         //get the user withdrawal details 
-        const withdrawDetails = await prisma.withdrawal.findFirst({
+        const unverifiedWithdrawDetails = await prisma.withdrawal.findUnique({
             where: {
+                id: id,
                 isVerified: false
             },
             include: {
@@ -91,21 +101,16 @@ export async function verifyWithdrawal(req: Request, res: Response): Promise<voi
             }
         })
 
-        if (!withdrawDetails) {
+        if (!unverifiedWithdrawDetails) {
             res.status(404).json({ error: 'No unverified deposit found' })
             return;
         }
-
-        // Ensure that the id is of type number
-        const withdrawalId = withdrawDetails.id;
-
-        console.log('Withdrawal ID:', withdrawalId); // Log withdrawalId for debugging
 
 
         // Verify the deposit
         const updatedWithdrawal = await prisma.withdrawal.update({
             where: {
-                id: withdrawalId,
+                id: id,
             },
             data: {
                 isVerified: true,
@@ -118,7 +123,7 @@ export async function verifyWithdrawal(req: Request, res: Response): Promise<voi
         }
 
         // // Send email to the user
-        await processingWithdrawal(withdrawDetails);
+        await processingWithdrawal(unverifiedWithdrawDetails);
 
 
         res.status(200).json({ message: 'Withdrawal verified successfully' });

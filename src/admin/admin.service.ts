@@ -334,9 +334,13 @@ export async function getUnverifiedDeposits(res: Response, req: Request): Promis
             where: {
                 isVerified: false,
             }, select: {
+                id: true,
                 amount: true,
                 transactionId: true,
                 plan: true
+            },
+            orderBy: {
+                id: 'asc'
             }
         });
 
@@ -350,10 +354,20 @@ export async function getUnverifiedDeposits(res: Response, req: Request): Promis
 
 //to verify a deposit 
 export async function verifyDeposit(req: Request, res: Response): Promise<void> {
+    console.log('Received request body:', req.body)
     try {
+        const { transactionId } = req.body;
+        console.log('Extracted depositId:', transactionId)
+        if (!transactionId) {
+            console.error('Deposit ID is missing in request')
+            res.status(400).json({ error: 'Deposit ID is required' })
+            return
+        }
+
         //get the user deposit details 
-        const depositDetails = await prisma.deposit.findFirst({
+        const depositDetails = await prisma.deposit.findUnique({
             where: {
+                transactionId: transactionId,
                 isVerified: false
             },
             include: {
@@ -369,7 +383,7 @@ export async function verifyDeposit(req: Request, res: Response): Promise<void> 
         // Verify the deposit
         await prisma.deposit.update({
             where: {
-                id: depositDetails.id,
+                transactionId: transactionId,
             },
             data: {
                 isVerified: true,
@@ -380,7 +394,7 @@ export async function verifyDeposit(req: Request, res: Response): Promise<void> 
         await sendDepositConfirmationEmail(depositDetails);
 
 
-        //res.status(200).json({ message: 'Deposit verified successfully' });
+        res.status(200).json({ message: 'Deposit verified successfully' });
     } catch (error) {
         console.error('Error in verifyDeposit:', error);
         res.status(500).json({ error: 'Internal Server Error' });

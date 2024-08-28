@@ -53,6 +53,7 @@
                     <section class="transaction-history">
                         <table id="transaction-history-table">
                             <tr>
+                                
                                <th>Username</th> 
                                 <th class="transaction-id-column">Wallet Address</th>
                                 <th>Action</th>
@@ -89,7 +90,7 @@
                 <button>send</button>
               </form>
 
-    <script>
+<script>
         const primaryNav = document.querySelector(".primary-navigation");
         const navToggle =  document.querySelector(".mobile-nav-toggle");
 
@@ -123,7 +124,7 @@
         } else {
             console.error('Failed to fetch deposit data from the server');
         }
-        };
+    };
 
         depositXhr.onerror = function() {
         console.error('Failed to fetch deposit data from the server');
@@ -131,65 +132,76 @@
 
         depositXhr.send();
 
+        // function renderDepositData(depositData) {
+        // const depositTable = document.getElementById('deposit-table');
+        // depositTable.innerHTML = '';
+
         function renderDepositData(depositData) {
-        const depositTable = document.getElementById('deposit-table');
-        depositTable.innerHTML = '';
-
-        depositData.forEach(deposit => {
-            const row = document.createElement('tr');
-
-            const transactionIdCell = document.createElement('td');
-            transactionIdCell.textContent = deposit.transactionId;
-
-            const amountCell = document.createElement('td');
-            amountCell.textContent = deposit.amount;
-
-            const planCell = document.createElement('td');
-            planCell.textContent = deposit.plan;
-
-            const actionCell = document.createElement('td');
-            const verifyButton = document.createElement('button');
-            verifyButton.textContent = 'Verify Plan';
-            verifyButton.classList.add('verify-button');
-            verifyButton.addEventListener('click', function() {
-            // Add verification logic for deposit here
-            //send a POST request to /api/verifyDeposit
-            fetch('/api/admin/verify-deposit', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({}),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    //to handle the response data as needed
-                    console.log(data);
-                    alert('Payment confirmed ')
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                })
-            // alert('Deposit verified for transaction ID: ' + deposit.transactionId);
+            const depositTable = document.getElementById('deposit-table');
+            depositTable.innerHTML ='';
+            depositData.forEach(deposit => {
+                const row = document.createElement('tr');
+                const transactionCell = document.createElement('td');
+                transactionCell.textContent = deposit.transactionId;
+                const amountCell = document.createElement('td');
+                amountCell.textContent = deposit.amount;
+                const planCell = document.createElement('td');
+                planCell.textContent = deposit.plan;
+                const actionCell = document.createElement('td');
+                const verifyButton = document.createElement('button');
+                verifyButton.textContent = 'Verify Plan';
+                verifyButton.classList.add('verify-button');
+            
+                verifyButton.addEventListener('click', function() {
+                    verifyDeposit(deposit.transactionId);
+                });
+                actionCell.appendChild(verifyButton);
+                row.appendChild(transactionCell);
+                row.appendChild(amountCell);
+                row.appendChild(planCell);
+                row.appendChild(actionCell);
+                depositTable.appendChild(row);
             });
-
-            actionCell.appendChild(verifyButton);
-
-            row.appendChild(transactionIdCell);
-            row.appendChild(amountCell);
-            row.appendChild(planCell);
-            row.appendChild(actionCell);
-
-            depositTable.appendChild(row);
-        });
         }
 
-        // Client-side JavaScript (AJAX) for Withdrawal Data
-        const withdrawalXhr = new XMLHttpRequest();
-        withdrawalXhr.open('GET', '/api/withdrawal/listWithdrawal', true);
+        function verifyDeposit(transactionId) {
+            console.log('verifyDeposit called with ID:', transactionId)
+            if (!transactionId) {
+                console.error('Deposit Id is missing')
+                alert('Deposit Id is missing. Cannot verify deposit.');
+                return;
+            }
+            fetch('/api/admin/verify-deposit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({transactionId: transactionId})
+            })
+            .then(response => {
+                if (!response.ok){
+                   return response.json().then(err => {throw err;});
+                }
+                return response.json()
+            })
+            .then(data => {
+                console.log(data);
+                alert('Payment confirmed');
 
-        withdrawalXhr.onload = function() {
-        if (withdrawalXhr.status >= 200 && withdrawalXhr.status < 400) {
+                // depositXhr.send();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to verify deposit: ${error.message}' || 'Please try again.')
+            });
+        }
+
+    // Client-side JavaScript (AJAX) for Withdrawal Data
+    const withdrawalXhr = new XMLHttpRequest();
+    withdrawalXhr.open('GET', '/api/withdrawal/listWithdrawal', true);
+
+    withdrawalXhr.onload = function() {
+    if (withdrawalXhr.status >= 200 && withdrawalXhr.status < 400) {
             try {
             const withdrawalResponse = JSON.parse(withdrawalXhr.responseText);
             const withdrawalData = withdrawalResponse.withdraw;
@@ -204,21 +216,25 @@
         } else {
             console.error('Failed to fetch withdrawal data from the server');
         }
-        };
+    };
 
-        withdrawalXhr.onerror = function() {
+    withdrawalXhr.onerror = function() {
         console.error('Failed to fetch withdrawal data from the server');
-        };
+    };
 
         withdrawalXhr.send();
 
-        function renderWithdrawalData(withdrawalData) {
+    
+
+    function renderWithdrawalData(withdrawalData) {
         const withdrawalTable = document.getElementById('withdrawal-table');
         withdrawalTable.innerHTML = '';
 
         withdrawalData.forEach(withdrawal => {
             const row = document.createElement('tr');
 
+            const IdCell = document.createElement('td');
+            IdCell.textContent = withdrawal.id
             const usernameCell = document.createElement('td');
             usernameCell.textContent = withdrawal.user.userName;
 
@@ -230,42 +246,57 @@
             verifyButton.textContent = 'Verify Withdrawal';
             verifyButton.classList.add('verify-button');
             verifyButton.addEventListener('click', function() {
-            // Add verification logic for withdrawal here
-            //send a POST request to /api/verifyDeposit
-            fetch('/api/withdrawal/verifyWithdrawal', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({}),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    //to handle the response data as needed
-                    console.log(data);
-                    alert('Withdrawal Processing')
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                })
-            // alert('Withdrawal verified for transaction ID: ' + withdrawal.transactionId);
+                verifyWithdrawal(withdrawal.id)
             });
 
             actionCell.appendChild(verifyButton);
-
             row.appendChild(usernameCell);
             row.appendChild(walletAddressCell);
             row.appendChild(actionCell);
 
             withdrawalTable.appendChild(row);
-        });
-        }
 
-        //withdrawal confirmation
-        const form = document.querySelector('form');
+        });
+    }
+
+    function verifyWithdrawal(id) {
+        console.log('verifyDeposit called with ID:', id)
+        if (!id) {
+            console.error('Withdrawal Id is missing')
+            alert('Withdrawal Id is missing. Cannot verify deposit.');
+            return;
+        }
+        fetch('/api/withdrawal/verifyWithdrawal', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({id:id}),
+        })
+        .then(response => {
+            if (!response.ok){
+                return response.json().then(err => {throw err;});
+            }
+            return response.json()
+        })
+        .then(data => {
+            //to handle the response data as needed
+            console.log(data);
+            alert('Withdrawal Processing')
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        })
+    }
+
+
+
+    
+    //withdrawal confirmation
+    const form = document.querySelector('form');
   
 
-        form.addEventListener('submit', async (e) => {
+    form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             // get values
@@ -293,7 +324,7 @@
             catch (err) {
             console.log(err);
             }
-        });
+    });
 </script>
 </body>
 <style>

@@ -226,7 +226,8 @@ display: none;
    
       });
 
-      copyButton.addEventListener('click', () => {
+      copyButton.addEventListener('click', async (e) => {
+        e.preventDefault();
         walletTextArea.select();
         document.execCommand('copy');
         window.getSelection().removeAllRanges();
@@ -265,7 +266,7 @@ display: none;
                   const newDeposit = await res.json();
                   console.log('Deposit made:', newDeposit);
                   showFormMessage(newDeposit.message, true)
-                  setTimeout(() => window.location.href = '/dashboard', 4000)
+                  setTimeout(() => window.location.href = '/dashboard', 1000)
                   //window.location.href = '/success';
               } else {
                   const errorData = await res.json();
