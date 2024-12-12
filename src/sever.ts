@@ -131,13 +131,14 @@ app.get('/dashboard', verifyToken, authorization('USER'), async (req, res) => {
         const users = await UserService.getUser(id);
         const totalBalance = await PaymentService.getFinalBalance(id)
         const withdraw = await PaymentService.totalWithdraws(id)
+        const activeInvestment = await PaymentService.activeInvestment(id)
 
         console.log('deposit:', deposits)
         console.log('roi:', roi)
         console.log('balance:', balance)
         console.log('user:', users)
         // Render the EJS template and pass the data
-        res.render('dashboard1', { deposits, roi, balance, users, totalBalance, withdraw });
+        res.render('dashboard1', { deposits, roi, balance, users, totalBalance, withdraw, activeInvestment });
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }

@@ -1,8 +1,4 @@
 import { prisma } from "../utils/db.sever";
-import { verifyToken } from "../utils/auth";
-import { User, getUser } from "../users/users.service"
-import { Request, Response } from "express";
-import { promises } from "dns";
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 type Deposit = {
@@ -32,24 +28,24 @@ interface PlanConfig {
 
 const PlanConfigs: Record<string, PlanConfig> = {
     PRIME: {
-        returnRate: 0.1,
+        returnRate: 0.2,
         durationInMs: 48 * 60 * 60 * 1000, //48hours
     },
     STANDARD: {
-        returnRate: 0.15,
+        returnRate: 0.25,
         durationInMs: 48 * 60 * 60 * 1000, //48days 
     },
 
     GOLD: {
-        returnRate: 0.38,
+        returnRate: 0.4,
         durationInMs: 48 * 60 * 60 * 1000, //1 week
     },
     PLATINUM: {
-        returnRate: 0.50,
+        returnRate: 0.52,
         durationInMs: 48 * 60 * 60 * 1000, //48days
     },
     INSURANCE: {
-        returnRate: 0.2,
+        returnRate: 0.25,
         durationInMs: 7 * 24 * 60 * 60 * 1000, //1 week
     },
     RealEstate: {
@@ -290,3 +286,53 @@ export async function updateDepositAmount(username: string, email: string, trans
 }
 
 
+// Function for active investment
+// check if the user has bought any plan 
+// check if the roi of that plan has been added to the balance
+// if the time for the plan has been met then the active investment should return to 0 
+// if not the amount should remain the same till the roi has been added  
+
+export const activeInvestment = async (userId: number): Promise<number> => {
+    const deposits = await prisma.deposit.findMany({
+        where: {
+            userId: userId,
+            isVerified: true,
+            plan: {
+                in: Object.keys(PlanConfigs)
+            }
+        },
+        include: {
+            user: true
+        }
+    });
+
+    const currentDate = new Date();
+
+    const calculateActiveInvestment = (deposit: any) => {
+        const planConfig = PlanConfigs[deposit.plan];
+        const depositDate = new Date(deposit.createdAt);
+        const timeElapsed = currentDate.getTime() - depositDate.getTime();
+        const totalDuration = planConfig.durationInMs;
+        const totalReturnRate = planConfig.returnRate;
+
+        // If investment period is complete
+        if (timeElapsed >= totalDuration) {
+            return 0;
+        }
+
+        // Calculate hourly ROI accumulation
+        const hoursElapsed = Math.floor(timeElapsed / (60 * 60 * 1000));
+        const hourlyReturnRate = totalReturnRate / (totalDuration / (60 * 60 * 1000));
+        const accumulatedROI = deposit.amount * (hoursElapsed * hourlyReturnRate);
+
+        // Return deposit amount plus accumulated ROI
+        return deposit.amount + accumulatedROI;
+    };
+
+    // Calculate total active investment with gradual ROI
+    const totalActiveInvestment = deposits.reduce((total, deposit) => {
+        return total + calculateActiveInvestment(deposit);
+    }, 0);
+
+    return Math.round(totalActiveInvestment * 10) / 10;
+};

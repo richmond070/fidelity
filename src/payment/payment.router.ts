@@ -186,3 +186,31 @@ paymentRouter.put('/update-deposit', async (req: Request, res: Response) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+
+// Route for getting active investment
+paymentRouter.get("/active-investment", verifyToken, async (req: Request, res: Response) => {
+    try {
+        // Type guard to narrow down the type
+        if (typeof req.user !== 'number') {
+            return res.status(403).json({ message: 'Invalid user ID' });
+        }
+        const user = req.user;
+        const id: number = parseInt(user, 10);
+
+        // Call the activeInvestment function to get current active investment
+        const activeInvestmentAmount = await PaymentService.activeInvestment(id);
+
+        // Return the active investment amount
+        return res.status(200).json({
+            data: activeInvestmentAmount,
+            message: "Active investment amount retrieved successfully"
+        });
+    } catch (error: any) {
+        console.error('Error retrieving active investment:', error);
+        return res.status(500).json({
+            message: "Error retrieving active investment",
+            error: error.message
+        });
+    }
+});
