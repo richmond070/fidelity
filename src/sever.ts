@@ -24,7 +24,9 @@ import { cookie } from "express-validator";
 import { adminRouter } from "./admin/admin.router";
 import { prisma } from "./utils/db.sever";
 import { mailRoute } from "./handler/mailRoute";
+import { installmentRouter } from "./installmentPayment/installment.router";
 
+import { planConfigs } from "./utils/payment.constants"
 
 
 
@@ -61,7 +63,8 @@ app.use("/api/user", userRouter);
 app.use("/api/deposit", paymentRouter);
 app.use("/api/withdrawal", withdrawRouter);
 
-// app.use("/api/trans", transactionRouter);
+app.use('/api', installmentRouter);
+app.use('/api', planConfigs);
 app.use("/api/admin", adminRouter)
 app.use('/api', mailRoute);
 //app.use(userToken);
@@ -103,16 +106,6 @@ app.get('/test', async (req, res) => {
     res.render('test')
 });
 
-app.get('/basic', verifyToken, (req, res) => res.render('basic'));
-app.get('/estate', verifyToken, (req, res) => res.render('estate'));
-app.get('/etf', verifyToken, (req, res) => res.render('etf'));
-app.get('/gold', verifyToken, (req, res) => res.render('gold'));
-app.get('/immigration', verifyToken, (req, res) => res.render('immigration'));
-app.get('/insurance', verifyToken, (req, res) => res.render('insurance'));
-app.get('/merger', verifyToken, (req, res) => res.render('merger'));
-app.get('/platinum', verifyToken, (req, res) => res.render('platinum'));
-app.get('/standard', verifyToken, (req, res) => res.render('standard'));
-
 app.get('/login', (req, res) => res.render('login'));
 app.get('/register', (req, res) => res.render('register'));
 app.get('/password', (req, res) => res.render('password'));
@@ -132,6 +125,7 @@ app.get('/dashboard', verifyToken, authorization('USER'), async (req, res) => {
         const totalBalance = await PaymentService.getFinalBalance(id)
         const withdraw = await PaymentService.totalWithdraws(id)
         const activeInvestment = await PaymentService.activeInvestment(id)
+
 
         console.log('deposit:', deposits)
         console.log('roi:', roi)
@@ -193,7 +187,9 @@ app.get('/withdraw', verifyToken, async (req, res) => {
     }
 });
 
-
+app.get('/installmentPay', verifyToken, (req, res) => res.render('installmentPay'));
+app.get('/verifyInstallment', (req, res) => res.render('verifyInstallment'));
+app.get('/installmentTransaction', verifyToken, (req, res) => res.render('installmentTransaction'));
 
 httpServer.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);

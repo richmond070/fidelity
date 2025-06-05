@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "windows"]
@@ -12,29 +9,32 @@ datasource db {
 }
 
 model User {
-  id                   Int          @id @default(autoincrement())
-  createdAt            DateTime     @default(now())
-  updateAt             DateTime     @updatedAt
+  id                   Int           @id @default(autoincrement())
+  createdAt            DateTime      @default(now())
+  updateAt             DateTime      @updatedAt
   fullName             String
-  userName             String       @unique
-  email                String       @unique
+  userName             String        @unique
+  email                String        @unique
   password             String
-  passwordUpdatedCount Int          @default(0)
-  role                 Roles        @default(USER)
+  role                 Roles         @default(USER)
+  isActive             Boolean       @default(true)
+  passwordUpdatedCount Int           @default(0)
   Deposit              Deposit[]
+  Installment          Installment[]
+  UserPlan             UserPlan[]
   Withdrawal           Withdrawal[]
 }
 
 model Deposit {
   id            Int      @id @default(autoincrement())
   createdAt     DateTime @default(now()) @db.Date
-  plan          String
   amount        Int
+  userId        Int
   transactionId String   @unique
   isVerified    Boolean
+  plan          String
   isUpdated     Boolean  @default(false)
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId        Int
 }
 
 model Withdrawal {
@@ -43,8 +43,34 @@ model Withdrawal {
   amount        Int     @default(0)
   batch_id      String  @default("abcd")
   isVerified    Boolean
-  user          User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        Int
+  user          User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Installment {
+  id             Int      @id @default(autoincrement())
+  userId         Int
+  user           User     @relation(fields: [userId], references: [id])
+  plan           String
+  amountPaid     Float    @default(0)
+  targetAmount   Float
+  transactionId  String   @unique
+  status         String
+  paymentHistory Json? // Store array of payments like [{ amount, date }]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([userId, plan, status])
+}
+
+model UserPlan {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  plan      String
+  startDate DateTime
+  endDate   DateTime
+  status    String
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 enum Roles {

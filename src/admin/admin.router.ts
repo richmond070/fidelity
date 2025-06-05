@@ -22,7 +22,7 @@ import { authorization } from "../utils/auth";
 export const adminRouter = Router();
 
 adminRouter.post("/user", createUser);
-adminRouter.get("/user", getUser);
+adminRouter.get("/getUser", getUser);
 adminRouter.get("/users", getUsers);
 adminRouter.delete("/user:id", deleteUser);
 
@@ -45,7 +45,7 @@ adminRouter.delete("/admin:id", deleteAdmin);
 adminRouter.get('/unverified-deposits', authorization('ADMIN'));
 
 // API endpoint to verify a deposit
-adminRouter.post('/verify-deposit', authorization('ADMIN'), verifyDeposit);
+adminRouter.post('/verify-deposit',authorization('ADMIN'), verifyDeposit);
 
 //Endpoint for withdraw
-adminRouter.put('/withdrawUpdate', updateWithdraw);
+adminRouter.put('/withdrawUpdate', authorization('ADMIN'), updateWithdraw);

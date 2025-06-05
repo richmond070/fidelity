@@ -2,720 +2,587 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eternal trading</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <script src="https://kit.fontawesome.com/cb0f802460.js" crossorigin="anonymous"></script>
-        <script src="https://cdn.tailwindcss.com"></script>
-        <script src="//code.jivosite.com/widget/6jdcoEmw88" async></script>
+    <title>EternalTradings Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffff 0%, #ffff 100%);
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background:linear-gradient(180deg, #3b288f 0%, #6b58bf 100%);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2rem 0;
+            transition: transform 0.3s ease;
+            position: fixed;
+            height: 100vh;
+            z-index: 1000;
+        }
+
+        .sidebar.mobile-hidden {
+            transform: translateX(-100%);
+        }
+
+        .company-logo {
+            text-align: center;
+            padding: 0 2rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .imgLogo {
+            width: 10rem;
+            filter: grayscale(100%);
+            -webkit-filter: grayscale(100%);
+            filter: brightness(0) invert(1);
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0 1rem;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background:  linear-gradient(135deg, #3b288f 0%, #6b58bf 100%);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 1rem;
+            fill: currentColor;
+        }
+
+        .dropdown {
+            display: none;
+            padding-left: 2rem;
+            margin-top: 0.5rem;
+        }
+
+        .dropdown.show {
+            display: block;
+        }
+
+        .dropdown a {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown a:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background:  linear-gradient(180deg, #3b288f 0%, #6b58bf 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem;
+            color: white;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+            transition: margin-left 0.3s ease;
+        }
+
+        .main-content.full-width {
+            margin-left: 0;
+        }
+
+        .header {
+            background:  linear-gradient(180deg, #3b288f 0%, #6b58bf 100%);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header h2 {
+            color: white;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 0.5rem;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 50px solid linear-gradient(135deg, #667eea 0%, #764ba2 100%);;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-deposit{
+            background:  linear-gradient(135deg, #667eea 0%, #764ba2 100%);;
+        }
+
+        .card-investment {
+            background:  linear-gradient(135deg, #43cea2 0%, #185a9d 100%);;
+        }
+
+        .card-withdrawal {
+            background:  linear-gradient(135deg, #f7971e 0%, #ffd200 100%);;
+        }
+
+        .card-balance {
+            background:  linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: rgb(250, 248, 248);
+            margin-bottom: 0.5rem;
+        }
+
+        .card-change {
+            font-size: 0.8rem;
+            color: #4ade80;
+        }
+
+        .card-change.negative {
+            color: #f87171;
+        }
+
+        /* Transaction History */
+        .transaction-section {
+            background:  linear-gradient(135deg, #667eea 0%, #764ba2 100%);;
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .filter-select {
+            background:  linear-gradient(135deg, #667eea 0%, #764ba2 100%);;
+            border: 1px solid linear-gradient(135deg, #667eea 0%, #764ba2 100%);;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            color: white;
+            outline: none;
+        }
+
+        .filter-select option {
+            background: #4c1d95;
+            color: white;
+        }
+
+        .transaction-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .transaction-table th,
+        .transaction-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid  linear-gradient(135deg, #667eea 0%, #764ba2 100%);;
+        }
+
+        .transaction-table th {
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .transaction-table td {
+            color:  #ffff;
+        }
+
+        .transaction-table tbody tr:hover {
+            background:  linear-gradient(135deg, #667eea 0%, #764ba2 100%);;
+        }
+
+        .plan-badge {
+            background: linear-gradient(45deg, #ffd700, #ffed4a);
+            color: #fbf9f9;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.mobile-show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+                padding-top: 4rem;
+            }
+
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .section-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .transaction-table {
+                font-size: 0.9rem;
+            }
+
+            .transaction-table th,
+            .transaction-table td {
+                padding: 0.75rem 0.5rem;
+            }
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .overlay.show {
+            display: block;
+        }
+    </style>
 </head>
 <body>
-    <div class="tool-box">
-        <h1 style="color: gold; font-size: 30px; text-align: center;margin-top: 15px;">Profile board</h1>
-        <div class="profile-content">
-            <div class="profile-info">
-                <div class="info">
-                    <h3>Full name:</h3> <p><%= users.fullName%></p>
-                    <h3>Username:</h3> <p><%= users.userName %></p>
-                    <h3>Email:</h3> <p><%= users.email %></p>
-                    
-                </div>
+    <div class="overlay" id="overlay"></div>
+    
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+    </button>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar mobile-hidden" id="sidebar">
+            <div class="company-logo">
+                <img src="/ASSETS/WHITE.png" alt="Logo" class="imgLogo">
             </div>
-<br><br>
-            <button class="profile-btn">Edit profile<a href="#"></a></button>
-        </div>
-        
-    </div>
-
-    <div class="body-content">
-        <div class="primary-header flex">
-            <div class="logo"> <img src="/ASSETS/WHITE.png" alt="Logo" class="imgLogo"></div>
-
-            <button class="mobile-nav-toggle" aria-controls="primary-navigation" aria-expanded="false">
-                <span style="font-size:30px;cursor:pointer;" style="overflow: hidden;">☰</span>
-
-            </button>
-
+            
             <nav>
-                <ul id="primary-navigation" data-visible='false' class="primary-navigation flex">
-                    <li class="active pattern"><a href="/dashboard"><i class="fa fa-dashboard icons"></i></a>
-                        Dashboard
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="/dashboard" class="nav-link active" onclick="showSection('dashboard')">
+                            <svg class="nav-icon" viewBox="0 0 24 24">
+                                <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+                            </svg>
+                            Dashboard
+                        </a>
                     </li>
-                    <li class="pattern"><a href="#">
-                        <span aria-hidden="true"></span><i class="fa fa-file-invoice icons"></i>Transactions</a>
-                        <ul class="dropdown">
-                            <li><a href="/plans"><i class="fa fa-donate icons"></i>Deposit</a></li>
-                            <li><a href="/withdraw"><i class="fa fa-hand-holding-usd icons"></i>Withdraw</a></li>
-                        </ul>
+                    
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" onclick="toggleDropdown('transactionDropdown')">
+                            <svg class="nav-icon" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                            Transactions
+                        </a>
+                        <div class="dropdown" id="transactionDropdown">
+                            <a href="/plans" onclick="showSection('deposits')">Deposits</a>
+                            <a href="/withdraw" onclick="showSection('withdrawals')">Withdrawals</a>
+                        </div>
                     </li>
-                    <li class="pattern"><a href="/profile">
-                        <span aria-hidden="true"></span><i class="fa fa-user icons"></i>Profile</a>
+                    
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" onclick="toggleDropdown('fundDropdown')">
+                            <svg class="nav-icon" viewBox="0 0 24 24">
+                                <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
+                            </svg>
+                            Fund Account
+                        </a>
+                        <div class="dropdown" id="fundDropdown">
+                            <a href="/installmentPay" onclick="showSection('makePayment')">Make Payment</a>
+                            <a href="/installmentTransaction" onclick="showSection('viewPayments')">View Payments</a>
+                        </div>
                     </li>
-                    <li class="pattern"><a href="/">
-                        <span aria-hidden="true"></span><i class="fa fa-door-open icons"></i>Logout</a>
+
+                    <li class="nav-item">
+                        <a href="/profile" class="nav-link" onclick="showSection('profile')">
+                            <svg class="nav-icon" viewBox="0 0 24 24">
+                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                            </svg>
+                            Profile
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="/" class="nav-link" onclick="logout()">
+                            <svg class="nav-icon" viewBox="0 0 24 24">
+                                <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.59L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+                            </svg>
+                            Logout
+                        </a>
                     </li>
                 </ul>
-            </nav> 
-        </div>
-        <div class="team-area">
-            <div class="single-team one">
-                <div class="box">
-                    <p>
-                        <span>Total Deposit</span><br>
-                        <span id="displayDeposit" style="color: #fff">$ <%= balance %></span>
-                    </p>
-                    <i class="fa fa-donate box-icon"></i>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content" id="mainContent">
+            <div class="header">
+                <h2>Welcome Back, <%= users.userName %>!</h2>
+                <p>Here's your trading overview for today</p>
+            </div>
+
+            <!-- Dashboard Cards -->
+            <div class="dashboard-cards">
+                <div class="card card-deposit">
+                    <div class="card-header">
+                        <span class="card-title">Total Deposits</span>
+                    </div>
+                    <div class="card-value">$<%= balance %></div>
+                </div>
+
+                <div class="card card-withdrawal">
+                    <div class="card-header">
+                        <span class="card-title">Total Withdrawn</span>
+                    </div>
+                    <div class="card-value">$<%= withdraw %></div>
+                </div>
+
+                <div class="card card-balance ">
+                    <div class="card-header">
+                        <span class="card-title">Account Balance</span>
+                    </div>
+                    <div class="card-value">$<%= totalBalance %></div>
+                </div>
+
+                <div class="card card-investment ">
+                    <div class="card-header">
+                        <span class="card-title">Active Investments</span>
+                    </div>
+                    <div class="card-value">$<%= activeInvestment%></div>
                 </div>
             </div>
 
-            <div class="single-team two">
-                <div class="box">
-                        <p>
-                            <span>Total Withdrawn</span> <br>
-                            <span id="withdraw-primary" style="color: #fff">$ <%= withdraw %></span>
-                        </p>
-                        <i class="fa fa-hand-holding-usd box-icon"></i>
+            <!-- Transaction History -->
+            <div class="transaction-section">
+                <div class="section-header">
+                    <h3 class="section-title">Recent Deposits</h3>
+                    <select class="filter-select" id="transactionFilter">
+                        <option value="all">All Transactions</option>
+                        <option value="today">Today</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="year">This Year</option>
+                    </select>
                 </div>
-            </div>
 
-            <div class="single-team three">
-                <div class="box">
-                    <p>             
-                        <span>Account Balance</span> <br>
-                        <span id="balance-primary" style="color: #fff">$ <%= totalBalance %></span>
-                    </p>
-            
-                    <i class="fa fa-shopping-bag box-icon"></i>
-                </div>
-                
-            </div>
-
-            <div class="single-team four">
-                <div class="box">
-                    <p>
-                        <span>Active investments</span> <br>
-                        <span id="activeInvestments" style="color: #fff">$ <%= activeInvestment%></span>
-                    </p>
-    
-                    <i class="fa fa-tasks box-icon"></i>
-                </div>
-            </div>
-        </div>  
-        <br><br><br>
-
-        <div class="head"style="background-color: #3b288f;padding: 20px 30px;">
-            <span style="font-size:30px;cursor:pointer; color: gold ;" class="nav3"  >Transaction history</span>
-        </div> <br>
-        <!-- Deposit and withdraw -->
-        
-        
-                <!-- Transaction History Section -->
-                
-        <div class="col-div-8">
-            <div class="box-8" style=" padding-top: 20px; padding-left: 10px;">
-              <div class="content-box">
-                <!-- <p style="color: gold;">Transactions</p> -->
-                <table id="transaction-history-table">
+                <table class="transaction-table">
                     <thead>
                         <tr>
-                          <th>Type</th>
-                          <th>Amount</th>
-                          <th>Date</th>
+                            <th>Plan</th>
+                            <th>Amount</th>
+                            <th>Date</th>
                         </tr>
-                      </thead>
-                  <tbody id="transaction-history">
-                    <!-- Transaction history rows will be added here using JavaScript -->
-                    <% deposits.forEach(deposit => { %>
-                        <tr>
-                          <td><%= deposit.plan %></td>
-                          <td><%= deposit.amount %></td>
-                          <td><%= deposit.createdAt %></td>
-                        </tr>
-                      <% }); %>
-                  </tbody>
+                    </thead>
+                    <tbody id="transactionTableBody">
+                        <% deposits.forEach(deposit => { %>
+                            <tr>
+                              <td> <span class="plan-badge"><%=deposit.plan %></span></td>
+                              <td><%= deposit.amount %></td>
+                              <td><%= new Date(deposit.createdAt).toLocaleDateString() %></td>
+                            </tr>
+                          <% }); %>
+                    </tbody>
                 </table>
-              </div>
             </div>
-          </div>
-          <div id="overlay"></div>
-        </div>
+        </main>
     </div>
 
-
     <script>
-        const primaryNav = document.querySelector(".primary-navigation");
-        const navToggle =  document.querySelector(".mobile-nav-toggle");
-    
-        navToggle.addEventListener("click", () => {
-            const visibility = primaryNav.getAttribute("data-visible");
-    
-            if(visibility === "false") {
-                primaryNav.setAttribute("data-visible", true);
-            } else if (visibility === "true"){
-                primaryNav.setAttribute("data-visible", false);  
+        // Mobile menu functionality
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const mainContent = document.getElementById('mainContent');
+
+        mobileMenuToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('mobile-show');
+            sidebar.classList.toggle('mobile-hidden');
+            overlay.classList.toggle('show');
+        });
+
+        overlay.addEventListener('click', function() {
+            sidebar.classList.add('mobile-hidden');
+            sidebar.classList.remove('mobile-show');
+            overlay.classList.remove('show');
+        });
+
+        // Dropdown functionality
+        function toggleDropdown(id) {
+            const dropdown = document.getElementById(id);
+            dropdown.classList.toggle('show');
+        }
+
+        // Navigation functionality
+        function showSection(section) {
+            // Remove active class from all nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Add active class to clicked nav link
+            event.target.classList.add('active');
+            
+            // Close mobile menu if open
+            if (window.innerWidth <= 768) {
+                sidebar.classList.add('mobile-hidden');
+                sidebar.classList.remove('mobile-show');
+                overlay.classList.remove('show');
             }
-        }) 
+            
+            console.log('Navigating to section:', section);
+            // Here you would implement the logic to show different sections
+        }
+
+        // Logout functionality
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                console.log('Logging out...');
+                // Implement logout logic here
+                //alert('Logout functionality would be implemented here');
+            }
+        }
+
+        // Transaction filter functionality
+        document.getElementById('transactionFilter').addEventListener('change', function() {
+            const filterValue = this.value;
+            console.log('Filtering transactions by:', filterValue);
+            // Here you would implement the filtering logic
+            // For demo purposes, we'll just log the filter value
+        });
+
+        // Responsive handling
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('mobile-hidden', 'mobile-show');
+                overlay.classList.remove('show');
+                mainContent.classList.remove('full-width');
+            } else {
+                if (!sidebar.classList.contains('mobile-show')) {
+                    sidebar.classList.add('mobile-hidden');
+                }
+                mainContent.classList.add('full-width');
+            }
+        });
+
+        // Initialize responsive state
+        if (window.innerWidth <= 768) {
+            mainContent.classList.add('full-width');
+        }
     </script>
 </body>
-
-<style>
-    @import url('https://stackpath.bootstrapcdn.com-awesome/4.7.0/css-awesome.min.css');
-    *{
-    box-sizing: border-box;
-    text-decoration: none;
-    padding: 0;
-    margin: 0;  
-}
-
-body, html {
-    display: grid;
-    grid-template-columns: 50% 150%;
-   /* width: 100%;*/
-   font-family: system-ui;
-    height: 100%;
-    position: relative;
-}
-
-/*student profile*/
-
-.tool-box {
-    background-color: #3b288f;
-    max-height: 100%;
-    overflow: auto;
-
-	position: static;
-    /*display: grid;*/
-    /*grid-gap: 5px;*/
-    padding: 10px;
-    color: white;
-}
-
-.profile-content {
-   /* transform: translateY(-20%);*/
-    display: grid;
-    grid-gap: 10px;
-	margin-top: 30%;
-}
-
-.profile-info{
-    /*transform: translateY(-10%);*/
-}
-
-.info{
-    display: grid;
-    grid-template-columns:auto;
-    grid-gap: 15px;
-    justify-content:left;
-    padding-left:10px;
-}
-
-.info>p{
-    font-size: 20px;
-    padding-bottom:5px;
-}
-
-.profile-btn {
-    background-color: rgb(143, 143, 202);
-    border: none;
-    /*border-radius: 50px;*/
-    margin: 15px;
-    padding: 15px;
-    font-weight:600;
-    font-size: 15px;
-   /* font-family:Verdana, Geneva, Tahoma, sans-serif;*/
-    color: snow;
-}
-
-.profile-btn:hover{
-    background-color: rgb(117, 92, 207);
-}
-
-/* for the nav bar*/
-a {
-    color: #3b288f;
-    text-decoration: none;
-}
-
-.flex {
-    display: flex;
-    gap: var(--gap, 1rem);
-}
-
-.primary-header {
-    /*align-items: center;*/
-    justify-content: space-between;
-    background-color:#3b288f;
-	border-bottom: #3b288f solid 3px;
-}
-
-.mobile-nav-toggle {
-    display: none;
-}
-
-.logo {
-    align-self: center;
-    padding-left:2vh;
-    margin: 0;
-    /*text-transform: uppercase;*/
-    font-weight: 50;
-    color: gold;
-}
-
-.imgLogo {
-    width: 10rem;
-    filter: grayscale(100%);
-    -webkit-filter: grayscale(100%);
-    filter: brightness(0) invert(1);
-    /* border: 2px solid #fff; */
-}
-
-.primary-navigation {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-
-    justify-content: space-around;
-   /* margin: 20px;*/
-    font-weight: 500;
-    color: rgb(248, 150, 2);
-    /*max-height: 50%;*/
-
-    background: hsl (0 0% 100% / 0.1);
-    backdrop-filter: blur(1rem);
-}
-
-.primary-navigation a {
-    text-decoration: none;
-}
-
-.primary-navigation a>[aria-hidden="true"] {
-    font-weight: 700;
-    margin-inline-end: 0.75em;
-}
-
-
-.primary-navigation li ul.dropdown li {
-    display: block
-}
-
-.primary-navigation li ul.dropdown {
-    width: 30%;
-    background-color:#3b288f;
-    position: absolute;
-    z-index: 999;
-    display: none;
-    padding-left: 2vw;
-    padding-bottom: 2vw;
-}
-
-.primary-navigation li:hover ul.dropdown{
-    display: block;
-}
-
-@supports (backdrop-filter: blur(1rem)) {
-    .primary-navigation {
-        background: hsl (0 0% 100% / 1);
-        backdrop-filter: blur(0.1rem);
-    }
-
-
-}
-
-nav {
-    padding: 2vw;
-    font-size: 1.5vw;
-
-}
-
-nav a {
-    color: #fff;
-}
-
-/* handling body content*/
-.body-content {
-    background-color:lavender;
-}
-
-.active {
-    background-color: darkslateblue;
-    padding: 5px;
-}
-
-.pattern:hover {
-    box-shadow: 0 -5px 0px white inset,
-    200px 0 0 rgba(255, 255, 255, 0.03) inset;
-    padding: 25px 15px 20px 15px;
-}
-
-.team-area {
-    display: grid;
-    grid-template-columns: 5fr 5fr;
-   /* grid-template-rows: 30px 30px;*/
-    grid-auto-rows: 50px, auto;
-    grid-gap:15px;
-    justify-content: center;
-
-   /* border: black, 20px, solid;*/
-    padding: 20px;
-    margin: 15px;
-}
-
-.single-team {
-    background-color: #3b288f;
-    box-shadow: black;
-    padding: 4vh;
-    margin: 2vh;
-}
-
-/*.one, .two, .three, .four {
-    width: 100%;
-    height: 100%;
-}*/
-
-.team-text > p {
-    font-size: 4vh;
-    color:gold;
-    font-weight: 200;
-}
-
-.col-div-8{
-	width: 100%;
-	float: left;
-    /* height: 0%;
-    border: 2px solid gold; */
-}
-
-.content-box{
-	padding: 20px;
-}
-.content-box p{
-	margin: 0px;
-    font-size: 20px;
-    color: #f7403b;
-}
-.content-box p span{
-	float: right;
-    background-color: #ddd;
-    padding: 3px 10px;
-    font-size: 15px;
-}
-/*.box{
-	width: 85%;
-	height: 100px;
-	background-color: #3b288f;
-	margin-left: 10px;
-	padding:10px;
-}*/
-.box p{
-	/*font-size: 35px;*/
-    color: #fff;
-    font-weight: bold;
-    line-height: 30px;
-    padding-left: 10px;
-    margin-top: 20px;
-    display: inline-block;
-}
-.box p span{
-	font-size: 20px;
-	font-weight: 500;
-	color: gold;
-}
-.box-icon{
-	font-size: 30px!important;
-    float: right;
-    margin-top: 35px!important;
-    color: gold;
-    padding-right: 10px;
-}
-.box-8, .box-4{
-	width: 95%;
-	background-color: #3b288f;
-	height: 100%;
-    padding-left:20px ;
-   /* border-top-left-radius: 30px;
-    border-top-right-radius: 30px;
-    
-    border-bottom-left-radius: 30px;
-    border-bottom-right-radius: 30px;*/
-	
-}
-
-.box-8{
-	margin-left: 30px;
-}
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-  
-}
-td, th {
-  text-align: left;
-  padding:15px;
-  color: #ddd;
-  
-}
-tr:nth-child(even) {
-    background-color:#7d66e0;
-			/*text-decoration: #3b288f;*/
-}
-
-td:nth-child(3) { /* Target the date column */
-    max-width: 30px; /* Set a maximum width */
-    overflow: hidden; /* Hide overflowing content */
-    white-space: nowrap; /* Prevent line breaks */
-    text-overflow: ellipsis; /* Display ellipsis (...) for overflow */
-}
-
-.head{
-    margin: 4vh;
-	color: gold;
-    width: 95%;
-    text-align: center;
-}
-
-@media (min-width:320px) and (max-width: 768px) {
-
-    body, html {
-        max-width: 100%;
-        max-height: 100%;
-       display: grid;
-        grid-template-columns: auto;
-        position: relative;
-        /*overflow-x: hidden;*/
-        background-position: center;
-        background-size: cover;
-    }
-
-    body::-webkit-scrollbar{
-        width: 0px;
-        height: 0px;
-    }
-
-
-    .primary-navigation {
-        --gap: 2em;
-
-        position: fixed;
-        z-index: 1000;
-        inset: 0 0 0 30%;
-
-        flex-direction: column;
-        padding: min(30vh, 10rem) 2em;
-
-        background: #3b288f;
-        /*backdrop-filter: blur(5rem);*/
-
-        transform: translateX(100%);
-
-
-    }
-
-    /*dropdown menu*/
-    .primary-navigation li ul.dropdown {
-        width: 70%;
-        height: 10%;
-        background-color:#8971f3;
-        position: absolute;
-        z-index: 999;
-        display: none;
-        padding-left: 2vw;
-        padding-bottom: 2vw;
-    }
-
-    .primary-navigation li ul.dropdown li{
-        padding: 5%;
-    }
-
-    .primary-navigation[data-visible="true"] {
-        transform: translateX(0%);
-    }
-
-    .mobile-nav-toggle {
-        display: block;
-        position: fixed;
-        z-index: 9999;
-        background-color: transparent;
-        border: teal;
-        color: #fff;
-        background-image: url("https://www.flaticon.com/premium-icon/navigation_2811759");
-       width: 4rem;
-        height: 2rem;
-
-        aspect-ratio: 3;
-        top: 1rem;
-        right: 2rem;
-    }
-
-    nav li {
-        font-size: 5vw;
-        padding: 0;
-    }
-
-    nav {
-        padding: 2vw;
-        font-size: 1.5vh;
-
-    }
-    .tool-box {
-        display: none;
-    }
-
-    .team-area {
-        display: grid;
-        grid-template-columns: auto;
-    /* grid-template-rows: 30px 30px;*/
-        grid-auto-rows: auto;
-        grid-gap:25px;
-        justify-content: center;
-       /* width: 100%;*/
-       /* height: 100%;*/
-        padding: 20px;
-        margin: 5px;
-    }
-
-    .single-team {
-        background-color: #3b288f;
-        /*box-shadow: black;
-        border: black, 5px, solid;*/
-        padding: 15px;
-        /*margin: 15px;*/  
-        width: 100%;
-    }
-
-    .logo {
-        align-self: center;
-        padding-left:1vh;
-        font-size: px;
-        margin: 0;
-        /*text-transform: uppercase;*/
-        /*font-weight: 50;*/
-        color: gold;
-    }
-
-    .imgLogo {
-        width: 9rem;
-        padding: 30px 0;
-    }
-
-    .body-content {
-        background-color:lavender;
-        width: 100%;
-        height: 100%;
-    }
-
-    .flex {
-        display: flex;
-        gap: var(--gap, 1rem);
-    }
-
-    .primary-header {
-        /*align-items: center;*/
-        justify-content: space-around;
-        background-color:#3b288f;
-    }
-    /*.one, .two, .three, .four {
-    width: 100%;
-    height: 100%;
-    }*/
-
-    .col-div-8{
-        width: 100%;
-        float: left;
-        /* height: 0%;
-        border: 2px solid gold; */
-    }
-
-    .content-box{
-        padding: 20px;
-    }
-    .content-box p{
-        margin: 0px;
-        font-size: 20px;
-        color: #f7403b;
-    }
-    .content-box p span{
-        float: right;
-        background-color: #ddd;
-        padding: 3px 10px;
-        font-size: 15px;
-    }
-    /*.box{
-        width: 85%;
-        height: 100px;
-        background-color: #3b288f;
-        margin-left: 10px;
-        padding:10px;
-    }*/
-    .box p{
-       /* font-size: 35px;*/
-        color: #fff;
-        font-weight: bold;
-        line-height: 30px;
-        padding-left: 10px;
-        margin-top: 20px;
-        display: inline-block;
-    }
-    .box p span{
-        font-size: 20px;
-        font-weight: 500;
-        color: gold;
-    }
-    .box-icon{
-        font-size: 30px!important;
-        float: right;
-        margin-top: 35px!important;
-        color: gold;
-        padding-right: 10px;
-    }
-    .box-8, .box-4{
-        width: 90%;
-        background-color: #3b288f;
-        height: 100%;
-        padding-left:20px ;
-    /* border-top-left-radius: 30px;
-        border-top-right-radius: 30px;
-        
-        border-bottom-left-radius: 30px;
-        border-bottom-right-radius: 30px;*/
-        
-    }
-
-    .box-8{
-        margin-left: 30px;
-    }
-    table {
-    font-family: arial, sans-serif;
-    border-collapse: collapse;
-    width: 100%;
-    
-    }
-    td, th {
-    text-align: left;
-    padding:15px;
-    color: #ddd;
-    
-    }
-    tr:nth-child(even) {
-        background-color:#7d66e0;
-                /*text-decoration: #3b288f;*/
-    }
-
-    td:nth-child(3) { /* Target the date column */
-        min-width: 210px; /* Set a maximum width */
-        overflow: hidden; /* Hide overflowing content */
-        white-space: nowrap; /* Prevent line breaks */
-        text-overflow: ellipsis; /* Display ellipsis (...) for overflow */
-    }
-
-    .head{
-        margin: 4vh;
-        color: gold;
-        width: 90%;
-        text-align: center;
-    }
-
-}    
-</style>
 </html>

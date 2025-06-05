@@ -30,23 +30,3 @@ mailRoute.post("/send", (req, res) => {
         }
     });
 });
-
-
-// import express from 'express';
-// import emailService from './mail'
-
-// const emailrouter = express.Router();
-
-// emailrouter.post('/send-email', async (req, res) => {
-//     const { to, subject, text } = req.body;
-
-//     try {
-//         await emailService.sendMail(to, subject, text);
-//         res.status(200).send('Email sent successfully!');
-//     } catch (error: any) {
-//         console.error('Error sending email:', error);
-//         res.status(500).send('Internal Server Error');
-//     }
-// });
-
-// export default emailrouter;

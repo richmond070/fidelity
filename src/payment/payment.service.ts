@@ -1,5 +1,6 @@
 import { prisma } from "../utils/db.sever";
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { PlanConfigs } from "../utils/payment.constants";
 
 type Deposit = {
     id: number;
@@ -21,51 +22,6 @@ type DepositMade = {
 interface PrismaUniqueConstraintErrorMeta {
     target: string[];
 }
-interface PlanConfig {
-    returnRate: number;
-    durationInMs: number;
-}
-
-const PlanConfigs: Record<string, PlanConfig> = {
-    PRIME: {
-        returnRate: 0.2,
-        durationInMs: 48 * 60 * 60 * 1000, //48hours
-    },
-    STANDARD: {
-        returnRate: 0.25,
-        durationInMs: 48 * 60 * 60 * 1000, //48days 
-    },
-
-    GOLD: {
-        returnRate: 0.4,
-        durationInMs: 48 * 60 * 60 * 1000, //1 week
-    },
-    PLATINUM: {
-        returnRate: 0.52,
-        durationInMs: 48 * 60 * 60 * 1000, //48days
-    },
-    INSURANCE: {
-        returnRate: 0.25,
-        durationInMs: 7 * 24 * 60 * 60 * 1000, //1 week
-    },
-    RealEstate: {
-        returnRate: 0.75,
-        durationInMs: 14 * 24 * 60 * 60 * 1000, //1 week
-    },
-    MERGER: {
-        returnRate: 0.9,
-        durationInMs: 14 * 24 * 60 * 60 * 1000, //1 week
-    },
-    IMMIGRATION: {
-        returnRate: 0.75,
-        durationInMs: 14 * 24 * 60 * 60 * 1000, //1 week
-    },
-    ETF: {
-        returnRate: 0.55,
-        durationInMs: 14 * 24 * 60 * 60 * 1000, //1 week
-    },
-};
-
 
 //to list all verified payments made by a user 
 export const listDeposit = async (userId: number): Promise<DepositMade[] | null> => {
@@ -284,6 +240,61 @@ export async function updateDepositAmount(username: string, email: string, trans
         throw error;
     }
 }
+
+export async function adminUpdateUserDeposit(
+    username: string,
+    email: string,
+    depositId: number,
+    newAmount: number
+): Promise<any> {
+    try {
+        // 1. Find the user by username or email
+        const user = await prisma.user.findFirst({
+            where: {
+                OR: [
+                    { userName: username },
+                    { email: email }
+                ]
+            }
+        });
+
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        // 2. Retrieve all deposits made by the user
+        const deposits = await prisma.deposit.findMany({
+            where: {
+                userId: user.id
+            }
+        });
+
+        if (deposits.length === 0) {
+            return { message: "No deposit found for this user." };
+        }
+
+        // 3. If a specific depositId is provided, update it
+        const targetDeposit = deposits.find(dep => dep.id === depositId);
+
+        if (!targetDeposit) {
+            throw new Error('Deposit with the specified ID not found for this user.');
+        }
+
+        const updatedDeposit = await prisma.deposit.update({
+            where: { id: depositId },
+            data: { amount: newAmount }
+        });
+
+        return {
+            message: 'Deposit updated successfully',
+            updatedDeposit
+        };
+    } catch (error) {
+        console.error("Error updating deposit as admin:", error);
+        throw error;
+    }
+}
+
 
 
 // Function for active investment

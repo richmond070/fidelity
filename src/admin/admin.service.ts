@@ -63,7 +63,6 @@ export const getUser = async (req: Request, res: Response) => {
 };
 
 // get  all users that are registered 
-
 export const getUsers = async (req: Request, res: Response) => {
     const { fullName, userName, email } = req.body
     try {
@@ -77,10 +76,9 @@ export const getUsers = async (req: Request, res: Response) => {
             //     email: true
             // }
         })
-        // res.status(200).json({
-        //     data: user
-        // })
-        res.render('allUsers', { user: user })
+        res.status(200).json({
+            data: user
+        })
     } catch (error) {
         console.log(error)
         res.status(500).json({
@@ -135,17 +133,20 @@ export const deposit = async (req: Request, res: Response) => {
     }
 }
 
+//get all deposits that are not verified
 export const getAllDeposit = async (req: Request, res: Response) => {
     try {
         const deposit = await prisma.deposit.findMany({
             where: {
                 isVerified: false
             },
-            select: {
-                amount: true,
-                transactionId: true,
-                plan: true,
-                createdAt: true
+            include: { // Use include instead of select for relations
+                user: {
+                    select: {
+                        userName: true,
+                        email: true // Add more fields if needed
+                    }
+                }
             }
         });
         // res.render('admin', { deposit: deposit })
@@ -158,25 +159,25 @@ export const getAllDeposit = async (req: Request, res: Response) => {
     }
 }
 
+//get all deposits that are verified
 export const getAllDeposits = async (req: Request, res: Response) => {
     try {
         const deposit = await prisma.deposit.findMany({
             where: {
                 isVerified: true
             },
-            select: {
-                amount: true,
-                transactionId: true,
-                plan: true,
-                createdAt: true,
-                user: { // Include user details
+            include: { // Use include instead of select for relations
+                user: {
                     select: {
-                        userName: true // Select only the required user fields
+                        userName: true,
+                        email: true // Add more fields if needed
                     }
                 }
             }
         });
-        res.render('trans', { deposit: deposit })
+        res.status(200).json({
+            data: deposit
+        })
     } catch (error: any) {
         console.error('Error fetching data from the database:', error.message);
         res.status(500).send('Internal Sever Error');
@@ -344,7 +345,7 @@ export async function getUnverifiedDeposits(res: Response, req: Request): Promis
             }
         });
 
-        res.render('admin', { unverifiedDeposits })
+        res.status(200).json({ data: unverifiedDeposits });
     } catch (error) {
         console.error('Error notifying admin:', error);
         throw new Error('Failed to notify admin');
@@ -359,7 +360,7 @@ export async function verifyDeposit(req: Request, res: Response): Promise<void> 
         const { transactionId } = req.body;
         console.log('Extracted depositId:', transactionId)
         if (!transactionId) {
-            console.error('Deposit ID is missing in request')
+            console.error('Transaction ID is missing in request')
             res.status(400).json({ error: 'Deposit ID is required' })
             return
         }

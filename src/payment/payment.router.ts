@@ -170,20 +170,25 @@ paymentRouter.get("/roi", verifyToken, async (req: Request, res: Response) => {
 })
 
 // Route for updating a user's deposit
-paymentRouter.put('/update-deposit', async (req: Request, res: Response) => {
+paymentRouter.put('/update-deposit', verifyToken, authorization("ADMIN"), async (req: Request, res: Response) => {
     try {
         // Retrieve username, email, transactionId, and amount from request body
         const { username, email, transactionId, amount } = req.body;
 
+        // Validate input
+        if (!transactionId || amount === undefined) {
+            return res.status(400).json({ error: 'transactionId and amount are required' });
+        }
+
         // Call service function to update deposit amount
-        const updatedDeposit = await PaymentService.updateDepositAmount(username, email, transactionId, amount);
+        const updatedDeposit = await PaymentService.adminUpdateUserDeposit(username, email, transactionId, amount);
 
         // Return success response with updated deposit details
         res.status(200).json({ message: 'Deposit updated successfully', deposit: updatedDeposit });
-    } catch (error) {
+    } catch (error: any) {
         // Handle errors
         console.error('Error:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: error.message || 'Something went wrong' });
     }
 });
 

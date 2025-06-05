@@ -69,13 +69,38 @@ export async function listUnverifiedWithdrawal(req: Request, res: Response) {
         })
         res.status(200).json({ withdraw })
 
-        // res.render('admin', { withdraw: withdraw })
     } catch (error) {
         console.error('Error notifying admin:', error);
         throw new Error('Failed to notify admin');
     }
 }
 
+//list withdrawal that are not verified to notify the admin 
+export async function listVerifiedWithdrawal(req: Request, res: Response) {
+    try {
+        const withdraw = await prisma.withdrawal.findMany({
+            where: {
+                isVerified: true
+            },
+            select: {
+                id: true,
+                walletAddress: true,
+                userId: true,
+                user: { // Include user details
+                    select: {
+                        userName: true // Select only the required user fields
+                    }
+                }
+            }
+
+        })
+        res.status(200).json({ withdraw })
+
+    } catch (error) {
+        console.error('Error notifying admin:', error);
+        throw new Error('Failed to notify admin');
+    }
+}
 
 
 //verify all unverified payments 

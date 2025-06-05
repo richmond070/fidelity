@@ -176,29 +176,6 @@ userRouter.post("/login", async (req: Request, res: Response) => {
     }
 })
 
-//POST: update of forgotten password 
-// userRouter.post('/updated-password', async (req: Request, res: Response) => {
-//     const { identifier, newPassword } = req.body;
-
-//     //check if the details are correct 
-//     if (!identifier || !newPassword) {
-//         return res.status(400).json({ message: 'Identifier and newPassword are required. ' })
-//     }
-
-//     //making the update on the password
-//     try {
-//         const updateUser = await UserService.updatePassword(identifier, newPassword)
-
-//         if (!updateUser) {
-//             return res.status(404).json({ message: "User not found." });
-//         }
-
-//         return res.status(200).json(updateUser);
-//     } catch (error) {
-//         return res.status(500).json({ message: "An error occurred while updating the password.", error })
-//     }
-
-// })
 
 userRouter.post("/findUser", async (req: Request, res: Response) => {
 

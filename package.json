@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "prisma": {
-    "seed": "node --require esbuild-register prisma/seed.ts"
-  },
   "scripts": {
     "build": "tsc",
     "postinstall": "prisma generate",
@@ -47,11 +44,14 @@
     "ws": "^8.14.2"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.3",
     "@types/node": "^20.5.9",
     "esbuild-register": "^3.4.2",
+    "jest": "^29.7.0",
     "nodemon": "^3.0.1",
     "prisma": "^5.7.0",
+    "ts-jest": "^29.3.4",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   }
