@@ -663,12 +663,15 @@
                     Logout
                 </a>
             </div>
+            <div class="google" style="display: flex;overflow: hidden;width: 50px;height: 30px;">
+                <div id="google_translate_element"></div>
+            </div>
         </div>
     </nav>
 
     <!-- Main Content -->
     <div class="container">
-        <h1>💼 Investment Plans</h1>
+        <h1> Investment Plans</h1>
         <div class="plans-container">
             <div id="plans-grid" class="plans-grid">
                 <div class="loading">Loading plans...</div>
@@ -1074,6 +1077,12 @@
                 }
             }, 10000);
         }
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement(
+                {pageLanguage: 'en'},
+                'google_translate_element'
+            );
+        } 
     </script>
 </body>
 </html>

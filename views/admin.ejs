@@ -1235,12 +1235,12 @@
                 // Load pending withdrawals from API
                 const pendingWithdrawalsResponse = await fetch('/api/withdrawal/listWithdrawal');
                 const pendingWithdrawalsResult = await pendingWithdrawalsResponse.json();
-                const pendingWithdrawalsData = pendingWithdrawalsResult.data || []; // Extract the data array
+                const pendingWithdrawalData = pendingWithdrawalsResult.withdraw || pendingWithdrawalsResult.data || []; // Extract the data array
                 
                 // Update stats
                 document.getElementById('total-users').textContent = usersData.length || 0;
                 document.getElementById('total-transactions').textContent = transactionsData.length || 0;
-                document.getElementById('pending-withdrawals').textContent = pendingWithdrawalsData.length || 0;
+                document.getElementById('pending-withdrawals').textContent = pendingWithdrawalData.length || 0;
                 document.getElementById('pending-deposits').textContent = pendingDepositsData.length || 0;
                 
                 // Populate users table
@@ -1280,7 +1280,7 @@
                     unverifiedDepositsResponse
                 ] = await Promise.all([
                     fetch('/api/withdrawal/listVerifiedWithdrawal'),
-                    fetch('/api/withdrawal/listWithdrawal'), // Fixed the URL (assuming it should be different)
+                    fetch('/api/withdrawal/listWithdrawal'),
                     fetch('/api/admin/deposits'),
                     fetch('/api/admin/getDeposit')
                 ]);
@@ -1291,54 +1291,59 @@
                 const verifiedDeposits = await verifiedDepositsResponse.json();
                 const unverifiedDeposits = await unverifiedDepositsResponse.json();
 
-                // Extract data arrays (assuming your backend returns {data: [...]})
-                const verifiedWithdrawalsData = verifiedWithdrawals.data || [];
-                const unverifiedWithdrawalsData = unverifiedWithdrawals.data || [];
-                const verifiedDepositsData = verifiedDeposits.data || [];
-                const unverifiedDepositsData = unverifiedDeposits.data || [];
+                // Extract data arrays - FIXED: Use correct property names
+                const verifiedWithdrawalsData = verifiedWithdrawals.withdraw || verifiedWithdrawals.data || [];
+                const unverifiedWithdrawalsData = unverifiedWithdrawals.withdraw || unverifiedWithdrawals.data || [];
+                const verifiedDepositsData = verifiedDeposits.data || verifiedDeposits.deposits || [];
+                const unverifiedDepositsData = unverifiedDeposits.data || unverifiedDeposits.deposits || [];
 
                 // Combine all transactions into a single array
                 const allTransactions = [
                     // Verified withdrawals
                     ...verifiedWithdrawalsData.map(txn => ({
-                        id: txn.transactionId || txn.id,
+                        id: txn.id || txn.transactionId,
                         user: txn.user?.userName || txn.userName || 'N/A',
                         type: 'Withdrawal',
                         amount: txn.amount,
                         status: 'Verified',
-                        date: txn.createdAt || txn.date
+                        date: txn.createdAt || txn.date || new Date().toISOString()
                     })),
                     // Unverified withdrawals
                     ...unverifiedWithdrawalsData.map(txn => ({
-                        id: txn.transactionId || txn.id,
+                        id: txn.id || txn.transactionId,
                         user: txn.user?.userName || txn.userName || 'N/A',
                         type: 'Withdrawal',
                         amount: txn.amount,
                         status: 'Pending',
-                        date: txn.createdAt || txn.date
+                        date: txn.createdAt || txn.date || new Date().toISOString()
                     })),
                     // Verified deposits
                     ...verifiedDepositsData.map(txn => ({
-                        id: txn.transactionId || txn.id,
+                        id: txn.id || txn.transactionId,
                         user: txn.user?.userName || txn.userName || 'N/A',
                         type: 'Deposit',
                         amount: txn.amount,
                         status: 'Verified',
-                        date: txn.createdAt || txn.date
+                        date: txn.createdAt || txn.date || new Date().toISOString()
                     })),
                     // Unverified deposits
                     ...unverifiedDepositsData.map(txn => ({
-                        id: txn.transactionId || txn.id,
+                        id: txn.id || txn.transactionId,
                         user: txn.user?.userName || txn.userName || 'N/A',
                         type: 'Deposit',
                         amount: txn.amount,
                         status: 'Pending',
-                        date: txn.createdAt || txn.date
+                        date: txn.createdAt || txn.date || new Date().toISOString()
                     }))
                 ];
 
                 // Sort transactions by date (newest first)
                 allTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                // Debug logging
+                console.log('Total transactions loaded:', allTransactions.length);
+                console.log('Unverified withdrawals:', unverifiedWithdrawalsData.length);
+                console.log('Sample transaction:', allTransactions[0]);
 
                 // Populate the transactions table
                 const tbody = document.querySelector('#transactions-table tbody');
@@ -1373,7 +1378,7 @@
                 // Load users data from API
                 const withdrawalResponse = await fetch('/api/withdrawal/listWithdrawal');
                 const withdrawalResult = await withdrawalResponse.json();
-                const withdrawalData = withdrawalResult.data || []; // Extract the data array
+                const withdrawalData = withdrawalResult.withdraw || withdrawalResult.data || []; // Extract the data array
 
                 const allWithdrawals = 
                     // Verified withdrawals

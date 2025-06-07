@@ -62,7 +62,7 @@ export const PlanConfigs: Record<string, PlanConfig> = {
             min: 30000,
         }
     },
-    RealEstate: {
+    REALESTATE: {
         returnRate: 0.75,
         durationInMs: 14 * 24 * 60 * 60 * 1000, //1 week
         price: {

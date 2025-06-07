@@ -55,13 +55,11 @@ export async function listUnverifiedWithdrawal(req: Request, res: Response) {
             where: {
                 isVerified: false
             },
-            select: {
-                id: true,
-                walletAddress: true,
-                userId: true,
-                user: { // Include user details
+            include: { // Use include instead of select for relations
+                user: {
                     select: {
-                        userName: true // Select only the required user fields
+                        userName: true,
+                        email: true // Add more fields if needed
                     }
                 }
             }
@@ -82,19 +80,17 @@ export async function listVerifiedWithdrawal(req: Request, res: Response) {
             where: {
                 isVerified: true
             },
-            select: {
-                id: true,
-                walletAddress: true,
-                userId: true,
-                user: { // Include user details
+            include: { // Use include instead of select for relations
+                user: {
                     select: {
-                        userName: true // Select only the required user fields
+                        userName: true,
+                        email: true // Add more fields if needed
                     }
                 }
             }
 
         })
-        res.status(200).json({ withdraw })
+        res.status(200).json({ data: withdraw })
 
     } catch (error) {
         console.error('Error notifying admin:', error);
