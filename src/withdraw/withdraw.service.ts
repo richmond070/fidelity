@@ -106,8 +106,8 @@ export async function verifyWithdrawal(req: Request, res: Response): Promise<voi
         const { id } = req.body
 
         if (!id) {
-            console.error('Deposit ID is missing in request')
-            res.status(400).json({ error: 'Deposit ID is required' })
+            console.error('Withdrawal ID is missing in request')
+            res.status(400).json({ error: 'Withdrawal ID is required' })
             return
         }
 
